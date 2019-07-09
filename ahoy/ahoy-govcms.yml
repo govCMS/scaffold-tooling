@@ -89,18 +89,3 @@ commands:
         false
       fi
     hide: true
-
-  old:
-    usage: "Historic commands."
-    imports:
-      - vendor/simesy/require/ahoy/ahoy-old.yml
-
-  quickstart:
-    usage: "For non-technical users."
-    imports:
-      - vendor/simesy/require/ahoy/ahoy-quickstart.yml
-
-  site:
-    usage: "Customised commands for this site."
-    imports:
-      - .ahoy-site.yml
