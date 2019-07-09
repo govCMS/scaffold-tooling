@@ -1,0 +1,9 @@
+---
+ahoyapi: v2
+usage: Quick start commands.
+
+# These can be extended with no effect on the govcms platform build.
+commands:
+  init:
+    usage: Get started with quickstart.
+    cmd: echo "hello world"
