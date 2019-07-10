@@ -6,6 +6,11 @@
  * This file should contain all settings.php configurations that are needed by all environments.
  */
 
+/**
+ * Include standard services.yml.
+ */
+$settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
+
 // Config directory.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '../config/sync';
 

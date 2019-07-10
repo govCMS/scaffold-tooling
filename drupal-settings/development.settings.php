@@ -1,29 +1,41 @@
 <?php
+
 /**
  * @file
- * amazee.io Drupal 8 development environment configuration file.
- *
- * This file will only be included on development environments.
- *
- * It contains some defaults that the amazee.io team suggests, please edit them as required.
+ * Non-production settings. Included from settings.php.
  */
 
-// Show all error messages on the site
-$config['system.logging']['error_level'] = 'all';
+/**
+ * Include development services yml.
+ */
+$settings['container_yamls'][] = $govcms_includes . '/development.services.yml';
 
- // Disable Google Analytics from sending dev GA data.
+/**
+ * Show all error messages, with backtrace information.
+ *
+ * In case the error level could not be fetched from the database, as for
+ * example the database connection failed, we rely only on this value.
+ */
+$config['system.logging']['error_level'] = 'verbose';
+
+/**
+ * Disable Google Analytics from sending dev GA data.
+ */
 $config['google_analytics.settings']['account'] = 'UA-XXXXXXXX-YY';
 
-// Expiration of cached pages to 0
+/**
+ * Set expiration of cached pages to 0.
+ */
 $config['system.performance']['cache']['page']['max_age'] = 0;
 
-// Aggregate CSS files off
-$config['system.performance']['css']['preprocess'] = 0;
+/**
+ * Disable CSS and JS aggregation.
+ */
+$config['system.performance']['css']['preprocess'] = FALSE;
+$config['system.performance']['js']['preprocess'] = FALSE;
 
-// Aggregate JavaScript files off
-$config['system.performance']['js']['preprocess'] = 0;
-
-// Stage file proxy URL from production URL
-if (getenv('LAGOON_PRODUCTION_URL')){
-  $config['stage_file_proxy.settings']['origin'] = getenv('LAGOON_PRODUCTION_URL');
-}
+/**
+ * Disable render caches, necessary for twig files to be reloaded on every page view.
+ */
+$settings['cache']['bins']['render'] = 'cache.backend.null';
+$settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';

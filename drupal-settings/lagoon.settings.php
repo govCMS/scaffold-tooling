@@ -8,6 +8,11 @@
  * the platform.).
  */
 
+/**
+ * Include lagoon services file.
+ */
+$settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
+
 // Configuration path settings.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '/app/config/default';
 $config_directories['dev'] = '/app/config/dev';
@@ -120,14 +125,6 @@ if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
 
   if (getenv('STAGE_FILE_PROXY_URL')) {
     $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
-  }
-
-  if (getenv('DEV_MODE')) {
-    if (!drupal_installation_attempted()) {
-      if (file_exists(__DIR__ . '/development.settings.php')) {
-        include __DIR__ . '/development.settings.php';
-      }
-    }
   }
 
 }

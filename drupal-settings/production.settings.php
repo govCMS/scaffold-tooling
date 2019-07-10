@@ -1,12 +1,17 @@
 <?php
+
 /**
  * @file
- * amazee.io Drupal 8 production environment configuration file.
- *
- * This file will only be included on production environments.
- *
- * It contains some defaults that the amazee.io team suggests, please edit them as required.
+ * Production settings. Included from settings.php.
  */
+
+/**
+ * Include production.services.yml.
+ */
+$settings['container_yamls'][] = $govcms_includes . '/production.services.yml';
+
+// Inject Google Analytics snippet on all production sites.
+$config['google_analytics.settings']['codesnippet']['after'] = "gtag('config', 'UA-54970022-1', {'name': 'govcms'}); gtag('govcms.send', 'pageview', {'anonymizeIp': true})";
 
 // Don't show any error messages on the site (will still be shown in watchdog)
 $config['system.logging']['error_level'] = 'hide';
