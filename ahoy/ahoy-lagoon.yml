@@ -18,10 +18,6 @@ commands:
     usage: Start a shell inside TEST container.
     cmd: docker-compose exec test bash
 
-  composer:
-    usage: Start a shell inside TEST container.
-    cmd: docker-compose exec -T test composer "$@"
-
   run:
     usage: Run command inside TEST container.
     cmd: docker-compose exec -T test bash -c "$@"
@@ -52,15 +48,8 @@ commands:
 
   login:
     usage: Login to a website.
-    cmd: docker-compose exec -T test drush uli "$@"
-
-  lint:
-    usage: Lint code
-    cmd: docker-compose exec -T test vendor/bin/phpcs
-
-  test-behat:
-    usage: Run Behat tests.
-    cmd: docker-compose exec -T test vendor/bin/behat "$@"
+    cmd: echo "please use 'ahoy drush uli'"
+    # cmd: docker-compose exec -T test drush uli "$@"
 
   pull:
     usage: Pull latest docker images.
@@ -69,7 +58,7 @@ commands:
   refresh-db:
     usage: Refresh the database container with latest nightly dump.
     cmd: |
-      ahoy confirm "Running this command will replace your current database. Are you sure?" &&
+      ahoy lagoon confirm "Running this command will replace your current database. Are you sure?" &&
       # Run this if confirm returns true
       cat .env | grep MARIADB_DATA_IMAGE | cut -c20- | xargs -n1 docker pull && ahoy up ||
       # Run this if confirm returns false

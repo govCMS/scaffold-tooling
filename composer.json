@@ -1,6 +1,6 @@
 {
-    "name": "simesy/require",
-    "description": "Allow satis to get some things required for the platform, but not in the distribution.",
+    "name": "simesy/scaffold-tooling",
+    "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
     "require": {
         "drupal/clamav": "^1.1",
         "drupal/console": "^1.0.2",

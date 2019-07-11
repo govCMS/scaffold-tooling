@@ -1,0 +1,15 @@
+---
+ahoyapi: v2
+
+commands:
+  verify:
+    usage: Integrity checks
+    cmd: ./vendor/simesy/integrity-checks.sh
+
+  lint:
+    usage: Lint code
+    cmd: docker-compose exec -T test vendor/bin/phpcs
+
+  behat:
+    usage: Run Behat tests.
+    cmd: docker-compose exec -T test vendor/bin/behat "$@"
