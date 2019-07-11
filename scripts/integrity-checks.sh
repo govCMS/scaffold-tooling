@@ -34,7 +34,7 @@ function compare() {
 
 # May add versioning, currently just cloning master.
 rm -Rf "$WORKSPACE"
-git clone --depth=1 "$SCAFFOLD" "$WORKSPACE"
+git clone --depth=1 --quiet "$SCAFFOLD" "$WORKSPACE"
 
 if [ "$flavour" = "saas" ] ; then
 
@@ -52,7 +52,7 @@ if [ "$flavour" = "saas" ] ; then
 
     compare \
         $(cat composer.json | jq -c '.["minimum-stability"]') \
-        $(cat $WORKSPACE/composer.json | jq -c '.extra["minimum-stability"]') \
+        $(cat $WORKSPACE/composer.json | jq -c '.["minimum-stability"]') \
         "Minimum stablity is dev." \
         "Your composer.json must set minimum stability to dev."
 
