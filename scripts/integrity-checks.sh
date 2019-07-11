@@ -24,8 +24,8 @@ fi
 function compare() {
     if [ "$1" != "$2" ] ; then
         echo -e "\033[0;91mProblem\033[0m:" "$4"
-        echo -e "  Current value:\n    $1"
-        echo -e "  Expected value:\n    $2"
+        echo -e "  Current value:\n    --$1--"
+        echo -e "  Expected value:\n    --$2--"
         return 1
     fi
     echo -e "\033[0;32mOK:\033[0m" $3
@@ -56,11 +56,9 @@ if [ "$flavour" = "saas" ] ; then
         "Minimum stablity is dev." \
         "Your composer.json must set minimum stability to dev."
 
-    modules_custom=$(find web/modules/custom -type f -name *.info.yml)
-    modules_default=$(find web/sites/default -type f -name *.info.yml)
     compare \
-        "$modules_custom" \
-        "" \
+        " "$(find web/modules/custom -type f -name *.info.yml) \
+        " " \
         "No custom modules found." \
         "There should be no modules in web/sites/default/modules or web/modules"
 
