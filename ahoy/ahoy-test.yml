@@ -4,7 +4,7 @@ ahoyapi: v2
 commands:
   verify:
     usage: Integrity checks
-    cmd: ./vendor/simesy/integrity-checks.sh
+    cmd: vendor/bin/integrity-checks.sh
 
   lint:
     usage: Lint code
