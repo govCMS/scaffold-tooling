@@ -42,8 +42,8 @@ commands:
     usage: Stop Docker containers.
     cmd: docker-compose stop "$@"
 
-  install:
-    usage: Install the profile.
+  install-govcms:
+    usage: Install the govcms profile.
     cmd: docker-compose exec -T test drush si -y "$@"
 
   login:

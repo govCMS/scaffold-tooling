@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # PoC script to show early validation of a push.
 
 # Currently triggered from ./gitlab-ci.yml but it seems to be something that we would
