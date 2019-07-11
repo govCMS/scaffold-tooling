@@ -16,5 +16,11 @@
         "drupal/drupal-extension": "^3.4",
         "integratedexperts/behat-screenshot": "^0.7.2",
         "phpunit/phpunit": "^7.4"
-    }
+    },
+    "bin": [
+        "scripts/lagoon-test-setup.sh",
+        "scripts/integrity-checks.sh",
+        "scripts/quickstart-init.sh"
+    ]
+
 }
