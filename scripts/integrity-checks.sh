@@ -5,44 +5,65 @@
 # https://gitlab.com/gitlab-org/gitlab-ee/issues/8429
 
 SATIS="https://satis.govcms.gov.au/beta6"
-code=0
+SCAFFOLD="https://github.com/govCMS/govcms8-scaffold-paas.git"
+WORKSPACE="/tmp/govcms8-scaffold-paas"
+
+STRICT=1
+WARNING=2
+
+exit_code=0
 
 flavour=$(egrep  "^type: " .version.yml | awk -F ": " '{print $2}')
 if [ "$flavour" = "saas" ] || [ "$flavour" = "paas" ] || [ "$flavour" = "saasplus" ] ; then
     echo "GovCMS build flavour: $flavour"
 else
     echo "Not a relevant SaaS/PaaS project."
-    exit 0
+    exit_code 0
 fi
 
-## SaaS logic.
+function compare() {
+    if [ "$1" != "$2" ] ; then
+        echo -e "\033[0;91mProblem\033[0m:" "$4"
+        echo -e "  Current value:\n    $1"
+        echo -e "  Expected value:\n    $2"
+        return 1
+    fi
+    echo -e "\033[0;32mOK:\033[0m" $3
+    return 0
+}
+
+# May add versioning, currently just cloning master.
+rm -Rf "$WORKSPACE"
+git clone --depth=1 "$SCAFFOLD" "$WORKSPACE"
 
 if [ "$flavour" = "saas" ] ; then
 
-    # There must be two repos, on is our satis and the other sets packagist to false.
-    repos_count=$(cat composer.json | jq '.repositories | length')
-    repos_govcms=$(cat composer.json | jq -r '.repositories.govcms.url')
-    repos_packagist=$(cat composer.json | jq -c '.repositories["packagist.org"]')
+    compare \
+        $(cat composer.json | jq -c '.repositories') \
+        $(cat $WORKSPACE/composer.json | jq -c '.repositories') \
+        "Composer repositories are expected." \
+        "The repositories section of your composer.json should match the scaffold."
 
-    if [ "$repos_count" != "2" ] || [ "$repos_govcms" != "$SATIS" ] || [ "$repos_packagist" != "false" ] ; then
-        echo -e "\033[0;91mFor $flavour, there should be two composer repository entries: one for '$SATIS' and one sets 'packagist.org' to 'false'.\033[0m"
-        # echo $(cat composer.json | jq '.repositories')
-        code=1
-    else
-        echo "Composer repositories are valid for $flavour."
-    fi
+    compare \
+        $(cat composer.json | jq -c '.extra["enable-patching"]') \
+        $(cat $WORKSPACE/composer.json | jq -c '.extra["enable-patching"]') \
+        "Composer patching is enabled." \
+        "Your composer.json must enable patching."
 
-    # Check locations where user can add modules (other locations would be overridden with composer install.
+    compare \
+        $(cat composer.json | jq -c '.["minimum-stability"]') \
+        $(cat $WORKSPACE/composer.json | jq -c '.extra["minimum-stability"]') \
+        "Minimum stablity is dev." \
+        "Your composer.json must set minimum stability to dev."
+
     modules_custom=$(find web/modules/custom -type f -name *.info.yml)
     modules_default=$(find web/sites/default -type f -name *.info.yml)
-
-    if [[ $modules_custom ]] || [[ $modules_default ]] ; then
-        echo -e "\033[0;91mFor $flavour, custom modules are not supported.\033[0m"
-        code=1
-    else
-        echo "No custom modules found (as expected) for $flavour."
-    fi
+    compare \
+        "$modules_custom" \
+        "" \
+        "No custom modules found." \
+        "There should be no modules in web/sites/default/modules or web/modules"
 
 fi
 
-exit $code
+exit $exit_code
