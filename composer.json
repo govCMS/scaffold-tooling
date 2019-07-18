@@ -1,5 +1,5 @@
 {
-    "name": "simesy/scaffold-tooling",
+    "name": "govcms/scaffold-tooling",
     "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
@@ -24,8 +24,5 @@
         "scripts/lagoon-tests-setup.sh",
         "scripts/integrity-checks.sh",
         "scripts/quickstart-init.sh"
-    ],
-    "replace": {
-         "govcms/scaffold-tooling": "*"
-    }
+    ]
 }
