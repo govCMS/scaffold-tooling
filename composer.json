@@ -24,6 +24,8 @@
         "scripts/lagoon-tests-setup.sh",
         "scripts/integrity-checks.sh",
         "scripts/quickstart-init.sh"
-    ]
-
+    ],
+    "replace": {
+         "govcms/scaffold-tooling": "*"
+    }
 }
