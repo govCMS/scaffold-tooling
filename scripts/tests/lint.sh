@@ -1,21 +1,18 @@
 #!/usr/bin/env bash
 IFS=$'\n\t'
 
-# Rudimentary help.
-if [ "$#" -ne 1 ]; then
-	echo "Usage: $0 [skip|warning|strict]"
-	exit 1
-fi
+STRICTNESS=${1}
+TYPE="$(basename $0)"
+case ${STRICTNESS} in
+    skip)
+        echo "Skipping "${TYPE}" based on configuration." && exit 0 ;;
+    warn)
+        ;;
+    fail | *)
+        STRICTNESS="fail" && set -euo pipefail ;;
+esac
+echo "Running '"${TYPE}"' and will "${STRICTNESS}" on failures."
 
-if [ "$1" = "skip" ] ; then
-    echo "--> Skipping!!!"
-    exit 0
-fi
-
-if [ "$1" != "warning" ] ; then
-    # @see http://redsymbol.net/articles/unofficial-bash-strict-mode/
-    set -euo pipefail
-    echo "--> Strictly!!!"
-fi
-
-echo "$0 -- ResultsVALUE: $1"
+#
+# If you modify anything above this line, please update all scripts in the same directory.
+#

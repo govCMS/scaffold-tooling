@@ -1,5 +1,21 @@
 #!/usr/bin/env bash
-# PoC script to show early validation of a push.
+IFS=$'\n\t'
+
+STRICTNESS=${1}
+TYPE="$(basename $0)"
+case ${STRICTNESS} in
+    skip)
+        echo "Skipping "${TYPE}" based on configuration." && exit 0 ;;
+    warn)
+        ;;
+    fail | *)
+        STRICTNESS="fail" && set -euo pipefail ;;
+esac
+echo "Running '"${TYPE}"' and will "${STRICTNESS}" on failures."
+
+#
+# If you modify anything above this line, please update all scripts in the same directory.
+#
 
 # Currently triggered from ./gitlab-ci.yml but it seems to be something that we would
 # want to apply from external, and best solved with an instance template coming soon
