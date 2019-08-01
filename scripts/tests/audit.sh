@@ -5,7 +5,7 @@ STRICTNESS=${1}
 TYPE="$(basename $0)"
 case ${STRICTNESS} in
     skip)
-        echo "Skipping "${TYPE}" based on configuration." && exit 0 ;;
+        echo "Skipping '"${TYPE}"' based on configuration." && exit 0 ;;
     warn)
         set +e ;;
     fail | *)
