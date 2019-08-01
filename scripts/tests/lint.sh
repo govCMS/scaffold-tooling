@@ -16,3 +16,6 @@ echo "Running '"${TYPE}"' and will "${STRICTNESS}" on failures."
 #
 # If you modify anything above this line, please update all scripts in the same directory.
 #
+
+
+thiswillfail
