@@ -8,14 +8,14 @@ if [ "$#" -ne 1 ]; then
 fi
 
 if [ "$1" = "skip" ] ; then
-    echo "Skipping $0"
+    echo "--> Skipping!!!"
     exit 0
 fi
 
 if [ "$1" != "warning" ] ; then
     # @see http://redsymbol.net/articles/unofficial-bash-strict-mode/
     set -euo pipefail
-    echo "Strictly $0"
+    echo "--> Strictly!!!"
 fi
 
-echo "$0 -- Is this $1"
+echo "$0 -- ResultsVALUE: $1"
