@@ -8,9 +8,19 @@ docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry-production.govc
 docker-compose up -d
 docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 1m
 
-if grep --quiet '^MARIADB_DATA_IMAGE' .env; then
-    ahoy -v lagoon govcms-deploy
-else
-    ahoy -v composer install
-    docker-compose exec -T test drush si -y "$@"
-fi
+# Does the container exist.
+
+# if yes set it up.
+
+
+# If no install.
+
+# Control of skip on fail.
+
+
+#if grep --quiet '^MARIADB_DATA_IMAGE' .env; then
+#    ahoy -v lagoon govcms-deploy
+#else
+#    ahoy -v composer install
+#    docker-compose exec -T test drush si -y "$@"
+#fi
