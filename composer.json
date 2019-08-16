@@ -14,6 +14,7 @@
         "drush/drush": "^9.0.0",
         "behat/behat": "^3.5",
         "behat/gherkin": "^4.5",
+        "jakub-onderka/php-parallel-lint": "^1.0",
         "integratedexperts/behat-screenshot": "^0.7.2",
         "phpunit/phpunit": "^7.4",
         "webflo/drupal-finder": "^1.0.0",
