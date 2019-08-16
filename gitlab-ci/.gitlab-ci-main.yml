@@ -1,0 +1,67 @@
+---
+image: quay.io/tobybellwood/govcms-ci
+services:
+  - "docker:dind"
+stages:
+  - static
+  - integration
+  - audit
+  - deploy
+variables:
+  DOCKER_HOST: "tcp://localhost:2375"
+  DOCKER_REGISTRY: "gitlab-registry-production.govcms.amazee.io"
+  GITLAB_PROJECT: "dof-dev/govcms8-demo-ci"
+  MARIADB_DATA_IMAGE: "$DOCKER_REGISTRY/$GITLAB_PROJECT/mariadb-drupal-data"
+
+vet:
+  before_script:
+    - ./scripts/gitlab-ci/setup-static.sh
+  script:
+    - date
+    - echo "We'll run verification here"
+  stage: static
+static:
+  extends: .static
+  before_script:
+    - ./scripts/gitlab-ci/setup-static.sh
+  script:
+    - date
+    - ahoy lint
+    - ahoy test-phpunit
+  stage: static
+functional:
+  extends: .func
+  artifacts:
+    expire_in: "7 days"
+    paths:
+      - tests/behat/features/screenshots
+  before_script:
+    - ./scripts/gitlab-ci/setup-full.sh
+  script:
+    - date
+    - ahoy test-behat
+  except:
+    variables:
+      - "$CI_COMMIT_MESSAGE =~ /GovCMS-Migration/"
+  stage: integration
+audit:
+  before_script:
+    - ./scripts/gitlab-ci/setup-full.sh
+  script:
+    - date
+    - "ahoy audit-site"
+  only:
+    - merge_requests
+  stage: audit
+audit_manual:
+  script:
+    - "ahoy audit-site"
+  before_script:
+    - ./scripts/gitlab-ci/setup-full.sh
+  when: manual
+  stage: audit
+deploy:
+  script:
+    - "echo \"curl -X POST -d projectName=$CI_PROJECT_NAME -d branchName=$CI_COMMIT_REF_NAME http://rest2tasks.lagoon.svc:3000/deploy\""
+    - "curl -X POST -d projectName=$CI_PROJECT_NAME -d branchName=$CI_COMMIT_REF_NAME http://rest2tasks.lagoon.svc:3000/deploy"
+  stage: deploy
