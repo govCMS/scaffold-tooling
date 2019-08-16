@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+# Code linting path pass in.
+
+APP_DIR=${APP_DIR:-/app}
+PROFILE_DIR=${PROFILE_DIR:-${APP_DIR}/web}
+
+# Lint code.
+${APP_DIR}/tests/vendor/bin/parallel-lint --exclude /app/tests/vendor -e php,inc,module,theme,install,profile,test ${PROFILE_DIR}/"$@"
+
+# Check code standards.
+${APP_DIR}/tests/vendor/bin/phpcs --standard=${APP_DIR}/tests/phpcs.xml ${PROFILE_DIR}/"$@"
+
+# Check code mess.
+${APP_DIR}/tests/vendor/bin/phpmd ${PROFILE_DIR}/"$@" text codesize,unusedcode,cleancode

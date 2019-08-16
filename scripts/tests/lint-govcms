@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
 # Code linting for GovCMS project.
 
 APP_DIR=${APP_DIR:-/app/web}
