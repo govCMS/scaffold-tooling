@@ -8,16 +8,15 @@ stages:
   - audit
   - deploy
 variables:
+  extends: .variables
   DOCKER_HOST: "tcp://localhost:2375"
   DOCKER_REGISTRY: "gitlab-registry-production.govcms.amazee.io"
   GITLAB_PROJECT: "dof-dev/govcms8-demo-ci"
-  MARIADB_DATA_IMAGE: "$DOCKER_REGISTRY/$GITLAB_PROJECT/mariadb-drupal-data"
 
 vet:
   before_script:
     - ./scripts/gitlab-ci/setup-static.sh
   script:
-    - date
     - echo "We'll run verification here"
   stage: static
 static:
