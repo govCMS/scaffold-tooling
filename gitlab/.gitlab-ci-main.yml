@@ -26,7 +26,7 @@ static:
     - ./scripts/gitlab-ci/setup-static.sh
   script:
     - docker-compose exec -T test lint web/modules/custom
-    - docker-compose exec -T test lint web/thmes/custom
+    - docker-compose exec -T test lint web/themes/custom
     - docker-compose exec -T test phpunit web/modules/custom
   stage: static
 functional:
