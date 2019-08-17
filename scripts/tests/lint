@@ -6,6 +6,7 @@ set -euo pipefail
 APP_DIR=${APP_DIR:-/app}
 
 # Lint code.
+touch ${APP_DIR}/"$@"/index.php # Avoid "no files found" error. @see https://github.com/JakubOnderka/PHP-Parallel-Lint/issues/108
 ${APP_DIR}/vendor/bin/parallel-lint --exclude /app/tests/vendor -e php,inc,module,theme,install,profile,test ${APP_DIR}/"$@"
 
 # Check code standards.
