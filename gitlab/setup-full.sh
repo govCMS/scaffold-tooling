@@ -15,7 +15,7 @@ EXIT_CODE=0 && docker manifest inspect "testagain" || EXIT_CODE=$?
 if [[ $EXIT_CODE -ne 0 ]]; then
     echo "$MARIADB_DATA_IMAGE not found, installing GovCMS"
     docker-compose exec -T cli bash -c 'drush sql-drop'
-    if [[ test -f "./custom/database-quickstart.sql.gz" ]]; then
+    if [[ -f "./custom/database-quickstart.sql.gz" ]]; then
         gunzip ./custom/database-quickstart.sql.gz
         docker-compose exec -T cli bash -c 'drush sql-cli --yes' < ./custom/database-quickstart.sql
     else
