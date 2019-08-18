@@ -15,14 +15,14 @@ variables:
 
 vet:
   before_script:
-    - ./scripts/gitlab-ci/setup-static.sh
+    - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
   script:
     - echo "We'll run verification here"
   stage: static
 static:
   extends: .static
   before_script:
-    - ./scripts/gitlab-ci/setup-static.sh
+    - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
   script:
     - docker-compose exec -T test lint web/modules/custom
     - docker-compose exec -T test lint web/themes/custom
@@ -35,7 +35,7 @@ functional:
     paths:
       - tests/behat/features/screenshots
   before_script:
-    - ./scripts/gitlab-ci/setup-full.sh
+    - ./vendor/govcms/scaffold-tooling/gitlab/setup-full.sh
   script:
     - docker-compose exec -T test behat
   except:
@@ -44,7 +44,7 @@ functional:
   stage: integration
 audit:
   before_script:
-    - ./scripts/gitlab-ci/setup-full.sh
+    - ./vendor/govcms/scaffold-tooling/gitlab/setup-full.sh
   script:
     - date
     - "ahoy audit-site"
@@ -55,7 +55,7 @@ audit_manual:
   script:
     - "ahoy audit-site"
   before_script:
-    - ./scripts/gitlab-ci/setup-full.sh
+    - ./vendor/govcms/scaffold-tooling/gitlab/setup-full.sh
   when: manual
   stage: audit
 deploy:
