@@ -5,7 +5,6 @@ set -exuo pipefail
 docker network prune -f && docker network create amazeeio-network
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $DOCKER_REGISTRY
 
-composer install
 docker-compose up -d
 docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 1m
 
@@ -16,8 +15,12 @@ EXIT_CODE=0 && docker manifest inspect "testagain" || EXIT_CODE=$?
 if [[ $EXIT_CODE -ne 0 ]]; then
     echo "$MARIADB_DATA_IMAGE not found, installing GovCMS"
     docker-compose exec -T cli bash -c 'drush sql-drop'
-    gunzip ./govcms-quickstart.sql.gz
-    docker-compose exec -T cli bash -c 'drush sql-cli --yes' < ./govcms-quickstart.sql
+    if [[ test -f "./custom/database-quickstart.sql.gz" ]]; then
+        gunzip ./custom/database-quickstart.sql.gz
+        docker-compose exec -T cli bash -c 'drush sql-cli --yes' < ./custom/database-quickstart.sql
+    else
+        docker-compose exec -T cli bash -c 'drush si govcms -y'
+    fi
 else
     ahoy govcms-deploy
 fi

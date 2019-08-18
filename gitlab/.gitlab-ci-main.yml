@@ -1,4 +1,20 @@
 ---
+.static_template: &static_template
+  before_script:
+    - composer install
+    - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
+  stage: static
+
+.full_template: &full_template
+  before_script:
+    - composer install
+    - ./vendor/govcms/scaffold-tooling/gitlab/setup-full.sh
+  artifacts:
+    expire_in: "7 days"
+    paths:
+      - tests/behat/features/screenshots
+  stage: integration
+
 image: quay.io/tobybellwood/govcms-ci
 services:
   - "docker:dind"
@@ -16,53 +32,35 @@ variables:
   DOCKER_REGISTRY: "gitlab-registry-production.govcms.amazee.io"
   GITLAB_PROJECT: "dof-dev/govcms8-demo-ci"
 
-.setup_static: &setup_static
-  - composer install
-  - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
-.setup_full: &setup_full
-  - composer install
-  - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
-
 vet:
-  before_script:
-    <<: *setup_static
+  <<: *static_template
   script:
     - echo "We'll run verification here"
-  stage: static
 static:
-  before_script:
-    <<: *setup_static
+  <<: *static_template
+  extends: .static
   script:
     - docker-compose exec -T test lint web/modules/custom
     - docker-compose exec -T test lint web/themes/custom
     - docker-compose exec -T test phpunit web/modules/custom
   stage: static
 functional:
+  <<: *full_template
   extends: .func
-  artifacts:
-    expire_in: "7 days"
-    paths:
-      - tests/behat/features/screenshots
-  before_script:
-    <<: *setup_full
   script:
     - docker-compose exec -T test behat
   except:
     variables:
       - "$CI_COMMIT_MESSAGE =~ /GovCMS-Migration/"
-  stage: integration
 audit:
-  before_script:
-    <<: *setup_full
+  <<: *full_template
   script:
-    - date
     - "ahoy audit-site"
   only:
     - merge_requests
   stage: audit
 audit_manual:
-  before_script:
-    <<: *setup_full
+  <<: *full_template
   script:
     - "ahoy audit-site"
   when: manual
