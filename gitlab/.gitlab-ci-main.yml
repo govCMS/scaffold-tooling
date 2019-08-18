@@ -7,6 +7,9 @@ stages:
   - integration
   - audit
   - deploy
+before_script:
+  - composer install
+  - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
 variables:
   extends: .variables
   DOCKER_HOST: "tcp://localhost:2375"
@@ -14,15 +17,11 @@ variables:
   GITLAB_PROJECT: "dof-dev/govcms8-demo-ci"
 
 vet:
-  before_script:
-    - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
   script:
     - echo "We'll run verification here"
   stage: static
 static:
   extends: .static
-  before_script:
-    - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
   script:
     - docker-compose exec -T test lint web/modules/custom
     - docker-compose exec -T test lint web/themes/custom
