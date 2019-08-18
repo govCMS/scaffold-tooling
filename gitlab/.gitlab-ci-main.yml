@@ -16,22 +16,22 @@ variables:
   DOCKER_REGISTRY: "gitlab-registry-production.govcms.amazee.io"
   GITLAB_PROJECT: "dof-dev/govcms8-demo-ci"
 
-.setup_static:
+.setup_static: &setup_static
   - composer install
   - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
-.setup_full:
+.setup_full: &setup_full
   - composer install
   - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
 
 vet:
   before_script:
-    extends: .setup_static
+    <<: *setup_static
   script:
     - echo "We'll run verification here"
   stage: static
 static:
   before_script:
-    extends: .setup_static
+    <<: *setup_static
   script:
     - docker-compose exec -T test lint web/modules/custom
     - docker-compose exec -T test lint web/themes/custom
@@ -44,7 +44,7 @@ functional:
     paths:
       - tests/behat/features/screenshots
   before_script:
-    extends: .setup_full
+    <<: *setup_full
   script:
     - docker-compose exec -T test behat
   except:
@@ -53,7 +53,7 @@ functional:
   stage: integration
 audit:
   before_script:
-    extends: .setup_full
+    <<: *setup_full
   script:
     - date
     - "ahoy audit-site"
@@ -62,7 +62,7 @@ audit:
   stage: audit
 audit_manual:
   before_script:
-    extends: .setup_full
+    <<: *setup_full
   script:
     - "ahoy audit-site"
   when: manual
