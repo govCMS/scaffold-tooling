@@ -21,10 +21,5 @@
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
         "zaporylie/composer-drupal-optimizations": "^1.0"
-    },
-    "bin": [
-        "scripts/lagoon-tests-setup.sh",
-        "scripts/integrity-checks.sh",
-        "scripts/quickstart-init.sh"
-    ]
+    }
 }
