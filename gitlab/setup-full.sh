@@ -25,7 +25,7 @@ if [[ $EXIT_CODE -ne 0 ]]; then
     fi
 else
     echo "Running govcms-deploy."
-    ahoy govcms-deploy
+    docker-compose exec -T cli govcms-deploy
 fi
 
 docker-compose exec -T cli bash -c 'drush st'

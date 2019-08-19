@@ -23,13 +23,10 @@ stages:
   - integration
   - audit
   - deploy
-before_script:
-  - composer install
-  - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
 variables:
   extends: .variables
   DOCKER_HOST: "tcp://localhost:2375"
-  DOCKER_REGISTRY: "gitlab-registry-production.govcms.amazee.io"
+  GITLAB_DOCKER_REGISTRY: "gitlab-registry-production.govcms.amazee.io"
   GITLAB_PROJECT: "dof-dev/govcms8-demo-ci"
 
 vet:
