@@ -5,6 +5,18 @@ set -euo pipefail
 APP_DIR=${APP_DIR:-/app}
 CUR_DIR=$(pwd)
 
+# @todo. Review.
+# This seems a bit weird. We need audit-site to copy into the project so it can
+# be run with @self - a drutiny limitation - but we don't do it in setup-full.sh
+# so that it can be run locally (setup-full.sh is only in gitlab). There are a
+# lot of assumptions that need to be visited.
+if [[ ! -d "$APP_DIR/audit-site" ]]; then
+  # Assume https://github.com/govcms/audit-site is built at /opt/audit-site.
+  cp -Rf /opt/audit-site "$APP_DIR"
+  # Assume this is fully built at /opt.
+  chmod 775 "$APP_DIR/audit-site/vendor/bin/drutiny"
+fi
+
 cd "$APP_DIR/audit-site"
 ./vendor/bin/drutiny policy:audit Drupal-8:fileCacheDisabled @self
 
