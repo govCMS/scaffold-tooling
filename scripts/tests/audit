@@ -2,19 +2,10 @@
 IFS=$'\n\t'
 set -euo pipefail
 
-#!/usr/bin/env bash
-# Drutiny wrapper.
-
 APP_DIR=${APP_DIR:-/app}
-
-if [[ ! -d "$APP_DIR/audit-site" ]]; then
-  cp -Rf /opt/audit-site "$APP_DIR"
-  chmod 775 "$APP_DIR/audit-site/vendor/bin/drutiny"
-fi
-
 CUR_DIR=$(pwd)
 
 cd "$APP_DIR/audit-site"
-vendor/bin/drutiny "$@"
+./vendor/bin/drutiny policy:audit Drupal-8:fileCacheDisabled @self
 
 cd $CUR_DIR
