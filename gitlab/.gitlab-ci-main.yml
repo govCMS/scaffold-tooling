@@ -52,14 +52,14 @@ functional:
 audit:
   <<: *full_template
   script:
-    - "ahoy audit-site"
+    - docker-compose exec -T test audit
   only:
     - merge_requests
   stage: audit
 audit_manual:
   <<: *full_template
   script:
-    - "ahoy audit-site"
+    - docker-compose exec -T test audit
   when: manual
   stage: audit
 deploy:
