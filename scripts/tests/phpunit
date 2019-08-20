@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 IFS=$'\n\t'
 set -euo pipefail
-# PHPUnit testing.
 
-APP_DIR=${APP_DIR:-/app}
+# Run phpunit in a typical GovCMS Drupal project.
+# Pass in path to lint, eg ./vendor/bin/lint web/modules/custom.
 
+# Allow path override.
+APP_DIR=${APP_DIR:-$PWD}
+
+echo "@todo get this working"
 ${APP_DIR}/vendor/bin/phpunit --bootstrap ${APP_DIR}/tests/phpunit/bootstrap_phpunit.inc --configuration  ${APP_DIR}/tests/phpunit/phpunit.xml "$@"

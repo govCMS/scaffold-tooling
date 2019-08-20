@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 IFS=$'\n\t'
 set -euo pipefail
-# Code linting path pass in.
 
-APP_DIR=${APP_DIR:-/app}
+# Run code linting in a typical GovCMS Drupal project.
+# Pass in path to lint, eg ./vendor/bin/lint web/modules/custom.
+
+# Allow path override.
+APP_DIR=${APP_DIR:-$PWD}
 
 # Lint code.
 touch ${APP_DIR}/"$@"/index.php # Avoid "no files found" error. @see https://github.com/JakubOnderka/PHP-Parallel-Lint/issues/108
-${APP_DIR}/vendor/bin/parallel-lint --exclude /app/tests/vendor -e php,inc,module,theme,install,profile,test ${APP_DIR}/"$@"
+${APP_DIR}/vendor/bin/parallel-lint --exclude ./tests/vendor -e php,inc,module,theme,install,profile,test ${APP_DIR}/"$@"
+rm ${APP_DIR}/"$@"/index.php
 
 # Check code standards.
 ${APP_DIR}/vendor/bin/phpcs --standard=${APP_DIR}/tests/phpcs.xml ${APP_DIR}/"$@"
