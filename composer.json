@@ -23,7 +23,12 @@
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "bin": [
-        "scripts/govcms-deploy",
-        "scripts/tests/*"
+        "scripts/tests/govcms-audit",
+        "scripts/tests/govcms-behat",
+        "scripts/tests/govcms-lint",
+        "scripts/tests/govcms-lint-distro",
+        "scripts/tests/govcms-phpunit",
+        "scripts/tests/govcms-vet",
+        "scripts/govcms-deploy"
     ]
 }
