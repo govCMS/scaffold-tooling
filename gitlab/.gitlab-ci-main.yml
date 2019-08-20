@@ -1,13 +1,12 @@
 ---
 .static_template: &static_template
   before_script:
-    - composer install
-    - ./vendor/govcms/scaffold-tooling/gitlab/setup-static.sh
+    - composer install --quiet
   stage: static
 
 .full_template: &full_template
   before_script:
-    - composer install
+    - composer install --quiet
     - ./vendor/govcms/scaffold-tooling/gitlab/setup-full.sh
   artifacts:
     expire_in: "7 days"
@@ -38,27 +37,25 @@ static:
     set +euo pipefail # Make sure all scripts run (an error in any is still a gitlab job fail).
     ./vendor/bin/govcms-lint web/modules/custom
     ./vendor/bin/govcms-lint web/themes/custom
+    # @todo this needs to run only static phpunit tests - no integration tests as Drupal can't be bootstrapped.
     ./vendor/bin/govcms-phpunit web/modules/custom
   stage: static
 functional:
   <<: *full_template
   extends: .func
   script:
-    - docker-compose exec -T test behat
-  except:
-    variables:
-      - "$CI_COMMIT_MESSAGE =~ /GovCMS-Migration/"
+    - docker-compose exec -T test ./vendor/bin/govcms-behat
 audit:
   <<: *full_template
   script:
-    - docker-compose exec -T test audit
+    - docker-compose exec -T test ./vendor/bin/govcms-audit
   only:
     - merge_requests
   stage: audit
 audit_manual:
   <<: *full_template
   script:
-    - docker-compose exec -T test audit
+    - docker-compose exec -T test ./vendor/bin/govcms-audit
   when: manual
   stage: audit
 deploy:

@@ -2,8 +2,6 @@
 IFS=$'\n\t'
 set -exuo pipefail
 
-docker-compose config
-
 docker network prune -f && docker network create amazeeio-network
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
@@ -32,6 +30,6 @@ else
 fi
 
 echo "Running govcms-deploy."
-docker-compose exec -T cli govcms-deploy
+docker-compose exec -T cli ./vendor/bin/govcms-deploy
 
 docker-compose exec -T cli bash -c 'drush st'
