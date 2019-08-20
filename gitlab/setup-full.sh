@@ -2,7 +2,7 @@
 IFS=$'\n\t'
 set -exuo pipefail
 
-env
+docker-compose config
 
 docker network prune -f && docker network create amazeeio-network
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -28,8 +28,10 @@ if [[ $EXIT_CODE -ne 0 ]]; then
         docker-compose exec -T cli bash -c 'drush si govcms -y'
     fi
 else
-    echo "Running govcms-deploy."
-    docker-compose exec -T cli govcms-deploy
+    echo "Using found database image: $DATABASE_IMAGE"
 fi
+
+echo "Running govcms-deploy."
+docker-compose exec -T cli govcms-deploy
 
 docker-compose exec -T cli bash -c 'drush st'
