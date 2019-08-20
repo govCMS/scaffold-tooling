@@ -26,8 +26,6 @@ stages:
 variables:
   extends: .variables
   DOCKER_HOST: "tcp://localhost:2375"
-  GITLAB_DOCKER_REGISTRY: "gitlab-registry-production.govcms.amazee.io"
-  GITLAB_PROJECT: "dof-dev/govcms8-demo-ci"
 
 vet:
   <<: *static_template
@@ -36,10 +34,11 @@ vet:
 static:
   <<: *static_template
   extends: .static
-  script:
-    - docker-compose exec -T test lint web/modules/custom
-    - docker-compose exec -T test lint web/themes/custom
-    - docker-compose exec -T test phpunit web/modules/custom
+  script: |
+    set +euo pipefail # Make sure all scripts run (an error in any is still a gitlab job fail).
+    ./vendor/bin/govcms-lint web/modules/custom
+    ./vendor/bin/govcms-lint web/themes/custom
+    ./vendor/bin/govcms-phpunit web/modules/custom
   stage: static
 functional:
   <<: *full_template
