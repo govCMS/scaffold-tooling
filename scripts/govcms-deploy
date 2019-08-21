@@ -26,7 +26,7 @@ common_deploy () {
   drush cr
 
   # Base configuration import with development environment overrides.
-  if [[ "GOVCMS_CONFIG_STRATEGY" = "import" && "$config_count" -gt 0 ]]; then
+  if [[ "$GOVCMS_CONFIG_STRATEGY" = "import" && "$config_count" -gt 0 ]]; then
     echo "Performing config import."
     # drush cim -y sync
     if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" && "$dev_config_count" -gt 0 ]]; then
