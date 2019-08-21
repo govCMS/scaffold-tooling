@@ -9,10 +9,10 @@ set -exuo pipefail
 mkdir -p /app/web/sites/default/files/private/tmp/
 
 # Check for presence of config files.
+set +e # Prevent script failure when assigning 0.
 config_count=`ls -1 /app/config/default/*.yml 2>/dev/null | wc -l`
 dev_config_count=`ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l`
-
-echo "Here"
+set -e
 
 echo "There are ${config_count} config yaml files, and ${dev_config_count} dev yaml files."
 
