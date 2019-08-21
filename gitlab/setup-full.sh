@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 IFS=$'\n\t'
-set -exuo pipefail
+set -euo pipefail
 
 docker network prune -f && docker network create amazeeio-network
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
