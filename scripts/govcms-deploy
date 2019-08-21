@@ -2,6 +2,10 @@
 IFS=$'\n\t'
 set -euo pipefail
 
+# @todo This strategy will be injected from .env or .lagoon.env Currently set to replicate the existing process.
+# Determine the config strategy.
+GOVCMS_CONFIG_STRATEGY=${GOVCMS_CONFIG_STRATEGY:-import}
+
 # Ensure placeholders are replaced in Drush9 alias file.
 #sed -i "s/%%PROJECT_NAME%%/$LAGOON_PROJECT/g" /app/drush/sites/govcms.site.yml
 
@@ -22,12 +26,12 @@ common_deploy () {
   drush cr
 
   # Base configuration import with development environment overrides.
-  if [ "$config_count" -gt 0 ]; then
-    echo "Example: Perform config import here."
+  if [[ "GOVCMS_CONFIG_STRATEGY" = "import" && "$config_count" -gt 0 ]]; then
+    echo "Performing config import."
     # drush cim -y sync
     if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" && "$dev_config_count" -gt 0 ]]; then
-      echo "Example: Perform non-prod partial import here."
-      # drush cim -y dev --partial
+      echo "Performing non-prod partial import."
+      drush cim -y dev --partial
     fi
   fi
 
