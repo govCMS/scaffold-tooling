@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 IFS=$'\n\t'
-set -euo pipefail
+set -exuo pipefail
 
 # Ensure placeholders are replaced in Drush9 alias file.
 #sed -i "s/%%PROJECT_NAME%%/$LAGOON_PROJECT/g" /app/drush/sites/govcms.site.yml
