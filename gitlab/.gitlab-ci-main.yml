@@ -32,17 +32,17 @@ vet:
     - echo "We'll run verification here"
 static:
   <<: *static_template
-  extends: .static
+  extends: .static-tests
   script: |
     set +euo pipefail # Make sure all scripts run (an error in any is still a gitlab job fail).
     ./vendor/bin/govcms-lint web/modules/custom
     ./vendor/bin/govcms-lint web/themes/custom
     # @todo this needs to run only static phpunit tests - no integration tests as Drupal can't be bootstrapped.
-    ./vendor/bin/govcms-phpunit web/modules/custom
+    # ./vendor/bin/govcms-phpunit --testsuite=unit
   stage: static
 functional:
   <<: *full_template
-  extends: .func
+  extends: .integration-tests
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-behat
 audit:
