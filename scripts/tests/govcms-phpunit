@@ -9,4 +9,4 @@ set -euo pipefail
 APP_DIR=${APP_DIR:-$PWD}
 
 echo "@todo get this working"
-${APP_DIR}/vendor/bin/phpunit --bootstrap ${APP_DIR}/tests/phpunit/bootstrap_phpunit.inc --configuration  ${APP_DIR}/tests/phpunit/phpunit.xml "$@"
+${APP_DIR}/vendor/bin/phpunit --bootstrap ${APP_DIR}/tests/phpunit/bootstrap.php --configuration  ${APP_DIR}/tests/phpunit/phpunit.xml "$@"
