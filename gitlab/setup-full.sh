@@ -12,7 +12,7 @@ DATABASE_IMAGE="$CI_REGISTRY_IMAGE/mariadb-drupal-data"
 
 # A hack to make the manifest check work.
 sed -i "s/^}$/,\"experimental\":\ \"enabled\"}/" ~/.docker/config.json
-EXIT_CODE=0 && docker manifest inspect "$DATABASE_IMAGE" || EXIT_CODE=$?
+EXIT_CODE=0 && docker manifest inspect "$DATABASE_IMAGE" > /dev/null || EXIT_CODE=$?
 
 if [[ $EXIT_CODE -ne 0 ]]; then
     echo "$DATABASE_IMAGE not found, installing GovCMS"
