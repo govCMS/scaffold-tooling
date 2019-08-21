@@ -12,7 +12,9 @@ mkdir -p /app/web/sites/default/files/private/tmp/
 config_count=`ls -1 /app/config/default/*.yml 2>/dev/null | wc -l`
 dev_config_count=`ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l`
 
-echo "There are $config_count config yaml files, and $dev_config_count dev yaml files."
+echo "Here"
+
+echo "There are ${config_count} config yaml files, and ${dev_config_count} dev yaml files."
 
 # Database updates, cache rebuild, optional config imports.
 common_deploy () {
