@@ -22,6 +22,10 @@
         "webmozart/path-util": "^2.3",
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
+    "conflict": {
+        "drupal/drupal": "*",
+        "drupal/chosen_lib": "<2.8.0"
+    },
     "bin": [
         "scripts/tests/govcms-audit",
         "scripts/tests/govcms-behat",
