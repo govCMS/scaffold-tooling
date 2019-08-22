@@ -45,18 +45,19 @@ functional:
   extends: .integration-tests
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-behat
-audit:
-  <<: *full_template
-  script:
-    - docker-compose exec -T test ./vendor/bin/govcms-audit
-  only:
-    - merge_requests
-  stage: audit
 audit_manual:
   <<: *full_template
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-audit
   when: manual
+  stage: audit
+audit:
+  <<: *full_template
+  extends: .audit
+  script:
+    - docker-compose exec -T test ./vendor/bin/govcms-audit
+  only:
+    - merge_requests
   stage: audit
 deploy:
   variables:
