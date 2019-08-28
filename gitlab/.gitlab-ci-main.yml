@@ -1,13 +1,17 @@
 ---
 .static_template: &static_template
   before_script:
-    - composer install --quiet
+    - wget -O - https://raw.githubusercontent.com/simesy/scaffold-tooling/49bd0cd/gitlab/setup-minimal.sh | bash
+  stage: static
+
+.bootstrap_template: &bootstrap_template
+  before_script:
+    - wget -O - https://raw.githubusercontent.com/simesy/scaffold-tooling/fa5395d/gitlab/setup-smoketests.sh | bash
   stage: static
 
 .full_template: &full_template
   before_script:
-    - composer install --quiet
-    - ./vendor/govcms/scaffold-tooling/gitlab/setup-full.sh
+    - wget -O - https://raw.githubusercontent.com/simesy/scaffold-tooling/fa5395d/gitlab/setup-full.sh | bash
   artifacts:
     expire_in: "7 days"
     paths:
@@ -19,46 +23,80 @@ services:
   - "docker:dind"
 stages:
   - static
+  - preflight
   - integration
-  - audit
   - deploy
 variables:
   extends: .variables
   DOCKER_HOST: "tcp://localhost:2375"
+# @todo see GOVCMS-3110
+#cache:
+#  key: "$CI_PROJECT_PATH_SLUG"
+#  paths:
+#    - /home/.composer/cache
+
+# Static.
 
 vet:
-  <<: *static_template
   script:
-    - echo "We'll run verification here"
-static:
-  <<: *static_template
-  extends: .static-tests
-  script: |
-    set +euo pipefail # Make sure all scripts run (an error in any is still a gitlab job fail).
-    ./vendor/bin/govcms-lint web/modules/custom
-    ./vendor/bin/govcms-lint web/themes/custom
-    # @todo this needs to run only static phpunit tests - no integration tests as Drupal can't be bootstrapped.
-    # ./vendor/bin/govcms-phpunit --testsuite=unit
+    - composer validate
+  when: on_success
+  allow_failure: false
   stage: static
-functional:
+
+lint:
+  <<: *static_template
+  extends: .job-lint
+  # Run all lines together so that they all run even if any fail.
+  script: |
+    set +exuo pipefail # Linting...
+    docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/modules/custom'
+    docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/themes/custom'
+unit:
+  <<: *static_template
+  extends: .job-unit
+  script:
+    - docker-compose exec -T test bash -c './vendor/bin/govcms-unit --testsuite=unit'
+
+# Pre-flight.
+
+preflight:
+  <<: *bootstrap_template
+  extends: .job-preflight
+  stage: preflight
+  script:
+    - docker-compose exec -T cli bash -c 'drush cim -y'
+    - docker-compose exec -T cli bash -c 'drush st'
+    - docker-compose exec -T cli bash -c 'drush updatedb:status'
+
+# Integration.
+behat:
   <<: *full_template
-  extends: .integration-tests
+  extends: .job-behat
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-behat
-audit_manual:
+functional:
   <<: *full_template
+  extends: .job-functional
   script:
-    - docker-compose exec -T test ./vendor/bin/govcms-audit
-  when: manual
-  stage: audit
+    - echo "Will run something like docker-compose exec -T test ./vendor/bin/govcms-integration"
 audit:
   <<: *full_template
-  extends: .audit
+  extends: .job-audit
+  script:
+    - docker-compose exec -T test ./vendor/bin/govcms-audit
+
+# MRs only.
+audit_on_merge:
+  <<: *full_template
+  extends: .job-audit-on-merge
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-audit
   only:
     - merge_requests
-  stage: audit
+  stage: deploy
+
+# Deploy / summary.
 deploy:
   variables:
     GOVCMS_DASHBOARD: "https://dashboard.govcms.gov.au/projects"
