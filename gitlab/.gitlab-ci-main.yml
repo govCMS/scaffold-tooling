@@ -29,11 +29,6 @@ stages:
 variables:
   extends: .variables
   DOCKER_HOST: "tcp://localhost:2375"
-# @todo see GOVCMS-3110
-#cache:
-#  key: "$CI_PROJECT_PATH_SLUG"
-#  paths:
-#    - /home/.composer/cache
 
 # Static.
 
