@@ -6,9 +6,6 @@ set -euo pipefail
 # Determine the config strategy.
 GOVCMS_CONFIG_STRATEGY=${GOVCMS_CONFIG_STRATEGY:-import}
 
-# Ensure placeholders are replaced in Drush9 alias file.
-#sed -i "s/%%PROJECT_NAME%%/$LAGOON_PROJECT/g" /app/drush/sites/govcms.site.yml
-
 # Ensure tmp folder always exists.
 mkdir -p /app/web/sites/default/files/private/tmp/
 
@@ -52,7 +49,7 @@ if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
 
         # Import prod db in Lagoon development environments.
         if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "local" ]]; then
-          drush sql-sync @govcms-prod @self -y
+          drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
           common_deploy
         else
           echo "Drupal not installed, try ahoy install"
