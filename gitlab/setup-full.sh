@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 IFS=$'\n\t'
-set -euo pipefail
+set -exuo pipefail
+
+##
+# Call this script from Gitlab CI config to bring up all containers,
+# and deploy, resulting in a full functional up-to-date site. It's
+# the slowest setup, but you can run behat and other complex tests.
+#
 
 docker network prune -f && docker network create amazeeio-network
 docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
+docker-compose up -d mariadb
 docker-compose up -d
-docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 1m
+docker-compose ps
+
+# Re-run composer to account for the fact the /app just got mounted over, but caches should be warm.
+docker-compose exec -T cli bash -c 'composer install --quiet'
 
 DATABASE_IMAGE="$CI_REGISTRY_IMAGE/mariadb-drupal-data"
 
@@ -31,5 +41,4 @@ fi
 
 echo "Running govcms-deploy."
 docker-compose exec -T cli ./vendor/bin/govcms-deploy
-
 docker-compose exec -T cli bash -c 'drush st'
