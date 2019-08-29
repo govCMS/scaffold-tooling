@@ -1,17 +1,17 @@
 ---
 .static_template: &static_template
   before_script:
-    - wget -O - https://raw.githubusercontent.com/simesy/scaffold-tooling/49bd0cd/gitlab/setup-minimal.sh | bash
+    - wget -O - https://raw.githubusercontent.com/govcms/scaffold-tooling/master/gitlab/setup-minimal.sh | bash
   stage: static
 
 .bootstrap_template: &bootstrap_template
   before_script:
-    - wget -O - https://raw.githubusercontent.com/simesy/scaffold-tooling/fa5395d/gitlab/setup-smoketests.sh | bash
+    - wget -O - https://raw.githubusercontent.com/govcms/scaffold-tooling/master/gitlab/setup-smoketests.sh | bash
   stage: static
 
 .full_template: &full_template
   before_script:
-    - wget -O - https://raw.githubusercontent.com/simesy/scaffold-tooling/fa5395d/gitlab/setup-full.sh | bash
+    - wget -O - https://raw.githubusercontent.com/govcms/scaffold-tooling/master/gitlab/setup-full.sh | bash
   artifacts:
     expire_in: "7 days"
     paths:
