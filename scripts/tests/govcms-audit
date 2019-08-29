@@ -18,6 +18,6 @@ if [[ ! -d "$APP_DIR/audit-site" ]]; then
 fi
 
 cd "$APP_DIR/audit-site"
-./vendor/bin/drutiny policy:audit Drupal-8:fileCacheDisabled @self
+./vendor/bin/drutiny profile:run d8-gitlab @self
 
 cd $CUR_DIR
