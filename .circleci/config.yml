@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: integratedexperts/ci-builder
+    steps:
+      - checkout
+      - run: composer validate
+      - run: .circleci/shellcheck.sh || true
+      - run: .circleci/phpcs.sh || true
