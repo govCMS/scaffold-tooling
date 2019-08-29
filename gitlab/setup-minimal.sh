@@ -12,4 +12,4 @@ docker-compose up -d test
 docker-compose ps
 
 # Re-run composer to account for the fact the /app just got mounted over.
-docker-compose exec -T cli bash -c 'composer install --quiet'
+docker-compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
