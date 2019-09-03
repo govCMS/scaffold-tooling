@@ -43,8 +43,7 @@ common_deploy () {
   fi
 
   if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
-    echo "Enable stage_file_proxy in non-prod environments."
-    # Enable stage file proxy post db-import.
+    echo "En-forcing modules and settings in non-prod environments."
     drush pm:enable stage_file_proxy -y
   fi
 
