@@ -74,7 +74,7 @@ else
       echo "Drupal is not installed locally, try ahoy install"
     else
       # In a non-functioning development site, import the database from production before running import.
-      # Note this this is destructive of a site that can't bootstrap for some other reason - should it be removed?
+      # Note, this would destroy data in a dev site that was just broken temporarily. Review?
       drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
       common_deploy
     fi
