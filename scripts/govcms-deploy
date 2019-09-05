@@ -20,7 +20,13 @@ config_count=`ls -1 /app/config/default/*.yml 2>/dev/null | wc -l`
 dev_config_count=`ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l`
 set -e
 
+echo "Running govcms-deploy"
+echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
+echo "Config strategy: $GOVCMS_DEPLOY_WORKFLOW_CONFIG"
+echo "Content strategy: $GOVCMS_DEPLOY_WORKFLOW_CONTENT"
 echo "There are ${config_count} config yaml files, and ${dev_config_count} dev yaml files."
+drush core:status
+drush config:status
 
 # Database updates, cache rebuild, optional config imports.
 common_deploy () {
@@ -43,15 +49,11 @@ common_deploy () {
   fi
 
   if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
-    echo "En-forcing modules and settings in non-prod environments."
+    echo "Enable stage_file_proxy in non-prod environments."
     drush pm:enable stage_file_proxy -y
   fi
 
 }
-
-echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
-drush core:status
-drush config:status
 
 if [[ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]]; then
 
