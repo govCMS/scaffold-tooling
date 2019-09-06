@@ -2,9 +2,14 @@
 IFS=$'\n\t'
 set -euo pipefail
 
+# Ensure lagoon environment is set with the least destructive default.
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+
 # @todo This strategy will be injected from .env or .lagoon.env Currently set to replicate the existing process.
-# Determine the config strategy.
-GOVCMS_CONFIG_STRATEGY=${GOVCMS_CONFIG_STRATEGY:-import}
+# Determine the config strategy `import` vs `retain`.
+GOVCMS_DEPLOY_WORKFLOW_CONFIG=${GOVCMS_DEPLOY_WORKFLOW_CONFIG:-import}
+# Determine the content strategy `import` vs `retain`.
+GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
 
 # Ensure tmp folder always exists.
 mkdir -p /app/web/sites/default/files/private/tmp/
@@ -15,56 +20,65 @@ config_count=`ls -1 /app/config/default/*.yml 2>/dev/null | wc -l`
 dev_config_count=`ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l`
 set -e
 
+echo "Running govcms-deploy"
+echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
+echo "Config strategy: $GOVCMS_DEPLOY_WORKFLOW_CONFIG"
+echo "Content strategy: $GOVCMS_DEPLOY_WORKFLOW_CONTENT"
 echo "There are ${config_count} config yaml files, and ${dev_config_count} dev yaml files."
+drush core:status
 
 # Database updates, cache rebuild, optional config imports.
 common_deploy () {
-  drush updb -y
-  drush cr
+
+  if [[ "$LAGOON_ENVIRONMENT_TYPE" = "development" && "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" = "import" ]]; then
+    drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
+  fi
+
+  drush updatedb -y
+  drush cache:rebuild
 
   # Base configuration import with development environment overrides.
-  if [[ "$GOVCMS_CONFIG_STRATEGY" = "import" && "$config_count" -gt 0 ]]; then
+  if [[ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" = "import" && "$config_count" -gt 0 ]]; then
     echo "Performing config import."
-    drush cim -y sync
-    if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" && "$dev_config_count" -gt 0 ]]; then
-      echo "Performing non-prod partial import."
-      drush cim -y dev --partial
+    drush config:import -y sync
+    if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" && "$dev_config_count" -gt 0 ]]; then
+      echo "Performing development config import on non-production site."
+      drush config:import -y dev --partial
     fi
   fi
 
-  if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
-    echo "Example: Enable stage_file_proxy in non-prod environments."
-    # Enable stage file proxy post db-import.
-    #drush en stage_file_proxy -y
+  if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
+    echo "Enable stage_file_proxy in non-prod environments."
+    drush pm:enable stage_file_proxy -y
   fi
+
 }
 
-# Non production environments.
-if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]]; then
-    echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
+if [[ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]]; then
 
-    if ! drush status --fields=bootstrap | grep -q "Successful"; then
-        echo "Drupal is not installed."
-        drush status
-
-        # Import prod db in Lagoon development environments.
-        if [[ ! -z "$LAGOON_ENVIRONMENT_TYPE" && "$LAGOON_ENVIRONMENT_TYPE" != "local" ]]; then
-          drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
-          common_deploy
-        else
-          echo "Drupal not installed, try ahoy install"
-        fi
-    else
-      common_deploy
-    fi
-# Production environments.
-else
-  echo "Lagoon production site."
   if drush status --fields=bootstrap | grep -q "Successful"; then
     echo "Making a database backup."
     mkdir -p /app/web/sites/default/files/private/backups/ && drush sql-dump --ordered-dump --gzip --result-file=/app/web/sites/default/files/private/backups/pre-deploy-dump.sql
     common_deploy
   else
-    echo "Drupal not installed in production"
+    echo "Drupal is not installed or not operational."
   fi
+
+else
+
+  if ! drush status --fields=bootstrap | grep -q "Successful"; then
+    echo "Drupal is not installed or not operational."
+
+    if [[ "$LAGOON_ENVIRONMENT_TYPE" = "local" ]]; then
+      echo "Drupal is not installed locally, try ahoy install"
+    else
+      # In a non-functioning development site, import the database from production before running import.
+      # Note, this would destroy data in a dev site that was just broken temporarily. Review?
+      drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self -y
+      common_deploy
+    fi
+  else
+    common_deploy
+  fi
+
 fi
