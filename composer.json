@@ -19,6 +19,8 @@
         "jakub-onderka/php-parallel-lint": "^1.0",
         "integratedexperts/behat-screenshot": "^0.7.2",
         "phpmd/phpmd": "2.7.0",
+        "phpunit/manifest": "1.0.1",
+        "phpunit/version": "1.0.1",
         "phpunit/phpunit": "6.5",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
