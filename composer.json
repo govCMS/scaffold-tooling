@@ -11,7 +11,6 @@
         "drupal/fast_404": "^1.0@alpha",
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"1.1.0",
-        "drupal/schema_metatag": "^1.4",
         "drupal/stage_file_proxy":"1.0.0-alpha3",
         "drush/drush": "^9.0.0",
         "behat/behat": "^3.5",
