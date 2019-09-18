@@ -25,7 +25,7 @@
         "behat/behat": "^3.5",
         "behat/gherkin": "^4.5",
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "integratedexperts/behat-screenshot": "^0.7.2",
+        "integratedexperts/behat-screenshot": "^0.7.2"
     },
     "bin": [
         "scripts/tests/govcms-audit",
