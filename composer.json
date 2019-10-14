@@ -19,14 +19,6 @@
         "webmozart/path-util": "^2.3",
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
-    "require-dev": {
-        "phpmd/phpmd": "2.7.0",
-        "phpunit/phpunit": "6.5",
-        "behat/behat": "^3.5",
-        "behat/gherkin": "^4.5",
-        "jakub-onderka/php-parallel-lint": "^1.0",
-        "integratedexperts/behat-screenshot": "^0.7.2"
-    },
     "bin": [
         "scripts/tests/govcms-audit",
         "scripts/tests/govcms-behat",
