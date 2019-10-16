@@ -27,12 +27,9 @@ jobs:
           command: |
             touch /home/project/latest-package
             git checkout -b latest-package-"${CIRCLE_SHA1}"
-            echo "1"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
-            echo "2"
             composer --working-dir=/app config repositories.test path /home/project/latest-package
-            echo "3"
-            composer --working-dir=/app require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs
+            composer --working-dir=/app require govcms/govcms:dev-latest-package-"${CIRCLE_SHA1}" --ignore-platform-reqs
       - run:
           name: Docker build
           working_directory: /app
@@ -42,13 +39,13 @@ jobs:
             docker cp "/app/*" "$(docker-compose ps -q test)":/app
       - run:
           name: Install site
-          working_directory: /var/govcms
+          working_directory: /app
           command: ahoy -v install -- install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
       - run:
           name: Lint code
-          working_directory: /var/govcms
+          working_directory: /app
           command: ahoy -v lint || true
       - run:
           name: Run Behat tests with rerun
-          working_directory: /var/govcms
+          working_directory: /app
           command: ahoy test-behat -- --format=progress_fail || ahoy test-behat -- --format=progress_fail --rerun
