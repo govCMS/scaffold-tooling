@@ -35,9 +35,6 @@ jobs:
           command: |
             docker-compose up -d mariadb
             docker-compose up -d cli
-            ls
-            # docker cp /home/project "$(docker-compose ps -q cli)":/home/project
-            docker cp "/app/*" "$(docker-compose ps -q cli)":/app
       - run:
           name: Install site
           working_directory: /app
