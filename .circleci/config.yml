@@ -25,7 +25,8 @@ jobs:
           command: |
             git checkout -b latest-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
-            composer --working-dir=/app config repositories.test path "/home/project"
+            cp -r /home/project /app/latest-package
+            composer --working-dir=/app config repositories.test path "./latest-package"
             composer --working-dir=/app update
             composer --working-dir=/app require govcms/scaffold-tooling:dev-latest-package-"${CIRCLE_SHA1}" --ignore-platform-reqs
       - run:
@@ -34,7 +35,7 @@ jobs:
           command: |
             docker-compose up -d mariadb
             docker-compose up -d test
-            docker cp /home/project "$(docker-compose ps -q test)":/home/project
+            # docker cp /home/project "$(docker-compose ps -q test)":/home/project
             docker cp "/app/*" "$(docker-compose ps -q test)":/app
       - run:
           name: Install site
