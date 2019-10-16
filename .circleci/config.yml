@@ -31,7 +31,7 @@ jobs:
             cd /var/govcms
             docker-compose up -d mariadb
             docker-compose up -d test
-            docker cp /var/govcms "$(docker-compose ps -q test)":/app
+            docker cp /var/govcms/* "$(docker-compose ps -q test)":/app
             docker cp /home/project "$(docker-compose ps -q test)":/var/latest-package
       - run:
           name: Rebuild composer with new code.
