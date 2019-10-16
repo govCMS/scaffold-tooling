@@ -22,5 +22,7 @@ jobs:
           name: Test settings via drush
           working_directory: /app
           command: |
+            cat ./vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php
             drush core:status
             [[ "${CIRCLE_SHA1}" == $(drush php:eval " ") ]]
+
