@@ -39,7 +39,10 @@ jobs:
       - run:
           name: Install site
           working_directory: /app
-          command:  docker-compose exec -T test drush si -y govcms
+          command: |
+            docker-compose exec -T ls /app
+            docker-compose exec -T ls /app/scripts
+            docker-compose exec -T test drush si -y govcms
       - run:
           name: Lint code
           working_directory: /app
