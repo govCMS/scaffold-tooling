@@ -36,10 +36,9 @@ jobs:
           name: Rebuild composer with new code.
           working_directory: /var/govcms
           command: |
-            ls
             docker-compose exec -T cli bash -c 'ls'
-            #docker-compose exec -T cli bash -c 'composer -n -d /app config repositories.test path /var/latest-package'
-            #docker-compose exec -T cli bash -c 'composer -n -d /app require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
+            docker-compose exec -T cli bash -c 'composer -n -d /app config repositories.test path /var/latest-package'
+            docker-compose exec -T cli bash -c 'composer -n -d /app require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
       - run:
           name: Install site
           working_directory: /var/govcms
