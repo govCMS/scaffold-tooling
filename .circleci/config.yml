@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     machine:
-      - image: quay.io/govcms/govcms-ci
+      image: quay.io/govcms/govcms-ci
     steps:
       - checkout
       - run: composer validate --strict || true
