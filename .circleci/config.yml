@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    docker:
+    machine:
       - image: quay.io/govcms/govcms-ci
     steps:
       - checkout
