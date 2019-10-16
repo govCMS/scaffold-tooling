@@ -8,51 +8,18 @@ jobs:
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
-
-      # govcms/scaffold-tooling is a composer package which is somewhat
-      # coupled with GovCMS/Lagoon. So this is an integration test
-      # to replicate how Composer builds govcms (eg. 'composer create-project ...').
-      # First we build a minimal test govcms docker environment without installing
-      # Drupal. Then update the code with the new package, push it in to the
-      # container and install and test Drupal.
-
-      - setup_remote_docker
-      - run:
-          name: Start amazeeio-network
-          command: docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
       - run:
           name: Setup codebase
           command: |
             git checkout -b latest-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
-            # Copy package to /app/scripts since it is the only preserved directory from our setup, due to https://github.com/govCMS/govcms8-scaffold-paas/blob/develop/.docker/Dockerfile.cli#L15-L16, and we don't have a bind mount.
-            cp -r /home/project /app/scripts/latest-package
-            composer --working-dir=/app config repositories.test path "/app/scripts/latest-package"
+            composer --working-dir=/app config repositories.test path "/home/project/latest-package"
             composer --working-dir=/app update
             composer --working-dir=/app require govcms/scaffold-tooling:dev-latest-package-"${CIRCLE_SHA1}" --ignore-platform-reqs
       - run:
-          name: Docker build
+          name: Test setttings
           working_directory: /app
           command: |
-            docker-compose up -d mariadb
-            docker-compose up -d test
-      - run:
-          name: Install site
-          working_directory: /app
-          command: |
-            docker-compose exec -T cli drush st
-            docker-compose exec -T cli ls /app
-            docker-compose exec -T cli ls /app/scripts
-            docker-compose exec -T cli ls /app/web/sites/default
-            docker-compose exec -T cli ls /app/vendor/govcms
-            docker-compose exec -T cli cat /app/web/sites/default/settings.php
-            docker-compose exec -T cli drush si -y govcms
-      - run:
-          name: Lint code
-          working_directory: /app
-          command: ahoy -v lint || true
-      - run:
-          name: Run Behat tests with rerun
-          working_directory: /app
-          command: ahoy test-behat -- --format=progress_fail || ahoy test-behat -- --format=progress_fail --rerun
-
+            echo 'global $scaffold; $scaffold = '"${CIRCLE_SHA1}"' >> ./vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php
+            ./vendor/bin/drush st
+            ./vendor/bin/drush ev 'global $scaffold; print $scaffold;'
