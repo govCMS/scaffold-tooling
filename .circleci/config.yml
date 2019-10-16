@@ -31,7 +31,8 @@ jobs:
             cd /var/govcms
             docker-compose up -d mariadb
             docker-compose up -d cli
-            # Need our code into the container ready for 'composer require'.
+            # Push the code in the container ready to 'composer require' it.
+            ls -la ${CIRCLE_WORKING_DIRECTORY}
             touch ${CIRCLE_WORKING_DIRECTORY}/latest-package
             docker cp ${CIRCLE_WORKING_DIRECTORY} "$(docker-compose ps -q <container>)":/var/latest-package
       - run:
@@ -44,7 +45,7 @@ jobs:
           name: Install site
           working_directory: /var/govcms
           command: ahoy -v install -- install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
-      - run:
+        - run:
           name: Lint code
           working_directory: /var/govcms
           command: ahoy -v lint || true
