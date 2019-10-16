@@ -29,8 +29,6 @@ jobs:
             git checkout -b latest-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /var/govcms
             cd /var/govcms
-            #docker-compose up -d mariadb
-            #docker-compose up -d cli
             # Push the code in the container ready to 'composer require' it
             touch /home/project/latest-package
-            docker cp ${CIRCLE_WORKING_DIRECTORY} "$(docker-compose ps -q <container>)":/var/latest-package
+            docker cp /home/project/latest-package "$(docker-compose ps -q <container>)":/var/latest-package
