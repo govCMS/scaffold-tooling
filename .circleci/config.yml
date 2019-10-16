@@ -31,7 +31,8 @@ jobs:
             cd /var/govcms
             docker-compose up -d mariadb
             docker-compose up -d test
-            docker cp /home/project "$(docker-compose ps -q cli)":/var/latest-package
+            docker cp /var/govcms "$(docker-compose ps -q test)":/app
+            docker cp /home/project "$(docker-compose ps -q test)":/var/latest-package
       - run:
           name: Rebuild composer with new code.
           working_directory: /var/govcms
@@ -42,7 +43,7 @@ jobs:
             docker-compose exec -T test bash -c pwd
             docker-compose exec -T test bash -c ls
             docker-compose exec -T test composer validate
-            docker-compose exec -T test bash -c 'composer validate'
+            docker-compose exec -T test bash -c "composer validate"
             docker-compose exec -T test bash -c 'composer -n -v config repositories.test path /var/latest-package'
             docker-compose exec -T test bash -c 'composer -n -v require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
       - run:
