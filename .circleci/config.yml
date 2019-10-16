@@ -30,7 +30,7 @@ jobs:
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /var/govcms
             cd /var/govcms
             docker-compose up -d mariadb
-            docker-compose up -d cli
+            docker-compose up -d test
             docker cp /home/project "$(docker-compose ps -q cli)":/var/latest-package
       - run:
           name: Rebuild composer with new code.
@@ -40,8 +40,8 @@ jobs:
             pwd
             docker ps
             docker-compose ps
-            docker-compose exec -T cli bash -c 'composer -n -d /app config repositories.test path /var/latest-package'
-            docker-compose exec -T cli bash -c 'composer -n -d /app require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
+            docker-compose exec -T test bash -c 'composer -n config repositories.test path /var/latest-package'
+            docker-compose exec -T test bash -c 'composer -n require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
       - run:
           name: Install site
           working_directory: /var/govcms
