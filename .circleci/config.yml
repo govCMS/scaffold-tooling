@@ -2,9 +2,27 @@ version: 2
 jobs:
   build:
     docker:
-      - image: integratedexperts/ci-builder
+      - image: quay.io/govcms/govcms-ci
     steps:
       - checkout
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
+      # Add a value to check via drush.
+      - run: echo 'print "'"${CIRCLE_SHA1}"'";' >> ./drupal/settings/all.settings.php
+      - run:
+          name: Setup codebase
+          command: |
+            git checkout -b latest-package-"${CIRCLE_SHA1}"
+            git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
+            composer --working-dir=/app config repositories.test path "/home/project"
+            composer --working-dir=/app update
+            composer --working-dir=/app require govcms/scaffold-tooling:dev-latest-package-"${CIRCLE_SHA1}" --ignore-platform-reqs
+      - run:
+          name: Test settings via drush
+          working_directory: /app
+          command: |
+            cat ./vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php
+            drush -l default core:status
+            [[ "${CIRCLE_SHA1}" == $(drush -l default php:eval " ") ]]
+
