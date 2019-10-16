@@ -9,7 +9,7 @@ jobs:
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
       # Add a value to check via drush.
-      - run: echo 'print "'"${CIRCLE_SHA1}"'";' >> ./drupal/settings/all.settings.php'
+      - run: echo 'print "'"${CIRCLE_SHA1}"'";' >> ./drupal/settings/all.settings.php
       - run:
           name: Setup codebase
           command: |
