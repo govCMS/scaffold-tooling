@@ -1,14 +1,13 @@
 version: 2
 jobs:
   build:
-    machine:
+    docker:
       - image: quay.io/govcms/govcms-ci
     steps:
       - checkout
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
-
       - run:
           name: Start amazeeio-network
           command: docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
@@ -33,38 +32,13 @@ jobs:
             # ahoy -v build
             docker-compose exec -T cli sh -c 'ls -la /app'
             docker-compose ps
-            #docker-compose exec -T php sh -c 'ls -l /app'
-            #docker-compose exec -T test sh -c 'ls -la /app'
-            #docker-compose exec -T nginx sh -c 'ls -l /app'
-            # docker-compose exec test dockerize -wait tcp://mariadb:3306 -timeout 1m
-      - run:
-          name: Update the Composer scaffold project to use the distro being tested
-          working_directory: /var/govcms
-          command: |
-            # Directory is mounted into the container.
-            touch test.txt
-            ls -la
-            docker-compose exec -T cli bash -c 'ls -la /app'
-            docker ps
-            cp composer.json composer-copy.json && cat composer-copy.json | jq .repositories='{"govcms":{"type":"composer","url":"https://satis.govcms.gov.au"},"ci":{"type":"path","url":"latest-package"},"packagist.org":false}' | tee composer.json
-            docker-compose exec -T cli bash -c 'composer -n require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
-            docker volume ls
-      - run:
-          name: Install site
-          working_directory: /var/govcms
-          command: ahoy -v install -- install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
-      - run:
-          name: Lint code
-          working_directory: /var/govcms
-          command: ahoy -v lint || true
-      - run:
-          name: Run Behat tests with rerun
-          working_directory: /var/govcms
-          command: ahoy test-behat -- --format=progress_fail || ahoy test-behat -- --format=progress_fail --rerun
-      - run:
-          name: Copy artifacts
-          working_directory: /var/govcms
-          command: mkdir -p /tmp/artifacts/behat && docker cp $(docker-compose -p govcms8 ps -q test):/app/tests/behat/screenshots /tmp/artifacts/behat
-          when: always
-
-
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
