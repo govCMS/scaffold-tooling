@@ -5,6 +5,7 @@ jobs:
       image: circleci/classic:latest
     steps:
       - checkout
+      - run: curl -s https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
