@@ -31,37 +31,7 @@ jobs:
             cd /var/govcms
             docker-compose up -d mariadb
             docker-compose up -d cli
-            # Push the code in the container ready to 'composer require' it.
+            # Push the code in the container ready to 'composer require' it
             ls -la ${CIRCLE_WORKING_DIRECTORY}
             touch ${CIRCLE_WORKING_DIRECTORY}/latest-package
             docker cp ${CIRCLE_WORKING_DIRECTORY} "$(docker-compose ps -q <container>)":/var/latest-package
-      - run:
-          name: Rebuild composer with new code.
-          working_directory: /var/govcms
-          command: |
-            docker-compose exec -T cli bash -c 'composer config repositories.test path /var/latest-package'
-            docker-compose exec -T cli bash -c 'composer -n require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
-      - run:
-          name: Install site
-          working_directory: /var/govcms
-          command: ahoy -v install -- install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
-        - run:
-          name: Lint code
-          working_directory: /var/govcms
-          command: ahoy -v lint || true
-      - run:
-          name: Run Behat tests with rerun
-          working_directory: /var/govcms
-          command: ahoy test-behat -- --format=progress_fail || ahoy test-behat -- --format=progress_fail --rerun
-      - run:
-          name: Copy artifacts
-          working_directory: /var/govcms
-          command: mkdir -p /tmp/artifacts/behat && docker cp $(docker-compose -p govcms8 ps -q test):/app/tests/behat/screenshots /tmp/artifacts/behat
-          when: always
-
-
-
-            # docker-compose exec test dockerize -wait tcp://mariadb:3306 -timeout 1m
-            # cp -r "${CIRCLE_WORKING_DIRECTORY}" "/var/govcms/latest-distro-package"
-            # composer -n require govcms/govcms:dev-latest-distro-package-"'"${CIRCLE_SHA1}"'"
-
