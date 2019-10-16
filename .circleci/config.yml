@@ -11,13 +11,11 @@ jobs:
       - run: .circleci/phpcs.sh || true
 
       # govcms/scaffold-tooling is a composer package which is somewhat
-      # coupled with GovCMS/Lagoon. So this is an integration test for
-      # to replicate how composer builds govcms (eg. 'composer create-project ...').
-      # First we build a govcms docker environment (CLI and DB only)
-      # without installing Drupal.
-      # Then inside the CLI container we modify the composer.json to reference
-      # our new code and use this code to install and run Drupal, thus testing
-      # the scaffold.
+      # coupled with GovCMS/Lagoon. So this is an integration test
+      # to replicate how Composer builds govcms (eg. 'composer create-project ...').
+      # First we build a minimal test govcms docker environment without installing
+      # Drupal. Then update the code with the new package, push it in to the
+      # container and install and test Drupal.
 
       - run:
           name: Start amazeeio-network
