@@ -34,7 +34,7 @@ jobs:
           working_directory: /app
           command: |
             docker-compose up -d mariadb
-            docker-compose up -d cli
+            docker-compose up -d test
       - run:
           name: Install site
           working_directory: /app
