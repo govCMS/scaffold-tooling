@@ -1,45 +1,40 @@
 version: 2
 jobs:
   build:
-    machine:
-      image: circleci/classic:latest
+    docker:
+      - image: quay.io/govcms/govcms-ci
     steps:
       - checkout
-      - run: curl -s https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer
+      - setup_remote_docker
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
+
+      # govcms/scaffold-tooling is a composer package which is somewhat
+      # coupled with GovCMS/Lagoon. So this is an integration test for
+      # to replicate how composer builds govcms (eg. 'composer create-project ...').
+      # First we build a govcms docker environment (CLI and DB only)
+      # without installing Drupal.
+      # Then inside the CLI container we modify the composer.json to reference
+      # our new code and use this code to install and run Drupal, thus testing
+      # the scaffold.
+
       - run:
           name: Start amazeeio-network
           command: docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
       - run:
-          name: Prepare the workspace with scaffold project
+          name: Setup tests, docker build
           command: |
-            composer create-project -n --no-install --repository=https://satis.govcms.gov.au/projects govCMS/govCMS-project:dev-paas-wip /var/govcms
+            pwd
+            # Make this new code available in the container.
             git checkout -b latest-distro-package-"${CIRCLE_SHA1}"
-            cp -r "${CIRCLE_WORKING_DIRECTORY}" "/var/govcms/latest-distro-package"
-            composer -n require govcms/govcms:dev-latest-distro-package-"'"${CIRCLE_SHA1}"'"
-      - run:
-          name: Docker build
-          working_directory: /var/govcms
-          command: |
+            git clone https://github.com/govCMS/govCMS8-scaffold-paas /var/govcms
+            cd /var/govcms
             docker-compose up -d mariadb
             docker-compose up -d cli
+            docker cp /local/path "$(docker-compose ps -q <container>)":/var/latest-package
 
-            ls -la
-            ls -la /app
-            ls -la /var/govcms
-            # docker-compose ps
-            # ahoy -v build
-            docker-compose exec -T cli sh -c 'ls -la /app'
-            docker-compose ps
-workflows:
-  version: 2
-  main:
-    jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only: /.*/
+            # docker-compose exec test dockerize -wait tcp://mariadb:3306 -timeout 1m
+            # cp -r "${CIRCLE_WORKING_DIRECTORY}" "/var/govcms/latest-distro-package"
+            # composer -n require govcms/govcms:dev-latest-distro-package-"'"${CIRCLE_SHA1}"'"
+ 
