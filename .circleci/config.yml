@@ -5,7 +5,6 @@ jobs:
       - image: quay.io/govcms/govcms-ci
     steps:
       - checkout
-      - setup_remote_docker
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
@@ -17,6 +16,7 @@ jobs:
       # Drupal. Then update the code with the new package, push it in to the
       # container and install and test Drupal.
 
+      - setup_remote_docker
       - run:
           name: Start amazeeio-network
           command: docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
@@ -25,6 +25,7 @@ jobs:
           command: |
             git checkout -b latest-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
+            # Copy package to /app/scripts since it is the only preserved directory from our setup, due to https://github.com/govCMS/govcms8-scaffold-paas/blob/develop/.docker/Dockerfile.cli#L15-L16, and we don't have a bind mount.
             cp -r /home/project /app/scripts/latest-package
             composer --working-dir=/app config repositories.test path "/app/scripts/latest-package"
             composer --working-dir=/app update
@@ -38,7 +39,7 @@ jobs:
       - run:
           name: Install site
           working_directory: /app
-          command:  docker-compose exec -T cli drush si -y "$@"
+          command:  docker-compose exec -T test drush si -y govcms
       - run:
           name: Lint code
           working_directory: /app
