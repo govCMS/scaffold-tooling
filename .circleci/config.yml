@@ -40,13 +40,13 @@ jobs:
           name: Install site
           working_directory: /app
           command: |
-            docker-compose exec -T drush st
-            docker-compose exec -T ls /app
-            docker-compose exec -T ls /app/scripts
-            docker-compose exec -T ls /app/web/sites/default
-            docker-compose exec -T ls /app/vendor/govcms
-            docker-compose exec -T cat /app/web/sites/default/settings.php
-            docker-compose exec -T test drush si -y govcms
+            docker-compose exec -T cli drush st
+            docker-compose exec -T cli ls /app
+            docker-compose exec -T cli ls /app/scripts
+            docker-compose exec -T cli ls /app/web/sites/default
+            docker-compose exec -T cli ls /app/vendor/govcms
+            docker-compose exec -T cli cat /app/web/sites/default/settings.php
+            docker-compose exec -T cli drush si -y govcms
       - run:
           name: Lint code
           working_directory: /app
