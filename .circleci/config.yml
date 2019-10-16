@@ -25,8 +25,8 @@ jobs:
           command: |
             git checkout -b latest-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
-            cp -r /home/project /app/latest-package
-            composer --working-dir=/app config repositories.test path "/app/latest-package"
+            cp -r /home/project /app/scripts/latest-package
+            composer --working-dir=/app config repositories.test path "/app/scripts/latest-package"
             composer --working-dir=/app update
             composer --working-dir=/app require govcms/scaffold-tooling:dev-latest-package-"${CIRCLE_SHA1}" --ignore-platform-reqs
       - run:
