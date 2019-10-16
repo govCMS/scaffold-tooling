@@ -26,6 +26,7 @@ jobs:
           name: Setup tests, docker build
           command: |
             pwd
+            env
             # Make this new code available in the container.
             git checkout -b latest-distro-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /var/govcms
@@ -37,4 +38,4 @@ jobs:
             # docker-compose exec test dockerize -wait tcp://mariadb:3306 -timeout 1m
             # cp -r "${CIRCLE_WORKING_DIRECTORY}" "/var/govcms/latest-distro-package"
             # composer -n require govcms/govcms:dev-latest-distro-package-"'"${CIRCLE_SHA1}"'"
- 
+
