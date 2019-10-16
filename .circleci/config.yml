@@ -38,7 +38,6 @@ jobs:
           command: |
             ls
             pwd
-            docker ps
             docker-compose ps
             docker-compose exec -T test bash -c pwd
             docker-compose exec -T test bash -c ls
