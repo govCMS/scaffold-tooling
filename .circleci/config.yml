@@ -31,7 +31,7 @@ jobs:
             cd /var/govcms
             docker-compose up -d mariadb
             docker-compose up -d cli
-            docker cp ${CIRCLE_WORKING_DIRECTORY} "$(docker-compose ps -q cli)":/var/latest-package
+            docker cp /home/project "$(docker-compose ps -q cli)":/var/latest-package
       - run:
           name: Rebuild composer with new code.
           working_directory: /var/govcms
