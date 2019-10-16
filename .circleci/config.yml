@@ -27,16 +27,19 @@ jobs:
           command: |
             touch /home/project/latest-package
             git checkout -b latest-package-"${CIRCLE_SHA1}"
+            echo "1"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
-            composer -n -d /app config repositories.test path /var/latest-package
-            composer -n -d /app require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs
+            echo "2"
+            composer --working-dir=/app config repositories.test path /home/project/latest-package
+            echo "3"
+            composer --working-dir=/app require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs
       - run:
-          name: Rebuild composer with new code.
+          name: Docker build
           working_directory: /app
           command: |
             docker-compose up -d mariadb
             docker-compose up -d test
-            docker cp /app/* "$(docker-compose ps -q test)":/app
+            docker cp "/app/*" "$(docker-compose ps -q test)":/app
       - run:
           name: Install site
           working_directory: /var/govcms
