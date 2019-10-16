@@ -20,6 +20,6 @@ jobs:
           name: Test setttings
           working_directory: /app
           command: |
-            echo 'global $scaffold; $scaffold = '"${CIRCLE_SHA1}"' >> ./vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php
+            echo 'global $scaffold; $scaffold = '"${CIRCLE_SHA1}"' >> ./vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php'
             ./vendor/bin/drush st
             ./vendor/bin/drush ev 'global $scaffold; print $scaffold;'
