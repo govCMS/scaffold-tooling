@@ -38,7 +38,7 @@ jobs:
       - run:
           name: Install site
           working_directory: /app
-          command: ahoy -v install -- install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
+          command:  docker-compose exec -T cli drush si -y "$@"
       - run:
           name: Lint code
           working_directory: /app
