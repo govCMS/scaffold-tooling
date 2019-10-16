@@ -23,7 +23,6 @@ jobs:
       - run:
           name: Setup codebase
           command: |
-            touch /home/project/latest-package
             git checkout -b latest-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
             composer --working-dir=/app config repositories.test path "/home/project"
@@ -35,6 +34,7 @@ jobs:
           command: |
             docker-compose up -d mariadb
             docker-compose up -d test
+            docker cp /home/project "$(docker-compose ps -q test)":/home/project
             docker cp "/app/*" "$(docker-compose ps -q test)":/app
       - run:
           name: Install site
