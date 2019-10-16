@@ -41,6 +41,7 @@ jobs:
             docker-compose ps
             docker-compose exec -T test bash -c pwd
             docker-compose exec -T test bash -c ls
+            docker-compose exec -T test bash -c 'composer validate'
             docker-compose exec -T test bash -c 'composer -n config repositories.test path /var/latest-package'
             docker-compose exec -T test bash -c 'composer -n require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
       - run:
