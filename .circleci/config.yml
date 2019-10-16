@@ -24,7 +24,6 @@ jobs:
           name: Setup codebase
           command: |
             touch /home/project/latest-package
-            git log -4
             git checkout -b latest-package-"${CIRCLE_SHA1}"
             git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
             composer --working-dir=/app config repositories.test path /home/project/latest-package
