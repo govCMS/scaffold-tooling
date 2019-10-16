@@ -23,29 +23,20 @@ jobs:
           name: Start amazeeio-network
           command: docker network prune -f && docker network inspect amazeeio-network >/dev/null || docker network create amazeeio-network
       - run:
-          name: Setup, docker build
+          name: Setup codebase
           command: |
-            git checkout -b latest-package-"${CIRCLE_SHA1}"
             touch /home/project/latest-package
-            git clone https://github.com/govCMS/govCMS8-scaffold-paas /var/govcms
-            cd /var/govcms
-            docker-compose up -d mariadb
-            docker-compose up -d test
-            docker cp /var/govcms/* "$(docker-compose ps -q test)":/app
-            docker cp /home/project "$(docker-compose ps -q test)":/var/latest-package
+            git checkout -b latest-package-"${CIRCLE_SHA1}"
+            git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
+            composer -n -d /app config repositories.test path /var/latest-package
+            composer -n -d /app require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs
       - run:
           name: Rebuild composer with new code.
-          working_directory: /var/govcms
+          working_directory: /app
           command: |
-            ls
-            pwd
-            docker-compose ps
-            docker-compose exec -T test bash -c pwd
-            docker-compose exec -T test bash -c ls
-            docker-compose exec -T test composer validate
-            docker-compose exec -T test bash -c "composer validate"
-            docker-compose exec -T test bash -c 'composer -n -v config repositories.test path /var/latest-package'
-            docker-compose exec -T test bash -c 'composer -n -v require govcms/govcms:dev-latest-package-"'"${CIRCLE_SHA1}"'" --ignore-platform-reqs'
+            docker-compose up -d mariadb
+            docker-compose up -d test
+            docker cp /app/* "$(docker-compose ps -q test)":/app
       - run:
           name: Install site
           working_directory: /var/govcms
