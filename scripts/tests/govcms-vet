@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2002
+
 IFS=$'\n\t'
 set -euo pipefail
 
 exit
-
 
 #
 # If you modify anything above this line, please update all scripts in the same directory.
@@ -13,16 +14,12 @@ exit
 # want to apply from external, and best solved with an instance template coming soon
 # https://gitlab.com/gitlab-org/gitlab-ee/issues/8429
 
-SATIS="https://satis.govcms.gov.au/beta6"
 SCAFFOLD="https://github.com/govCMS/govcms8-scaffold-paas.git"
 WORKSPACE="/tmp/govcms8-scaffold-paas"
 
-STRICT=1
-WARNING=2
-
 exit_code=0
 
-flavour=$(egrep  "^type: " .version.yml | awk -F ": " '{print $2}')
+flavour=$(grep  "^type: " .version.yml | awk -F ": " '{print $2}')
 if [ "$flavour" = "saas" ] || [ "$flavour" = "paas" ] || [ "$flavour" = "saasplus" ] ; then
     echo "GovCMS build flavour: $flavour"
 else
@@ -37,7 +34,7 @@ function compare() {
         echo -e "  Expected value:\n    --$2--"
         return 1
     fi
-    echo -e "\033[0;32mOK:\033[0m" $3
+    echo -e "\033[0;32mOK:\033[0m" "$3"
     return 0
 }
 
@@ -48,25 +45,25 @@ git clone --depth=1 --quiet "$SCAFFOLD" "$WORKSPACE"
 if [ "$flavour" = "saas" ] ; then
 
     compare \
-        $(cat composer.json | jq -c '.repositories') \
-        $(cat $WORKSPACE/composer.json | jq -c '.repositories') \
+        "$(cat composer.json | jq -c '.repositories')" \
+        "$(cat $WORKSPACE/composer.json | jq -c '.repositories')" \
         "Composer repositories are expected." \
         "The repositories section of your composer.json should match the scaffold."
 
     compare \
-        $(cat composer.json | jq -c '.extra["enable-patching"]') \
-        $(cat $WORKSPACE/composer.json | jq -c '.extra["enable-patching"]') \
+        "$(cat composer.json | jq -c '.extra["enable-patching"]')" \
+        "$(cat $WORKSPACE/composer.json | jq -c '.extra["enable-patching"]')" \
         "Composer patching is enabled." \
         "Your composer.json must enable patching."
 
     compare \
-        $(cat composer.json | jq -c '.["minimum-stability"]') \
-        $(cat $WORKSPACE/composer.json | jq -c '.["minimum-stability"]') \
+        "$(cat composer.json | jq -c '.["minimum-stability"]')" \
+        "$(cat $WORKSPACE/composer.json | jq -c '.["minimum-stability"]')" \
         "Minimum stablity is dev." \
         "Your composer.json must set minimum stability to dev."
 
     compare \
-        " "$(find web/modules/custom -type f -name *.info.yml) \
+        " $(find web/modules/custom -type f -name "*.info.yml")" \
         " " \
         "No custom modules found." \
         "There should be no modules in web/sites/default/modules or web/modules"

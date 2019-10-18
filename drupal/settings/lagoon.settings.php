@@ -11,6 +11,8 @@
 /**
  * Include lagoon services file.
  */
+// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
+global $govcms_includes;
 $settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
 
 // Configuration path settings.
@@ -28,11 +30,11 @@ $databases['default']['default'] = [
   'collation' => 'utf8mb4_general_ci',
 ];
 
-// Lagoon Solr connection
+// Lagoon Solr connection.
 $config['search_api.server']['backend_config']['connector_config']['host'] = getenv('SOLR_HOST') ?: 'solr';
 $config['search_api.server']['backend_config']['connector_config']['path'] = '/solr/' . getenv('SOLR_CORE') ?: 'drupal';
 
-// Lagoon Varnish & reverse proxy settings
+// Lagoon Varnish & reverse proxy settings.
 $varnish_control_port = getenv('VARNISH_CONTROL_PORT') ?: '6082';
 $varnish_hosts = explode(',', getenv('VARNISH_HOSTS') ?: 'varnish');
 array_walk($varnish_hosts, function (&$value, $key) use ($varnish_control_port) {
@@ -53,20 +55,24 @@ if (getenv('ENABLE_REDIS')) {
 
   $settings['cache_prefix']['default'] = getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
 
-  # Do not set the cache during installations of Drupal
+  // Do not set the cache during installations of Drupal.
   if (!drupal_installation_attempted()) {
     $settings['cache']['default'] = 'cache.backend.redis';
 
     // Include the default example.services.yml from the module, which will
-    // replace all supported backend services (that currently includes the cache tags
-    // checksum service and the lock backends, check the file for the current list)
+    // replace all supported backend services (that currently includes the cache
+    // tags checksum service and the lock backends, check the file for the
+    // current list).
     $settings['container_yamls'][] = 'modules/contrib/redis/example.services.yml';
 
     // Allow the services to work before the Redis module itself is enabled.
     $settings['container_yamls'][] = 'modules/contrib/redis/redis.services.yml';
 
-    // Manually add the classloader path, this is required for the container cache bin definition below
-    // and allows to use it without the redis module being enabled.
+    // Manually add the classloader path, this is required for the container
+    // cache bin definition below and allows to use it without the redis module
+    // being enabled.
+    // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
+    global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
 
     // Use redis for container cache.
@@ -82,7 +88,11 @@ if (getenv('ENABLE_REDIS')) {
         ],
         'cache.backend.redis' => [
           'class' => 'Drupal\redis\Cache\CacheBackendFactory',
-          'arguments' => ['@redis.factory', '@cache_tags_provider.container', '@serialization.phpserialize'],
+          'arguments' => [
+            '@redis.factory',
+            '@cache_tags_provider.container',
+            '@serialization.phpserialize',
+          ],
         ],
         'cache.container' => [
           'class' => '\Drupal\redis\Cache\PhpRedis',
@@ -105,7 +115,7 @@ if (getenv('ENABLE_REDIS')) {
 $config['clamav.settings']['scan_mode'] = 1;
 $config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/clamscan';
 
-// Hash Salt
+// Hash Salt.
 $settings['hash_salt'] = hash('sha256', getenv('LAGOON_PROJECT'));
 
 // Environment specific settings files.
