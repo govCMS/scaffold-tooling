@@ -8,3 +8,4 @@ jobs:
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
+      - run: curl -u ${TOKEN_SATIS_REBUILD}: -d build_parameters[CIRCLE_JOB]=upstream_trigger https://circleci.com/api/v1.1/projectgh/govcms/satis/tree/upstream_changes
