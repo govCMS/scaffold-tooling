@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -8,4 +8,7 @@ jobs:
       - run: composer validate --strict || true
       - run: .circleci/shellcheck.sh || true
       - run: .circleci/phpcs.sh || true
-      - run: curl -u ${TOKEN_SATIS_REBUILD}: -d build_parameters[CIRCLE_JOB]=upstream_trigger https://circleci.com/api/v1.1/projectgh/govcms/satis/tree/upstream_changes
+      - run: |
+          if [ "${CIRCLE_BRANCH}" = "master" ] || [ "${CIRCLE_BRANCH}" = "develop" ] ; then
+            curl -u "${CIRCLE_GOVCMS_SATIS_REBUILD}": -X POST --header "Content-Type: application/json" -d '{"parameters": {"trigger-description": "testing"}, "branch": "'"${CIRCLE_BRANCH}"'}' https://circleci.com/api/v2/project/github/govCMS/satis/pipeline
+          fi
