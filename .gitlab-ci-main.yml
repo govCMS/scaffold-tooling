@@ -19,7 +19,6 @@ variables:
 .static_template: &static_template
   before_script:
     - |
-      env
       if [ "${GOVCMS_FAST_LINTING-FALSE}" == TRUE ] ; then
         composer update
       else
@@ -113,8 +112,14 @@ lint:
   # Run all lines together so that they all run even if any fail.
   script: |
     set +exuo pipefail # Linting...
-    docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/modules/custom'
-    docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/themes/custom'
+    if [ "${GOVCMS_FAST_LINTING-FALSE}" == TRUE ] ; then
+      ./vendor/bin/govcms-lint web/modules/custom
+      ./vendor/bin/govcms-lint web/themes/custom
+    else
+      docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/modules/custom'
+      docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/themes/custom'
+    fi
+
 unit:
   <<: *static_template
   extends: .job-unit
