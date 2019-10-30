@@ -19,7 +19,7 @@ variables:
 .static_template: &static_template
   before_script:
     - |
-      if [ "${GOVCMS_FAST_LINTING-FALSE}" == TRUE ] ; then
+      if [ "${GOVCMS_FAST_LINTING-FALSE}" = true ] ; then
         composer update
       else
         docker network prune -f && docker network create amazeeio-network
@@ -112,7 +112,7 @@ lint:
   # Run all lines together so that they all run even if any fail.
   script: |
     set +exuo pipefail # Linting...
-    if [ "${GOVCMS_FAST_LINTING-FALSE}" == TRUE ] ; then
+    if [ "${GOVCMS_FAST_LINTING-FALSE}" = true ] ; then
       ./vendor/bin/govcms-lint web/modules/custom
       ./vendor/bin/govcms-lint web/themes/custom
     else
