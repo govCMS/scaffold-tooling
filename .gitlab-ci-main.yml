@@ -19,6 +19,7 @@ variables:
 .static_template: &static_template
   before_script:
     - |
+      env
       if [ "${GOVCMS_FAST_LINTING-FALSE}" == TRUE ] ; then
         composer update
       else
