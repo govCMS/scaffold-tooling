@@ -15,22 +15,10 @@ variables:
 # Test setups.
 #
 
-# Minimal setup to run things like linting.
+# Minimal setup without docker, tooling available by default is https://github.com/govCMS/govcms-ci.
 .static_template: &static_template
   before_script:
-    - |
-      if [ "${GOVCMS_FAST_LINTING-FALSE}" = "TRUE" ] ; then
-        composer update
-      else
-        docker network prune -f && docker network create amazeeio-network
-        docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-
-        docker-compose up -d test
-        docker-compose ps
-
-        # Re-run composer to account for the fact the /app just got mounted over.
-        docker-compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
-      fi
+    - composer install
   stage: static
 
 # Minimal setup to execute drush against a working Drupal.
@@ -100,31 +88,28 @@ variables:
 #
 
 vet:
+  <<: *static_template
+  stage: static
   script:
     - composer validate
   when: on_success
   allow_failure: false
-  stage: static
 
 lint:
   <<: *static_template
   extends: .job-lint
   # Run all lines together so that they all run even if any fail.
-  script: |
-    set +exuo pipefail # Linting...
-    if [ "${GOVCMS_FAST_LINTING-FALSE}" = "TRUE" ] ; then
+  script:
+    - |
+      set +exuo pipefail # Linting...
       ./vendor/bin/govcms-lint web/modules/custom
       ./vendor/bin/govcms-lint web/themes/custom
-    else
-      docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/modules/custom'
-      docker-compose exec -T test bash -c '/app/vendor/bin/govcms-lint web/themes/custom'
-    fi
 
 unit:
   <<: *static_template
   extends: .job-unit
   script:
-    - docker-compose exec -T test bash -c './vendor/bin/govcms-unit --testsuite=unit'
+    - ./vendor/bin/govcms-unit --testsuite=unit'
 
 # Pre-flight (like a smoke test for general deployability).
 preflight:
