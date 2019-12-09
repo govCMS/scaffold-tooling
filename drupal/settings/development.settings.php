@@ -8,6 +8,8 @@
 /**
  * Include development services yml.
  */
+// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
+global $govcms_includes;
 $settings['container_yamls'][] = $govcms_includes . '/development.services.yml';
 
 /**
@@ -35,7 +37,7 @@ $config['system.performance']['css']['preprocess'] = FALSE;
 $config['system.performance']['js']['preprocess'] = FALSE;
 
 /**
- * Disable render caches, necessary for twig files to be reloaded on every page view.
+ * Disable render caches for twig files to be reloaded on every page view.
  */
 $settings['cache']['bins']['render'] = 'cache.backend.null';
 $settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';

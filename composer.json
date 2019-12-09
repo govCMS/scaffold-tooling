@@ -1,6 +1,7 @@
 {
     "name": "govcms/scaffold-tooling",
     "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
+    "license": "GPL-2.0-or-later",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
         "drupal/chosen_lib": "2.6.0",

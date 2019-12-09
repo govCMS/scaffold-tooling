@@ -5,6 +5,6 @@ jobs:
       - image: integratedexperts/ci-builder
     steps:
       - checkout
-      - run: composer validate --strict || true
-      - run: .circleci/shellcheck.sh || true
-      - run: .circleci/phpcs.sh || true
+      - run: composer validate --strict --no-check-all
+      - run: .circleci/shellcheck.sh
+      - run: .circleci/phpcs.sh
