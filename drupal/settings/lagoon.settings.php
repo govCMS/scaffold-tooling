@@ -8,6 +8,12 @@
  * the platform.).
  */
 
+if (empty($govcms_includes)) {
+  // This should be defined in settings.php to the local vendor location of this file
+  // if it's not defined we can identify the install location.
+  $govcms_includes = dirname(__FILE__);
+}
+
 /**
  * Include lagoon services file.
  */
@@ -112,7 +118,7 @@ if (getenv('ENABLE_REDIS')) {
       ],
     ];
   } catch (\Exception $e) {
-    $settings['container_yamls'][] = 'sites/default/redis-unavailable.services.yml';
+    $settings['container_yamls'][] = "$govcms_includes/redis-unavailable.services.yml";
     $settings['cache']['default'] = 'cache.backend.null';
   }
 }
