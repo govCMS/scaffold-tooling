@@ -10,6 +10,7 @@ done < <(
     scripts \
     .circleci/phpcs.sh \
     .circleci/shellcheck.sh \
+    ! -name "README.*" \
     -type f \
     -print0
   )
