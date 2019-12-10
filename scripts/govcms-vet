@@ -5,16 +5,15 @@ set -euo pipefail
 # This script is primarily for saas sites to ensure that they are complying
 # with GovCMS conditions.
 
-# @todo switch this to use govCMS/govcms-scaffold when merged.
+# @todo switch this to use govCMS/govcms-scaffold when the scaffold is retired.
 SCAFFOLD_REPO="https://github.com/govCMS/govcms8-scaffold-paas.git"
 
 WORKSPACE="/tmp/govcms-vet"
 SCAFFOLD="${WORKSPACE}/scaffold"
 OURCODE="${WORKSPACE}/thiscode"
 
+# Flavour (saas/paas) can be passed in to test a codebase.
 FLAVOUR=$(grep  "^type: " .version.yml | awk -F ": " '{print $2}')
-
-# You can force to run as another flavour, eg run as saas to check compatibility.
 FLAVOUR=${1:-"$FLAVOUR"}
 
 if [[ "$FLAVOUR" = "paas" ]] ; then
@@ -39,6 +38,7 @@ echo -e "\033[0;32mGovCMS Platform vetting script\033[0m"
 echo "Build flavour: $FLAVOUR"
 exit_code=0
 
+# A function to compare two strings.
 function compare() {
     if [[ "$1" != "$2" ]] ; then
         echo -e "\033[0;91mProblem\033[0m:" "$4"
@@ -98,7 +98,7 @@ compare \
 
 # There is no known way to enable a Drupal module outside a "modules" directory.
 compare \
-    " $(find web -type f -name "*.info.yml" | grep modules)" \
+    " $(find $OURCODE/web -type f -name "*.info.yml" | grep modules)" \
     " " \
     "No custom Drupal modules were found." \
     "There are custom Drupal modules in the repository."
