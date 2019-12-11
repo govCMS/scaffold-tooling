@@ -13,8 +13,6 @@
 /**
  * Include standard services.yml.
  */
-// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-global $govcms_includes;
 $settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
 
 // Config directory.
