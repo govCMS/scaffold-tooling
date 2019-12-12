@@ -11,8 +11,7 @@
 /**
  * Include lagoon services file.
  */
-// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-global $govcms_includes;
+
 $settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
 
 // Configuration path settings.

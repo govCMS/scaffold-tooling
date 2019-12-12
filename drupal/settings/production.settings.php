@@ -8,8 +8,7 @@
 /**
  * Include production.services.yml.
  */
-// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-global $govcms_includes;
+
 $settings['container_yamls'][] = $govcms_includes . '/production.services.yml';
 
 // Inject Google Analytics snippet on all production sites.
