@@ -17,8 +17,12 @@
 global $govcms_includes;
 $settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
 
-// Config directory.
+// Drupal 8 config directory.
+// @todo remove when all sites are Drupal 9.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '../config/sync';
+
+// Drupal 9 config directory.
+$settings['config_sync_directory'] = '../config/default';
 
 // @see https://govdex.gov.au/jira/browse/GOVCMS-993
 // @see https://github.com/drupal/drupal/blob/7.x/sites/default/default.settings.php#L518

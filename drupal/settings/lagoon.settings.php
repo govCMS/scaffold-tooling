@@ -15,7 +15,8 @@
 global $govcms_includes;
 $settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
 
-// Configuration path settings.
+// Drupal 8 config directory.
+// @todo remove when all sites are Drupal 9 (see all.settings.php).
 $config_directories[CONFIG_SYNC_DIRECTORY] = '/app/config/default';
 $config_directories['dev'] = '/app/config/dev';
 
