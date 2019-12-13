@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2002
+
 IFS=$'\n\t'
 set -euo pipefail
 
+exit
+
+#
+# If you modify anything above this line, please update all scripts in the same directory.
+#
+
+# Currently triggered from ./gitlab-ci.yml but it seems to be something that we would
+# want to apply from external, and best solved with an instance template coming soon
+# https://gitlab.com/gitlab-org/gitlab-ee/issues/8429
+
 SCAFFOLD="https://github.com/govCMS/govcms8-scaffold-paas.git"
 WORKSPACE="/tmp/govcms8-scaffold-paas"
+
+exit_code=0
 
 flavour=$(grep  "^type: " .version.yml | awk -F ": " '{print $2}')
 if [ "$flavour" = "saas" ] || [ "$flavour" = "paas" ] || [ "$flavour" = "saasplus" ] ; then
