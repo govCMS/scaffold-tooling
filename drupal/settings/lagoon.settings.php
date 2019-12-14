@@ -15,11 +15,6 @@
 global $govcms_includes;
 $settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
 
-// Drupal 8 config directory.
-// @todo remove when all sites are Drupal 9 (see all.settings.php).
-$config_directories[CONFIG_SYNC_DIRECTORY] = '/app/config/default';
-$config_directories['dev'] = '/app/config/dev';
-
 $databases['default']['default'] = [
   'driver' => 'mysql',
   'database' => getenv('MARIADB_DATABASE') ?: 'drupal',
