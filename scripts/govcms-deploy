@@ -45,7 +45,7 @@ common_deploy () {
     drush config:import -y sync
     if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" && "$dev_config_count" -gt 0 ]]; then
       echo "Performing development config import on non-production site."
-      drush config:import -y dev --partial --source=../config/dev
+      drush config:import -y --partial --source=../config/dev
     fi
   fi
 
