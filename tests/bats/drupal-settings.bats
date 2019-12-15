@@ -124,3 +124,60 @@ settings() {
   [ $(echo $SETTINGS | jq .page_cache_invoke_hooks) == "true" ]
   [ $(echo $SETTINGS | jq .redirect_page_cache) == "true" ]
 }
+
+@test "GA disabled for dev" {
+  DEV1=$(
+    LAGOON_ENVIRONMENT_TYPE=development \
+    settings | jq -rc '.config | "\(.["google_analytics.settings"])"'
+  )
+  DEV2=$(
+    DEV_MODE=true \
+    settings | jq -rc '.config | "\(.["google_analytics.settings"])"'
+  )
+  [ $(echo $DEV1 | jq -rc .account) == "UA-XXXXXXXX-YY" ]
+  [ $(echo $DEV2 | jq -rc .account) == "UA-XXXXXXXX-YY" ]
+}
+
+@test "GA settings for prod" {
+  SNIPPET=$(
+    LAGOON_ENVIRONMENT_TYPE=production \
+    settings | jq -rc '.config | "\(.["google_analytics.settings"]["codesnippet"]["after"])"'
+  )
+  [[ "$SNIPPET" == *"gtag('config', 'UA-54970022-1', {'name': 'govcms'})"* ]]
+  [[ "$SNIPPET" == *"gtag('govcms.send', 'pageview', {'anonymizeIp': true})"* ]]
+}
+
+@test "Performance settings for prod" {
+  PERF=$(
+    LAGOON_ENVIRONMENT_TYPE=production \
+    settings | jq -rc '.config | "\(.["system.performance"])"'
+  )
+  [ $(echo $PERF | jq -rc .cache.page.max_age) == 900 ]
+  [ $(echo $PERF | jq -rc .css.preprocess) == 1 ]
+  [ $(echo $PERF | jq -rc .js.preprocess) == 1 ]
+}
+
+@test "Stage file proxy settings for prod" {
+  SFP=$(
+    LAGOON_ENVIRONMENT_TYPE=production \
+    settings | jq -rc '.config | "\(.["stage_file_proxy.settings"])"'
+  )
+  [ $(echo $SFP | jq -rc .origin) == "false" ]
+}
+
+@test "Stage file proxy settings for dev" {
+  SFP_DEFAULT=$(
+    LAGOON_PROJECT=govcmsd8 \
+    LAGOON_ENVIRONMENT_TYPE=development \
+    settings | jq -rc '.config | "\(.["stage_file_proxy.settings"])"'
+  )
+  SFP_OVERRIDE=$(
+    LAGOON_PROJECT=should-not-use \
+    STAGE_FILE_PROXY_URL="https://www.govcms.gov.au" \
+    LAGOON_ENVIRONMENT_TYPE=development \
+    settings | jq -rc '.config | "\(.["stage_file_proxy.settings"])"'
+  )
+
+  [ $(echo $SFP_DEFAULT | jq -rc .origin) == "https://nginx-govcmsd8-master.govcms.amazee.io" ]
+  [ $(echo $SFP_OVERRIDE | jq -rc .origin) == "https://www.govcms.gov.au" ]
+}
