@@ -34,13 +34,11 @@ settings() {
 
 @test "Correct includes in dev mode" {
   FILES=$(
+    unset LAGOON
     DEV_MODE=true \
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq .included_files
   )
-
-  env
-  echo $FILES
 
   [ $(echo $FILES | jq '. | has("all.settings.php")') == "true" ]
   [ $(echo $FILES | jq '. | has("lagoon.settings.php")') == "false" ]
