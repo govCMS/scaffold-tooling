@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: quay.io/govcms/govcms-ci:shellcheck_bats
+      - image: quay.io/govcms/govcms-ci
     steps:
       - checkout
       - run: composer validate --strict --no-check-all
