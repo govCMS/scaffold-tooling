@@ -2,9 +2,10 @@ version: 2
 jobs:
   build:
     docker:
-      - image: integratedexperts/ci-builder
+      - image: govcms/govcms-ci:shellcheck_bats
     steps:
       - checkout
       - run: composer validate --strict --no-check-all
       - run: .circleci/shellcheck.sh
       - run: .circleci/phpcs.sh
+      - run: .circleci/bats.sh
