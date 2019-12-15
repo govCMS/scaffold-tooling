@@ -9,6 +9,8 @@
  * Include production.services.yml.
  */
 
+// Corresponding services.yml.
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $settings['container_yamls'][] = $govcms_settings . '/production.services.yml';
 
 // Inject Google Analytics snippet on all production sites.

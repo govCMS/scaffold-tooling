@@ -10,9 +10,8 @@
 
 // phpcs:disable Drupal.Classes.ClassFileName.NoMatch
 
-/**
- * Include standard services.yml.
- */
+// Corresponding services.yml.
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $settings['container_yamls'][] = $govcms_settings . '/all.services.yml';
 
 // Config directory.

@@ -8,10 +8,8 @@
  * the platform.).
  */
 
-/**
- * Include lagoon services file.
- */
-
+// Corresponding services.yml.
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $settings['container_yamls'][] = $govcms_settings . '/lagoon.services.yml';
 
 // Configuration path settings.
