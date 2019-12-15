@@ -25,4 +25,4 @@ jobs:
           working_directory: /app
           command: |
             drush -l default core:status
-            [[ "${CIRCLE_SHA1}" == $(drush -l default php:eval " ") ]]z
+            [[ "${CIRCLE_SHA1}" == "$(drush -l default php:eval ' ')" ]]
