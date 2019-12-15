@@ -22,7 +22,7 @@ else {
 putenv("GOVCMS_DRUPAL_SETTINGS=./drupal/settings");
 
 // Copy of settings.php from scaffold placed during bats `setup`
-$scaffold_settings_dot_php = '/tmp/scaffold-tooling-bats/settings.php';
+$scaffold_settings_dot_php = '/tmp/bats/settings.php';
 if (!file_exists($scaffold_settings_dot_php)) {
   echo 'See drupal-settings.bats setup() for how download and setup ' . $scaffold_settings_dot_php;
 }
