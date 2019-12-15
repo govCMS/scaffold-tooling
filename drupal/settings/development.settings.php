@@ -9,7 +9,7 @@
  * Include development services yml.
  */
 
-$settings['container_yamls'][] = $govcms_includes . '/development.services.yml';
+$settings['container_yamls'][] = $govcms_settings . '/development.services.yml';
 
 /**
  * Show all error messages, with backtrace information.

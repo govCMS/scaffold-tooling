@@ -12,7 +12,7 @@
  * Include lagoon services file.
  */
 
-$settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
+$settings['container_yamls'][] = $govcms_settings . '/lagoon.services.yml';
 
 // Configuration path settings.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '/app/config/default';
