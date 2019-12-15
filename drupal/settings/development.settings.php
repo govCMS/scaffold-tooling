@@ -42,3 +42,11 @@ $config['system.performance']['js']['preprocess'] = FALSE;
  */
 $settings['cache']['bins']['render'] = 'cache.backend.null';
 $settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
+
+// Stage file proxy.
+if (getenv('STAGE_FILE_PROXY_URL')) {
+  $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
+}
+elseif (getenv('LAGOON_PROJECT')) {
+  $config['stage_file_proxy.settings']['origin'] = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
+}

@@ -121,39 +121,3 @@ if (getenv('LAGOON_ENVIRONMENT_TYPE')) {
     include __DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php';
   }
 }
-
-// Stage file proxy URL from production URL.
-if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
-
-  if (getenv('LAGOON_PROJECT')) {
-    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
-    $config['stage_file_proxy.settings']['origin'] = $origin;
-  }
-
-  if (getenv('STAGE_FILE_PROXY_URL')) {
-    $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
-  }
-
-}
-
-// Stage file proxy URL from production URL.
-if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
-
-  if (getenv('LAGOON_PROJECT')) {
-    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
-    $config['stage_file_proxy.settings']['origin'] = $origin;
-  }
-
-  if (getenv('STAGE_FILE_PROXY_URL')) {
-    $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
-  }
-
-  if (getenv('DEV_MODE')) {
-    if (!drupal_installation_attempted()) {
-      if (file_exists(__DIR__ . '/development.settings.php')) {
-        include __DIR__ . '/development.settings.php';
-      }
-    }
-  }
-
-}
