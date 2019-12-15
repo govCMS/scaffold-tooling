@@ -69,7 +69,7 @@ if (getenv('ENABLE_REDIS')) {
     // cache bin definition below and allows to use it without the redis module
     // being enabled.
     // @see https://github.com/govCMS/scaffold-tooling/issues/30
-    // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore#
+    // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
     global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
 
