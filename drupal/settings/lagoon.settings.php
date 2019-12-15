@@ -68,7 +68,8 @@ if (getenv('ENABLE_REDIS')) {
     // Manually add the classloader path, this is required for the container
     // cache bin definition below and allows to use it without the redis module
     // being enabled.
-    // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore# @see https://github.com/govCMS/scaffold-tooling/issues/30
+    // @see https://github.com/govCMS/scaffold-tooling/issues/30
+    // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore#
     global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
 
