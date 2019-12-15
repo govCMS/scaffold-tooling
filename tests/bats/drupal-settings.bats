@@ -38,6 +38,10 @@ settings() {
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq .included_files
   )
+
+  env
+  echo $FILES
+
   [ $(echo $FILES | jq '. | has("all.settings.php")') == "true" ]
   [ $(echo $FILES | jq '. | has("lagoon.settings.php")') == "false" ]
   [ $(echo $FILES | jq '. | has("production.settings.php")') == "false" ]
