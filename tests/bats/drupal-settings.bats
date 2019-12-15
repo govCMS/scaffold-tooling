@@ -122,12 +122,3 @@ settings() {
   [ $(echo $SETTINGS | jq .page_cache_invoke_hooks) == "true" ]
   [ $(echo $SETTINGS | jq .redirect_page_cache) == "true" ]
 }
-
-@test "Akamai friendly caching" {
-  SETTINGS=$(
-    LAGOON=true \
-    settings | jq -rc .settings
-  )
-  [ $(echo $SETTINGS | jq .page_cache_invoke_hooks) == "true" ]
-  [ $(echo $SETTINGS | jq .redirect_page_cache) == "true" ]
-}
