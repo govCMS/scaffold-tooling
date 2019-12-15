@@ -8,15 +8,11 @@ $installation_attempted =  getenv('INSTALLATION_ATTEMPTED') ?: FALSE;
 // Mock Drupal.
 $settings = [];
 $config = [];
+$databases = [];
 $app_root = 'not-applicable'; // Not testing for the dynamic inclusion of projects.settings.php and local settings.
 define('CONFIG_SYNC_DIRECTORY', 'sync'); // Remove in Drupal 9.
 $_SERVER['HTTP_HOST'] = $http_host;
-if ($installation_attempted) {
-  function drupal_installation_attempted() { return TRUE; }
-}
-else {
-  function drupal_installation_attempted() { return FALSE; }
-}
+if ($installation_attempted) { function drupal_installation_attempted() { return TRUE; } } else { function drupal_installation_attempted() { return FALSE; }}
 
 // This variable is the run-time optional way to point to an alternative location of https://github.com/govCMS/scaffold-tooling/tree/develop/drupal/settings
 putenv("GOVCMS_DRUPAL_SETTINGS=./drupal/settings");
@@ -35,6 +31,7 @@ require $scaffold_settings_dot_php;
 $output = [
   'settings' => $settings,
   'config' => $config,
+  'databases' => $databases,
   'included_files' => [],
 ];
 foreach (get_included_files() as $file) {

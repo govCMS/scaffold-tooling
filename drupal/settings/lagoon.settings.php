@@ -68,7 +68,7 @@ if (getenv('ENABLE_REDIS')) {
     // Manually add the classloader path, this is required for the container
     // cache bin definition below and allows to use it without the redis module
     // being enabled.
-    // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
+    // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore# @see https://github.com/govCMS/scaffold-tooling/issues/30
     global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
 
@@ -114,10 +114,3 @@ $config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/cla
 
 // Hash Salt.
 $settings['hash_salt'] = hash('sha256', getenv('LAGOON_PROJECT'));
-
-// Environment specific settings files.
-if (getenv('LAGOON_ENVIRONMENT_TYPE')) {
-  if (file_exists(__DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php')) {
-    include __DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php';
-  }
-}
