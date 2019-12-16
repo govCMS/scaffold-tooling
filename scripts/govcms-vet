@@ -12,9 +12,11 @@ WORKSPACE="/tmp/govcms-vet"
 SCAFFOLD="${WORKSPACE}/scaffold"
 OURCODE="${WORKSPACE}/thiscode"
 
-# Flavour (saas/paas) can be passed in to test a codebase.
-FLAVOUR=$(grep  "^type: " .version.yml | awk -F ": " '{print $2}')
+# Flavour (saas/paas) and version can be passed in to test a codebase.
+FLAVOUR=$(yq read .version.yml type)
 FLAVOUR=${1:-"$FLAVOUR"}
+VERSION=$(yq read .version.yml scaffold)
+VERSION=${2:-"$VERSION"}
 
 if [[ "$FLAVOUR" = "paas" ]] ; then
     # By default PaaS users will see green in their CI, but can inspect the job to see all warnings.
@@ -31,7 +33,7 @@ fi
 # Prepare files for comparison.
 rm -Rf "$WORKSPACE"
 mkdir -p "$OURCODE"
-git clone --depth=1 --quiet "$SCAFFOLD_REPO" "$SCAFFOLD"
+git clone --depth=1 --quiet --branch="$VERSION" "$SCAFFOLD_REPO" "$SCAFFOLD"
 git --work-tree="$OURCODE" checkout HEAD -- .
 
 echo -e "\033[0;32mGovCMS Platform vetting script\033[0m"
