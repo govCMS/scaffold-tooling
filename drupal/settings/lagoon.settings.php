@@ -8,12 +8,9 @@
  * the platform.).
  */
 
-/**
- * Include lagoon services file.
- */
-// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-global $govcms_includes;
-$settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
+// Corresponding services.yml.
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+$settings['container_yamls'][] = $govcms_settings . '/lagoon.services.yml';
 
 // Configuration path settings.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '/app/config/default';
@@ -71,6 +68,7 @@ if (getenv('ENABLE_REDIS')) {
     // Manually add the classloader path, this is required for the container
     // cache bin definition below and allows to use it without the redis module
     // being enabled.
+    // @see https://github.com/govCMS/scaffold-tooling/issues/30
     // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
     global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
@@ -117,46 +115,3 @@ $config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/cla
 
 // Hash Salt.
 $settings['hash_salt'] = hash('sha256', getenv('LAGOON_PROJECT'));
-
-// Environment specific settings files.
-if (getenv('LAGOON_ENVIRONMENT_TYPE')) {
-  if (file_exists(__DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php')) {
-    include __DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php';
-  }
-}
-
-// Stage file proxy URL from production URL.
-if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
-
-  if (getenv('LAGOON_PROJECT')) {
-    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
-    $config['stage_file_proxy.settings']['origin'] = $origin;
-  }
-
-  if (getenv('STAGE_FILE_PROXY_URL')) {
-    $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
-  }
-
-}
-
-// Stage file proxy URL from production URL.
-if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
-
-  if (getenv('LAGOON_PROJECT')) {
-    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
-    $config['stage_file_proxy.settings']['origin'] = $origin;
-  }
-
-  if (getenv('STAGE_FILE_PROXY_URL')) {
-    $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
-  }
-
-  if (getenv('DEV_MODE')) {
-    if (!drupal_installation_attempted()) {
-      if (file_exists(__DIR__ . '/development.settings.php')) {
-        include __DIR__ . '/development.settings.php';
-      }
-    }
-  }
-
-}

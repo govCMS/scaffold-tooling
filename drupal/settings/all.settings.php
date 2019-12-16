@@ -10,12 +10,9 @@
 
 // phpcs:disable Drupal.Classes.ClassFileName.NoMatch
 
-/**
- * Include standard services.yml.
- */
-// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-global $govcms_includes;
-$settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
+// Corresponding services.yml.
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+$settings['container_yamls'][] = $govcms_settings . '/all.services.yml';
 
 // Config directory.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '../config/sync';
@@ -27,6 +24,7 @@ $contrib_path = 'modules/contrib';
 if (file_exists($contrib_path . '/fast404/fast404.inc')) {
   include_once $contrib_path . 'fast404/fast404.inc';
 }
+// @todo this should be in the if block above?
 $settings['fast404_exts'] = '/^(?!robots)^(?!sites\/default\/files\/private).*\.(?:png|gif|jpe?g|svg|tiff|bmp|raw|webp|docx?|xlsx?|pptx?|swf|flv|cgi|dll|exe|nsf|cfm|ttf|bat|pl|asp|ics|rtf)$/i';
 $settings['fast404_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>';
 $settings['fast404_whitelist'] = ['robots.txt', 'system/files'];
@@ -40,6 +38,7 @@ $settings['file_temporary_path'] = 'sites/default/files/private/tmp';
 // By placing a file called 404.html in the root of their theme repository.
 // 404 pages must be less than 512KB to be used. This is a performance
 // measure to ensure transfer, memory usage and disk reads are manageable.
+// @todo include a class file, not inline like this.
 if (!class_exists('GovCms404Page')) {
   /**
    * Class GovCms404Page.
@@ -95,6 +94,7 @@ $settings['fast404_html'] = new GovCms404Page($settings['fast404_html']);
 
 // Ensure redirects created with the redirect module are able to set appropriate
 // caching headers to ensure that Varnish and Akamai can cache the HTTP 301.
+// @todo move to lagoon.settings.php
 $settings['page_cache_invoke_hooks'] = TRUE;
 $settings['redirect_page_cache'] = TRUE;
 

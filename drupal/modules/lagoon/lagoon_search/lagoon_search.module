@@ -1,0 +1,6 @@
+<?php
+
+/**
+ * @file
+ * Integration between your Drupal site and Lagoon Solr.
+ */
