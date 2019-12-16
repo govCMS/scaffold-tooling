@@ -28,7 +28,7 @@ settings() {
 
 @test "Correct includes in dev mode (lagoon image)" {
   FILES=$(
-    LAGOON=true
+    LAGOON=true \
     DEV_MODE=true \
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq .included_files
