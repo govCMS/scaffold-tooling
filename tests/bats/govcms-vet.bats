@@ -6,7 +6,7 @@ WORKSPACE=/tmp/bats/scaffold
 setup() {
   if [ ! -d "$WORKSPACE/.git" ]; then
     rm -Rf "$WORKSPACE"
-    git clone https://github.com/govCMS/govcms8-scaffold-paas "$WORKSPACE --quiet"
+    git clone --quiet https://github.com/govCMS/govcms8-scaffold-paas "$WORKSPACE"
     cd "$WORKSPACE"
     git tag -f rollback --quiet
   fi
