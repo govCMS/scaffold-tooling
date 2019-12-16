@@ -8,12 +8,12 @@ setup() {
     rm -Rf "$WORKSPACE"
     git clone https://github.com/govCMS/govcms8-scaffold-paas "$WORKSPACE"
     cd "$WORKSPACE"
-    git tag -f rollback --quiet
+    git tag -f rollback
   fi
 
   cd "$WORKSPACE"
-
-  git reset --hard rollback --quiet
+  git --version
+  git reset --hard --quiet rollback
   git clean -fd --quiet
 }
 
