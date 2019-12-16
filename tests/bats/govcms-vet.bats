@@ -9,6 +9,8 @@ setup() {
     git clone https://github.com/govCMS/govcms8-scaffold-paas "$WORKSPACE"
     cd "$WORKSPACE"
     git tag -f rollback
+    git config user.email "noone@example.gov.au"
+    git config user.name "Falcor"
   fi
 
   cd "$WORKSPACE"
