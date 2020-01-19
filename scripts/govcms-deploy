@@ -16,13 +16,15 @@ mkdir -p /app/web/sites/default/files/private/tmp/
 
 # Check for presence of config files.
 set +e # Prevent script failure when assigning 0.
-config_count=`ls -1 /app/config/default/*.yml 2>/dev/null | wc -l`
-dev_config_count=`ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l`
+# shellcheck disable=SC2012
+config_count=$(ls -1 /app/config/default/*.yml 2>/dev/null | wc -l)
+# shellcheck disable=SC2012
+dev_config_count=$(ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l)
 set -e
 
 echo "Running govcms-deploy"
 echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
-echo "Config strategy: $GOVCMS_DEPLOY_WORKFLOW_CONFIG"
+echo "Config strategy:  $GOVCMS_DEPLOY_WORKFLOW_CONFIG"
 echo "Content strategy: $GOVCMS_DEPLOY_WORKFLOW_CONTENT"
 echo "There are ${config_count} config yaml files, and ${dev_config_count} dev yaml files."
 drush core:status

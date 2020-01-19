@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+# This script is primarily for saas sites to ensure that they are complying
+# with GovCMS conditions.
+
+# @todo switch this to use govCMS/govcms-scaffold when the scaffold is retired.
+SCAFFOLD_REPO="https://github.com/govCMS/govcms8-scaffold-paas.git"
+
+WORKSPACE="/tmp/govcms-vet"
+SCAFFOLD="${WORKSPACE}/scaffold"
+OURCODE="${WORKSPACE}/thiscode"
+
+# Flavour (saas/paas) can be passed in to test a codebase.
+FLAVOUR=$(grep  "^type: " .version.yml | awk -F ": " '{print $2}')
+FLAVOUR=${1:-"$FLAVOUR"}
+
+if [[ "$FLAVOUR" = "paas" ]] ; then
+    # By default PaaS users will see green in their CI, but can inspect the job to see all warnings.
+    ON_ERROR=0
+elif [[ "$FLAVOUR" = "saas" ]] || [[ "$FLAVOUR" = "saasplus" ]] ; then
+    ON_ERROR=1
+else
+    echo "Not a relevant SaaS/PaaS project? Vetting skipped."
+    # Since this script should not be used on non-Drupal sites, raise an exit code in case
+    # it's a saas site with a broken yml.
+    exit 1
+fi
+
+# Prepare files for comparison.
+rm -Rf "$WORKSPACE"
+mkdir -p "$OURCODE"
+git clone --depth=1 --quiet "$SCAFFOLD_REPO" "$SCAFFOLD"
+git --work-tree="$OURCODE" checkout HEAD -- .
+
+echo -e "\033[0;32mGovCMS Platform vetting script\033[0m"
+echo "Build flavour: $FLAVOUR"
+exit_code=0
+
+# A function to compare two strings.
+function compare() {
+    if [[ "$1" != "$2" ]] ; then
+        echo -e "\033[0;91mProblem\033[0m:" "$4"
+        echo -e "  Ideal value:\n    --$2--"
+        echo -e "  Found value:\n    --$1--"
+        exit_code="$ON_ERROR"
+    else
+        echo -e "\033[0;32mOK:\033[0m" "$3"
+    fi
+}
+
+# Strict saas tests.
+
+# We could just compare the default composer file with the scaffold but
+# checking the things that matter is more informative. Note that composer.json
+# starts off locked, and allowed modules can be added via custom/composer/...
+# Also require and require-dev do not matter as long as the repositories section
+# is not edited.
+
+compare \
+    "$(jq -c '.repositories' < ${OURCODE}/composer.json)" \
+    "$(jq -c '.repositories' < ${SCAFFOLD}/composer.json)" \
+    "Composer repositories are default." \
+    "The repositories section of composer.json does not match the scaffold."
+
+compare \
+    "$(jq -c '.extra["enable-patching"]' < ${OURCODE}/composer.json)" \
+    "$(jq -c '.extra["enable-patching"]' < ${SCAFFOLD}/composer.json)" \
+    "Composer patching is enabled." \
+    "The composer.json does not enable patching."
+
+compare \
+    "$(jq -c '.scripts' < ${OURCODE}/composer.json)" \
+    "$(jq -c '.scripts' < ${SCAFFOLD}/composer.json)" \
+    "Composer scripts section is default." \
+    "The scripts section of composer.json does not match the scaffold."
+
+compare \
+    "$(composer config extra.patches-file -d ${OURCODE})" \
+    "$(composer config extra.patches-file -d ${SCAFFOLD})" \
+    "Composer patches file location is default." \
+    "The patches file section of composer.json does not match the scaffold."
+
+# Custom patches might be a future mechanism for saas. Currently allows
+# paas to avoid modifying composer.json.
+compare \
+    "$(jq -c '.patches' < ${OURCODE}/custom/composer/patches.json)" \
+    "$(jq -c '.patches' < ${SCAFFOLD}/custom/composer/patches.json)" \
+    "Composer patches file matches the scaffold" \
+    "There are custom composer patches."
+
+compare \
+    "$(jq -c 'keys' < ${OURCODE}/custom/composer/composer.json)" \
+    "$(jq -c 'keys' < ${SCAFFOLD}/custom/composer/composer.json)" \
+    "The custom/composer/composer.json keys are as expected." \
+    "There are additional keys set in the custom/composer/composer.json"
+
+# There is no known way to enable a Drupal module outside a "modules" directory.
+compare \
+    " $(find $OURCODE/web -type f -name "*.info.yml" | grep modules)" \
+    " " \
+    "No custom Drupal modules were found." \
+    "There are custom Drupal modules in the repository."
+
+exit "$exit_code"
