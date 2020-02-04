@@ -19,8 +19,11 @@ $config['google_analytics.settings']['codesnippet']['after'] = "gtag('config', '
 // Don't show any error messages on the site (will still be shown in watchdog).
 $config['system.logging']['error_level'] = 'hide';
 
-// Expiration of cached pages on Varnish to 15 min.
+// Set max cache lifetime to 15m by default.
 $config['system.performance']['cache']['page']['max_age'] = 900;
+if (is_numeric($max_age = getenv('CACHE_MAX_AGE'))) {
+  $config['system.performance']['cache']['page']['max_age'] = $max_age;
+}
 
 // Aggregate CSS files on.
 $config['system.performance']['css']['preprocess'] = 1;
