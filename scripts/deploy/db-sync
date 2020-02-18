@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS database sync
+#
+# This will pull a database from the production
+# environment.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
+
+if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
+  exit 0
+fi
+
+BOOTSTRAP=$(drush status --fields=bootstrap | grep -c "Successful")
+
+# Synchronise the environment on the first deploy.
+if [ $BOOTSTRAP -eq 1 ] && [ $GOVCMS_DEPLOY_WORKFLOW_CONTENT != "import" ]; then
+  exit 0
+fi
+
+echo "GovCMS Deploy :: Database synchronisation"
+echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
+
+drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
+
+# @TODO: sql-san?

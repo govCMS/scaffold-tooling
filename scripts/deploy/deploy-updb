@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS update database
+#
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_DEPLOY_UPDB=${GOVCMS_DEPLOY_UPDB:-true}
+GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
+
+if [ "$GOVCMS_DEPLOY_UPDB" != "true" ]; then
+  # Skip the databae updates for this deploy.
+  exit 0
+fi
+
+if [ "$GOVCMS_DEPLOY_PRE_UPDB" != "false" ]; then
+  # If we have the pre_updb task configured for this deployment
+  # then we don't need to re-run the databases updates.
+  exit 0
+fi
+
+echo "GovCMS Deploy :: Update Database"
+echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
+
+drush updatedb -y
+drush cache:rebuild

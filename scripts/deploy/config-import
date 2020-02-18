@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS configuration import
+#
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_DEPLOY_WORKFLOW_CONFIG=${GOVCMS_DEPLOY_WORKFLOW_CONFIG:-import}
+
+if [ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" != "import" ]; then
+  exit 0
+fi
+
+# Check that there are configuration files.
+set +e #
+# shellcheck disable=SC2012
+config_count=$(ls -1 /app/config/default/*.yml 2>/dev/null | wc -l)
+dev_config_count=$(ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l)
+set -e
+
+if [[ $config_count -eq 0 && $dev_config_count -eq 0 ]]; then
+  # There are no configuration files to import.
+  exit 0
+fi
+
+echo "GovCMS Deploy :: Configuration import"
+
+if [ $config_count -gt 0 ]; then
+  echo "Import site configuration"
+  drush config:import -y sync
+fi
+
+if [ $LAGOON_ENVIRONMENT_TYPE != "production" ] && [ $dev_config_count -gt 0 ]; then
+  echo "Import dev configuration partial"
+  drush config:import -y dev --partial
+fi
