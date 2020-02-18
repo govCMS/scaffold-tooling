@@ -14,7 +14,7 @@ LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
 
 # Backup processes only happen on production.
-if [ $LAGOON_ENVIRONMENT_TYPE != "production" ]; then
+if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   exit 0
 fi
 
@@ -23,5 +23,5 @@ if ! drush status --fields=bootstrap | grep -q "Successful"; then
   exit 0 # Perhaps exit > 0 to fail the build?
 fi
 
-mkdir -p $GOVCMS_BACKUP_DIR
-drush sql:dump --gzip --result-file=$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql
+mkdir -p "$GOVCMS_BACKUP_DIR"
+drush sql:dump --gzip --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"

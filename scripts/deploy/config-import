@@ -18,22 +18,23 @@ fi
 set +e #
 # shellcheck disable=SC2012
 config_count=$(ls -1 /app/config/default/*.yml 2>/dev/null | wc -l)
+# shellcheck disable=SC2012
 dev_config_count=$(ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l)
 set -e
 
-if [[ $config_count -eq 0 && $dev_config_count -eq 0 ]]; then
+if [[ "$config_count" -eq 0 && "$dev_config_count" -eq 0 ]]; then
   # There are no configuration files to import.
   exit 0
 fi
 
 echo "GovCMS Deploy :: Configuration import"
 
-if [ $config_count -gt 0 ]; then
+if [ "$config_count" -gt 0 ]; then
   echo "Import site configuration"
   drush config:import -y sync
 fi
 
-if [ $LAGOON_ENVIRONMENT_TYPE != "production" ] && [ $dev_config_count -gt 0 ]; then
+if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ] && [ "$dev_config_count" -gt 0 ]; then
   echo "Import dev configuration partial"
   drush config:import -y dev --partial
 fi

@@ -13,7 +13,7 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
 
-if [ $LAGOON_ENVIRONMENT_TYPE != "production" ]; then
+if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   echo '[skip]: Configuration backup can only be done on production.'
   exit 0
 fi
@@ -25,7 +25,7 @@ fi
 echo "GovCMS Deploy :: Backup configuration"
 echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
 
-drush config:export sync -y --destination $GOVCMS_BACKUP_DIR/config
-tar -czf $GOVCMS_BACKUP_DIR/config.tar.gz -C $GOVCMS_BACKUP_DIR/config .
-rm -rf $GOVCMS_BACKUP_DIR/config
+drush config:export sync -y --destination "$GOVCMS_BACKUP_DIR/config"
+tar -czf "$GOVCMS_BACKUP_DIR/config.tar.gz" -C "$GOVCMS_BACKUP_DIR/config" .
+rm -rf "$GOVCMS_BACKUP_DIR/config"
 

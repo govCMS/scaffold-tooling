@@ -12,7 +12,7 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_ENABLE_MODULES=${GOVCMS_DEPLOY_ENABLE_MODULES:-true}
 
-if [ $GOVCMS_DEPLOY_ENABLE_MODULES != "true" ]; then
+if [ "$GOVCMS_DEPLOY_ENABLE_MODULES" != "true" ]; then
   echo "[Skip]: Enable default modules for GovCMS"
   exit 0
 fi
@@ -23,17 +23,17 @@ MODULES=$(drush pm:list --status=enabled)
 NON_PROD_MODULES=("stage_file_proxy")
 REQ_MODULES=()
 
-if [ $LAGOON_ENVIRONMENT_TYPE != "production" ]; then
+if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   for MODULE in "${NON_PROD_MODULES[@]}"; do
-    if [[ "$(echo MODULES | grep -c $MODULE)" -eq 0 ]]; then
-      drush pm:enable $MODULE -y
+    if [[ $(echo "$MODULES" | grep -c "$MODULE") -eq 0 ]]; then
+      drush pm:enable "$MODULE" -y
     fi
   done
 fi
 
 # Enable Lagoon required modules in production.
 for MODULE in "${REQ_MODULES[@]}"; do
-  if [[ "$(echo MODULES | grep -c $MODULE)" -eq 0 ]]; then
-    drush pm:enable $MODULE -y
+    if [[ $(echo "$MODULES" | grep -c "$MODULE") -eq 0 ]]; then
+    drush pm:enable "$MODULE" -y
   fi
 done

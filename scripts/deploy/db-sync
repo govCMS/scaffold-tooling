@@ -16,10 +16,14 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
   exit 0
 fi
 
+if [ "$LAGOON_ENVIRONMENT_TYPE" = "local" ]; then
+  exit 0
+fi
+
 BOOTSTRAP=$(drush status --fields=bootstrap | grep -c "Successful")
 
 # Synchronise the environment on the first deploy.
-if [ $BOOTSTRAP -eq 1 ] && [ $GOVCMS_DEPLOY_WORKFLOW_CONTENT != "import" ]; then
+if [ "$BOOTSTRAP" -eq 1 ] && [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
   exit 0
 fi
 
