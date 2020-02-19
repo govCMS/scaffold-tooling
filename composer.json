@@ -33,7 +33,7 @@
         "scripts/deploy/govcms-database-update",
         "scripts/deploy/govcms-enable-modules",
         "scripts/deploy/govcms-pre-deploy-commands",
-        "scripts/deploy/govcms-pre-deploy-update-datase",
+        "scripts/deploy/govcms-pre-deploy-update-database",
         "scripts/deploy/govcms-prepare",
         "scripts/deploy/govcms-preserve-backups"
     ]
