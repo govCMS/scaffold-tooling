@@ -27,11 +27,13 @@
         "scripts/govcms-vet",
         "scripts/deploy/backup-config",
         "scripts/deploy/backup-db",
+        "scripts/deploy/cache-rebuild",
         "scripts/deploy/config-import",
         "scripts/deploy/db-sync",
         "scripts/deploy/database-update",
         "scripts/deploy/enable-modules",
         "scripts/deploy/pre-deploy-update-datase",
-        "scripts/deploy/prepare"
+        "scripts/deploy/prepare",
+        "scripts/deploy/preserve-backups"
     ]
 }
