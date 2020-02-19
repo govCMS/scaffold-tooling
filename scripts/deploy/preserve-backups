@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
+
+if [ -f "$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz" ]; then
+  mv "$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz" "$GOVCMS_BACKUP_DIR/pre-deploy-dump-last-good.sql.gz"
+fi

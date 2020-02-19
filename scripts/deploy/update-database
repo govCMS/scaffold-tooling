@@ -26,4 +26,3 @@ echo "GovCMS Deploy :: Update Database"
 echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
 
 drush updatedb -y
-drush cache:rebuild

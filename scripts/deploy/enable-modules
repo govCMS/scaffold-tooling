@@ -21,7 +21,14 @@ echo "GovCMS Deploy :: Enable modules"
 
 MODULES=$(drush pm:list --status=enabled)
 NON_PROD_MODULES=("stage_file_proxy")
-REQ_MODULES=()
+PLATFORM_MODULES=(
+  "redis"
+  "fast404"
+  "clamav"
+  "robotstxt"
+  "lagoon_logs"
+  "environment_indicator"
+)
 
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   for MODULE in "${NON_PROD_MODULES[@]}"; do
@@ -32,7 +39,7 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
 fi
 
 # Enable Lagoon required modules in production.
-for MODULE in "${REQ_MODULES[@]}"; do
+for MODULE in "${PLATFORM_MODULES[@]}"; do
     if [[ $(echo "$MODULES" | grep -c "$MODULE") -eq 0 ]]; then
     drush pm:enable "$MODULE" -y
   fi

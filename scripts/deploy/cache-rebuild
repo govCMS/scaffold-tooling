@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS database backups.
+#
+# Allow a cache-rebuild to be toggled at deploy time.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_CACHE_REBUILD=${GOVCMS_CACHE_REBUILD:-true}
+
+if [ "$GOVCMS_CACHE_REBUILD" != "true" ]; then
+  exit 0
+fi
+
+drush -y cache:rebuild
