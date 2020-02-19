@@ -35,3 +35,6 @@ for COMMAND in $COMMANDS; do
     echo "drush $COMMAND"
   fi
 done
+
+# Reset the field separator.
+IFS=$OIFS
