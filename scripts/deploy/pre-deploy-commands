@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# Pre-deploy commands
+#
+# Allows projects to define some commands
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_DEPLOY_PRE_COMMANDS=${GOVCMS_DEPLOY_PRE_COMMANDS:-false}
+
+if [ ! $# -eq 0 ]; then
+  GOVCMS_DEPLOY_PRE_COMMANDS=$1;
+fi
+
+if [ "$GOVCMS_DEPLOY_PRE_COMMANDS" = false ]; then
+  # A pre-deploy update is not required so return early.
+  exit 0;
+fi
+
+OIFS="$IFS"
+IFS=$'\n'
+
+echo "GovCMS Deploy :: Pre-deploy commands"
+echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
+
+COMMANDS=$(echo "$GOVCMS_DEPLOY_PRE_COMMANDS" | tr "," "\n")
+
+for COMMAND in $COMMANDS; do
+  # A little clunky but this tries to whitelist only some commands
+  # so we're not exposing the full gammet of Drush via ENV VARs.
+  if [[ $COMMAND =~ ^(pmu|pm:uninstall|en|pm:enable|config:set|cset).* ]]; then
+    echo "drush $COMMAND"
+  fi
+done

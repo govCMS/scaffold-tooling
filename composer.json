@@ -25,6 +25,12 @@
         "scripts/govcms-lint-distro",
         "scripts/govcms-phpunit",
         "scripts/govcms-vet",
-        "scripts/govcms-deploy"
+        "scripts/deploy/backup-config",
+        "scripts/deploy/backup-db",
+        "scripts/deploy/config-import",
+        "scripts/deploy/db-sync",
+        "scripts/deploy/database-update",
+        "scripts/deploy/enable-modules",
+        "scripts/deploy/pre-deploy-update-datase"
     ]
 }
