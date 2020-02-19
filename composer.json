@@ -30,7 +30,7 @@
         "scripts/deploy/govcms-cache-rebuild",
         "scripts/deploy/govcms-config-import",
         "scripts/deploy/govcms-db-sync",
-        "scripts/deploy/govcms-database-update",
+        "scripts/deploy/govcms-update-database",
         "scripts/deploy/govcms-enable-modules",
         "scripts/deploy/govcms-pre-deploy-commands",
         "scripts/deploy/govcms-pre-deploy-update-database",
