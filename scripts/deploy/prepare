@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS prepare for deploy.
+#
+# This performs some perfunctory commands to ensure that the
+# sites are in a deployable position.
+#
+
+sed -i "s/%%PROJECT_NAME%%/\${LAGOON_PROJECT}/g" /app/drush/sites/govcms.site.yml
