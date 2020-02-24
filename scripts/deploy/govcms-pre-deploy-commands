@@ -11,17 +11,18 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_PRE_COMMANDS=${GOVCMS_DEPLOY_PRE_COMMANDS:-false}
 
+echo "GovCMS Deploy :: Pre-deploy commands"
+
+
 if [ ! $# -eq 0 ]; then
   GOVCMS_DEPLOY_PRE_COMMANDS=$1;
 fi
 
 if [ "$GOVCMS_DEPLOY_PRE_COMMANDS" = false ]; then
   # A pre-deploy update is not required so return early.
+  echo "[skip]: There are not pre-deploy commands to be run."
   exit 0;
 fi
-
-echo "GovCMS Deploy :: Pre-deploy commands"
-echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
 
 COMMANDS=$(echo "$GOVCMS_DEPLOY_PRE_COMMANDS" | tr "," "\n")
 
@@ -29,6 +30,9 @@ for COMMAND in $COMMANDS; do
   # A little clunky but this tries to whitelist only some commands
   # so we're not exposing the full gammet of Drush via ENV VARs.
   if [[ $COMMAND =~ ^(pmu|pm:uninstall|en|pm:enable|config:set|cset).* ]]; then
-    echo "drush $COMMAND"
+    echo "[update]: Running $COMMAND"
+    drush $COMMAND
   fi
 done
+
+echo "[success]: Completed successfully."

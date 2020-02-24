@@ -10,7 +10,10 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_WORKFLOW_CONFIG=${GOVCMS_DEPLOY_WORKFLOW_CONFIG:-import}
 
+echo "GovCMS Deploy :: Configuration import"
+
 if [ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" != "import" ]; then
+  echo "[skip]: Workflow is not set to import."
   exit 0
 fi
 
@@ -24,17 +27,19 @@ set -e
 
 if [[ "$config_count" -eq 0 && "$dev_config_count" -eq 0 ]]; then
   # There are no configuration files to import.
+  echo "[skip]: There is no configuration."
   exit 0
 fi
 
-echo "GovCMS Deploy :: Configuration import"
 
 if [ "$config_count" -gt 0 ]; then
-  echo "Import site configuration"
+  echo "[update]: Import site configuration"
   drush config:import -y sync
 fi
 
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ] && [ "$dev_config_count" -gt 0 ]; then
-  echo "Import dev configuration partial"
+  echo "[update]: Import dev configuration partial"
   drush config:import -y dev --partial
 fi
+
+echo "[success]: Completed successfully."

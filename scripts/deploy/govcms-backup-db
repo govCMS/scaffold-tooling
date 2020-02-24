@@ -13,8 +13,11 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
 
+echo "GovCMS Deploy :: Backup database"
+
 # Backup processes only happen on production.
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
+  echo "[skip]: Non-production environment"
   exit 0
 fi
 
@@ -25,3 +28,5 @@ fi
 
 mkdir -p "$GOVCMS_BACKUP_DIR"
 drush sql:dump --gzip --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
+
+echo "[success]: Completed successfully."

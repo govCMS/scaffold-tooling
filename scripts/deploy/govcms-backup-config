@@ -10,9 +10,11 @@ set -euo pipefail
 # flow.
 #
 
-LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-prodused -i "s/%%PROJECT_NAME%%/\${env.LAGOON_PROJECT}/g" /app/drush/sites/govcms.site.ymlction}
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
 GOVCMS_CONFIG_BACKUP=${GOVCMS_CONFIG_BACKUP:-pre-deploy-config}
+
+echo "GovCMS Deploy :: Backup configuration"
 
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   echo '[skip]: Configuration backup can only be done on production.'
@@ -20,11 +22,11 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
 fi
 
 if ! drush status --fields=bootstrap | grep -q "Successful"; then
+  echo '[skip]: Site is not available.'
   exit 0
 fi
 
-echo "GovCMS Deploy :: Backup configuration"
-echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
-
 drush config:export sync -y --destination "$GOVCMS_BACKUP_DIR/config"
 tar -czf "$GOVCMS_BACKUP_DIR/$GOVCMS_CONFIG_BACKUP.tar.gz" -C "$GOVCMS_BACKUP_DIR/config" --remove-files
+
+echo "[success]: Completed successfully."

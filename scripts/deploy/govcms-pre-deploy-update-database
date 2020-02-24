@@ -20,12 +20,16 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
 
+echo "GovCMS Deploy :: Pre-deploy database updates"
+
 if [ "$GOVCMS_DEPLOY_PRE_UPDB" = false ]; then
   # A pre-deploy update is not required so return early.
+  echo "[skip]: Environment variable not set"
   exit 0;
 fi
 
-echo "GovCMS Deploy :: Pre-deploy database updates"
-echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
-
 drush updatedb -y
+
+echo "[success]: Completed successfully."
+
+

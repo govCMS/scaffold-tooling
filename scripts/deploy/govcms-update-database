@@ -11,18 +11,21 @@ LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_UPDB=${GOVCMS_DEPLOY_UPDB:-true}
 GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
 
+echo "GovCMS Deploy :: Update Database"
+
 if [ "$GOVCMS_DEPLOY_UPDB" != "true" ]; then
   # Skip the databae updates for this deploy.
+  echo "[skip]: Environment variable is set to skip."
   exit 0
 fi
 
 if [ "$GOVCMS_DEPLOY_PRE_UPDB" != "false" ]; then
   # If we have the pre_updb task configured for this deployment
   # then we don't need to re-run the databases updates.
+  echo "[skip]: Pre-depoy updates were applied."
   exit 0
 fi
 
-echo "GovCMS Deploy :: Update Database"
-echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
-
 drush updatedb -y
+
+echo "[success]: Completed successfully."

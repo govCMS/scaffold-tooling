@@ -11,8 +11,13 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_CACHE_REBUILD=${GOVCMS_CACHE_REBUILD:-true}
 
+echo "GovCMS Deploy :: Cache rebuild"
+
 if [ "$GOVCMS_CACHE_REBUILD" != "true" ]; then
+  echo "[skip]: Cache rebuild disabled."
   exit 0
 fi
 
 drush -y cache:rebuild
+
+echo "[success]: Completed successfully."

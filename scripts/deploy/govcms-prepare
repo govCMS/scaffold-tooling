@@ -8,5 +8,10 @@ set -euo pipefail
 # This performs some perfunctory commands to ensure that the
 # sites are in a deployable position.
 #
+# @deprecated 1.0
+#
+# This is for the legacy projects that have not been updated with the latest
+# scaffold
+#
 
 sed -i "s/%%PROJECT_NAME%%/\${LAGOON_PROJECT}/g" /app/drush/sites/govcms.site.yml
