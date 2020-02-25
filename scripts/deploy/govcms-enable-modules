@@ -30,7 +30,7 @@ PLATFORM_MODULES=(
   "environment_indicator"
 )
 
-MODULE_LIST =""
+MODULE_LIST=""
 
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   for MODULE in "${NON_PROD_MODULES[@]}"; do
@@ -48,9 +48,12 @@ for MODULE in "${PLATFORM_MODULES[@]}"; do
 done
 
 # If the modules are not enabled - then we must enable them.
-if [[ ! -z "$MODULE_LIST" ]]; then
-  MODULE_LIST=$(echo $MODULE_LIST | awk '{$1=$1};1')
-  drush pm:enable "$MODULE_LIST" -y
+if [[ -n "$MODULE_LIST" ]]; then
+  MODULE_LIST=$(echo "$MODULE_LIST" | awk '{$1=$1};1')
+  # SC2086 expects quoted variables, we want to pass each in as a
+  # separate parameter so we disable this check.
+  # shellcheck disable=SC2086
+  drush pm:enable $MODULE_LIST -y
 fi
 
 echo "[success]: Completed successfully."
