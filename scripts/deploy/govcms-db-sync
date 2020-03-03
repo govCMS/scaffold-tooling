@@ -19,17 +19,15 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
   exit 0
 fi
 
-if [ "$LAGOON_ENVIRONMENT_TYPE" = "local" ]; then
-  # Drush aliases don't work local > remote.
-  echo "[skip]: Local environment can't be synced."
-  exit 0
-fi
+echo "[info]: Check that the site can be bootstrapped"
 
-BOOTSTRAP=$(drush status --fields=bootstrap | grep -c "Successful")
+# If the site is not valid drush returns a 130 status and grep -c produces
+# inconcsistent return status causing the script to fail.
+BOOTSTRAP=$(drush status --fields=bootstrap)
 
 # Synchronise the environment on the first deploy.
-if [ "$BOOTSTRAP" -eq 1 ] && [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
-  echo "[skip]: Site can be bootstrapped or the workflow is not set to import."
+if [ $? -eq 0 ] && [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
+  echo "[skip]: Site can be bootstrapped and the workflow is not set to import."
   exit 0
 fi
 
@@ -39,4 +37,5 @@ echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
 drush --alias-path=/etc/drush/sites sql-sync @prod @self -y
 
 echo "[success]: Completed successfully."
+exit 0
 # @TODO: sql-san?
