@@ -20,21 +20,30 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
 fi
 
 echo "[info]: Check that the site can be bootstrapped"
-
-# If the site is not valid drush returns a 130 status and grep -c produces
-# inconcsistent return status causing the script to fail.
 BOOTSTRAP=$(drush status --fields=bootstrap)
 
-# Synchronise the environment on the first deploy.
-if [ $? -eq 0 ] && [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
+# shellcheck disable=SC2181
+if [ $? -ne 0 ] || [ "$(echo "$BOOTSTRAP" | grep -c "Successful")" -eq 0 ]; then
+  # This will ensure that the databse is synchronised on the first deploy
+  # of an enviornment in lagoon.
+  echo "[info]: Site could not be bootstrapped... syncing."
+  drush --alias-path=/etc/drush/sites sql-sync @govcms.prod @self -y
+  exit 0
+fi
+
+if [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
+  # Allow per environment overrides for the synchronisation flow, if the site
+  # has bootstrapped but the environment is not set to "import" for the workflow
+  # then we will not synchronise the database.
   echo "[skip]: Site can be bootstrapped and the workflow is not set to import."
   exit 0
 fi
 
-echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
+echo "[info]: Environment type: $LAGOON_ENVIRONMENT_TYPE"
+echo "[info]: Preparing database sync"
 
 # drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
-drush --alias-path=/etc/drush/sites sql-sync @prod @self -y
+drush --alias-path=/etc/drush/sites sql-sync @govcms.prod @self -y
 
 echo "[success]: Completed successfully."
 exit 0
