@@ -26,6 +26,6 @@ if [ "$GOVCMS_DEPLOY_PRE_UPDB" != "false" ]; then
   exit 0
 fi
 
+echo "[info]: Preparing database update."
 drush updatedb -y
-
 echo "[success]: Completed successfully."

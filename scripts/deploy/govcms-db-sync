@@ -11,6 +11,7 @@ set -euo pipefail
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
+GOVCMS_SITE_ALIAS=${GOVCMS_SITE_ALIAS:-govcms.prod}
 
 echo "GovCMS Deploy :: Database synchronisation"
 
@@ -20,14 +21,12 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
 fi
 
 echo "[info]: Check that the site can be bootstrapped"
-BOOTSTRAP=$(drush status --fields=bootstrap)
 
-# shellcheck disable=SC2181
-if [ $? -ne 0 ] || [ "$(echo "$BOOTSTRAP" | grep -c "Successful")" -eq 0 ]; then
+if ! drush status --fields=bootstrap | grep -q "Successful"; then
   # This will ensure that the databse is synchronised on the first deploy
   # of an enviornment in lagoon.
   echo "[info]: Site could not be bootstrapped... syncing."
-  drush --alias-path=/etc/drush/sites sql-sync @govcms.prod @self -y
+  drush --alias-path=/etc/drush/sites sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
   exit 0
 fi
 
@@ -42,8 +41,7 @@ fi
 echo "[info]: Environment type: $LAGOON_ENVIRONMENT_TYPE"
 echo "[info]: Preparing database sync"
 
-# drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
-drush --alias-path=/etc/drush/sites sql-sync @govcms.prod @self -y
+drush --alias-path=/etc/drush/sites sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
 
 echo "[success]: Completed successfully."
 exit 0
