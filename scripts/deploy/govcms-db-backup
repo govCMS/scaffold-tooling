@@ -17,7 +17,7 @@ echo "GovCMS Deploy :: Backup database"
 
 # Backup processes only happen on production.
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
-  echo "[skip]: Non-production environment"
+  echo "[skip]: Non-production environment."
   exit 0
 fi
 
@@ -28,5 +28,7 @@ fi
 
 mkdir -p "$GOVCMS_BACKUP_DIR"
 drush sql:dump --gzip --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
+
+echo "[info]: Backup saved to $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql."
 
 echo "[success]: Completed successfully."

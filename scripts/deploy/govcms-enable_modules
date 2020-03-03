@@ -54,6 +54,7 @@ if [[ -n "$MODULE_LIST" ]]; then
   # separate parameter so we disable this check.
   # shellcheck disable=SC2086
   drush pm:enable $MODULE_LIST -y
+  echo "[info]: Enabled $MODULE_LIST"
 fi
 
 echo "[success]: Completed successfully."

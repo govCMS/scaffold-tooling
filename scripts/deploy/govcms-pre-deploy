@@ -30,7 +30,7 @@ for COMMAND in $COMMANDS; do
   # A little clunky but this tries to whitelist only some commands
   # so we're not exposing the full gammet of Drush via ENV VARs.
   if [[ $COMMAND =~ ^(pmu|pm:uninstall|en|pm:enable|config:set|cset).* ]]; then
-    echo "[update]: Running $COMMAND"
+    echo "[update]: Running $COMMAND."
     # shellcheck disable=SC2086
     drush $COMMAND
   fi

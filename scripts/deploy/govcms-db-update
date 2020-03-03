@@ -5,7 +5,6 @@ set -euo pipefail
 #
 # GovCMS update database
 #
-#
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_UPDB=${GOVCMS_DEPLOY_UPDB:-true}

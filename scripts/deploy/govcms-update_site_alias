@@ -14,4 +14,6 @@ set -euo pipefail
 # scaffold
 #
 
-sed -i "s/%%PROJECT_NAME%%/\${LAGOON_PROJECT}/g" /app/drush/sites/govcms.site.yml
+if [ -f /app/drush/sites/govcms.site.yml ]; then
+  sed -i "s/%%PROJECT_NAME%%/\${LAGOON_PROJECT}/g" /app/drush/sites/govcms.site.yml
+fi

@@ -3,17 +3,15 @@ IFS=$'\n\t'
 set -euo pipefail
 
 #
-# GovCMS database backups.
+# GovCMS cache rebuild.
 #
 # Allow a cache-rebuild to be toggled at deploy time.
 #
-
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
-GOVCMS_CACHE_REBUILD=${GOVCMS_CACHE_REBUILD:-true}
 
 echo "GovCMS Deploy :: Cache rebuild"
 
-if [ "$GOVCMS_CACHE_REBUILD" != "true" ]; then
+if [ -n "$GOVCMS_SKIP_CACHE_REBUILD" ]; then
   echo "[skip]: Cache rebuild disabled."
   exit 0
 fi

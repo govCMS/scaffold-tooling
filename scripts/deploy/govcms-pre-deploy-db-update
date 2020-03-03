@@ -31,5 +31,3 @@ fi
 drush updatedb -y
 
 echo "[success]: Completed successfully."
-
-
