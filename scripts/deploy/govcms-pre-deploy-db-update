@@ -13,9 +13,6 @@ set -euo pipefail
 # (for example with drush status). This provides the deploy agent
 # the ability to perform updates early in the automated flow.
 #
-# The ansible deploy process will add GOVCMS_DEPLOY_PRE_UPDB prior to
-# triggering the deploy to allow this to run properly.
-#
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
@@ -24,7 +21,7 @@ echo "GovCMS Deploy :: Pre-deploy database updates"
 
 if [ "$GOVCMS_DEPLOY_PRE_UPDB" = false ]; then
   # A pre-deploy update is not required so return early.
-  echo "[skip]: Environment variable not set"
+  echo "[skip]: Skipping pre-deployment db update."
   exit 0;
 fi
 
