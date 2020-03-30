@@ -52,6 +52,9 @@ if (getenv('ENABLE_REDIS')) {
   $redis = new \Redis();
   $redis_host = getenv('REDIS_HOST') ?: 'redis';
   $redis_port = getenv('REDIS_PORT') ?: 6379;
+  // Redis should return in < 1s so this is a maximum time
+  // to ensure we don't hold the proc forever.
+  $redis_timeout = getenv('REDIS_CONNECT_TIMEOUT') ?: 2;
 
   try {
     if (drupal_installation_attempted()) {
@@ -59,7 +62,7 @@ if (getenv('ENABLE_REDIS')) {
       throw new \Exception('Drupal installation underway.');
     }
 
-    $redis->connect($redis_host, $redis_port);
+    $redis->connect($redis_host, $redis_port, $redis_timeout);
     $response = $redis->ping();
     if (strpos($response, 'PONG') === FALSE) {
       throw new \Exception('Redis could be reached but is not responding correctly.');
