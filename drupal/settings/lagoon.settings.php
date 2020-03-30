@@ -110,8 +110,17 @@ if (getenv('ENABLE_REDIS')) {
 }
 
 // ClamAV settings.
-$config['clamav.settings']['scan_mode'] = 1;
-$config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/clamscan';
+$clam_mode = getenv('CLAMAV_MODE') ?: 1;
+
+if ($clam_mode == 0 || strtolower($clam_mode) == 'daemon') {
+  $config['clamav.settings']['scan_mode'] = 0;
+  $config['clamav.settings']['mode_daemon_tcpip']['hostname'] = getenv('CLAMAV_HOST') ?: 'localhost';
+  $config['clamav.settings']['mode_daemon_tcpip']['port'] = getenv('CLAMAV_PORT') ?: 3310;
+}
+else {
+  $config['clamav.settings']['scan_mode'] = 1;
+  $config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/clamscan';
+}
 
 // Hash Salt.
 $settings['hash_salt'] = hash('sha256', getenv('LAGOON_PROJECT'));
