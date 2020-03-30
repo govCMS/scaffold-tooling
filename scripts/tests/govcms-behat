@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-IFS=$'\n\t'
-set -euo pipefail
-# Behat testing.
-
-APP_DIR=${APP_DIR:-/app}
-BEHAT_PROFILE=${BEHAT_PROFILE:-}
-
-${APP_DIR}/vendor/bin/behat --config ${APP_DIR}/tests/behat/behat.yml --strict --colors $BEHAT_PROFILE "$@"

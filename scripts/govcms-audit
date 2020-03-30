@@ -2,8 +2,8 @@
 IFS=$'\n\t'
 set -euo pipefail
 
-APP_DIR=${APP_DIR:-/app}
-CUR_DIR=$(pwd)
+APP_DIR="${APP_DIR:-/app}"
+CUR_DIR="$(pwd)"
 
 # @todo. Review.
 # This seems a bit weird. We need audit-site to copy into the project so it can
@@ -20,4 +20,4 @@ fi
 cd "$APP_DIR/audit-site"
 ./vendor/bin/drutiny profile:run d8-full --exit-on-severity=high @self
 
-cd $CUR_DIR
+cd "$CUR_DIR"

@@ -87,11 +87,15 @@ variables:
 # Job definitions.
 #
 
+# NOTICE: By default, this job must always run because it's a platform
+# compliance check. It should be "allow_failure: false" and
+# it should not use "extends:". PaaS users can override (docs link).
 vet:
   <<: *static_template
   stage: static
   script:
     - composer validate
+    - ./vendor/bin/govcms-vet
   when: on_success
   allow_failure: false
 

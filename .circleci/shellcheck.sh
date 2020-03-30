@@ -7,9 +7,10 @@ while IFS=  read -r -d $'\0'; do
     targets+=("$REPLY")
 done < <(
   find \
-    gitlab/*.sh \
     scripts \
+    .circleci/phpcs.sh \
     .circleci/shellcheck.sh \
+    ! -name "README.*" \
     -type f \
     -print0
   )
