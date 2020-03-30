@@ -127,6 +127,7 @@ if (getenv('ENABLE_REDIS')) {
     ];
   }
   catch (\Exception $e) {
+    // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
     $settings['container_yamls'][] = "$govcms_includes/redis-unavailable.services.yml";
     $settings['cache']['default'] = 'cache.backend.null';
   }
