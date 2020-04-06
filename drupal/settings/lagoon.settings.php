@@ -71,7 +71,7 @@ if (getenv('ENABLE_REDIS')) {
     $settings['redis.connection']['interface'] = 'PhpRedis';
     $settings['redis.connection']['host'] = $redis_host;
     $settings['redis.connection']['port'] = $redis_port;
-    $settings['cache_prefix']['default'] = getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
+    $settings['cache_prefix']['default'] = getenv('REDIS_CACHE_PREFIX') ?: getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
 
     $settings['cache']['default'] = 'cache.backend.redis';
 
