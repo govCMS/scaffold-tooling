@@ -11,7 +11,7 @@ LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 
 echo "GovCMS Deploy :: Cache rebuild"
 
-if [ -n "$GOVCMS_SKIP_CACHE_REBUILD" ]; then
+if [ -z "${GOVCMS_SKIP_CACHE_REBUILD-}" ]; then
   echo "[skip]: Cache rebuild disabled."
   exit 0
 fi
