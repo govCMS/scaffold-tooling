@@ -15,10 +15,6 @@
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $settings['container_yamls'][] = $govcms_settings . '/lagoon.services.yml';
 
-// Configuration path settings.
-$config_directories[CONFIG_SYNC_DIRECTORY] = '/app/config/default';
-$config_directories['dev'] = '/app/config/dev';
-
 $databases['default']['default'] = [
   'driver' => 'mysql',
   'database' => getenv('MARIADB_DATABASE') ?: 'drupal',
