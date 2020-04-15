@@ -2,9 +2,27 @@ version: 2
 jobs:
   build:
     docker:
-      - image: integratedexperts/ci-builder
+      - image: quay.io/govcms/govcms-ci
     steps:
       - checkout
       - run: composer validate --strict --no-check-all
       - run: .circleci/shellcheck.sh
       - run: .circleci/phpcs.sh
+      - run: .circleci/bats.sh
+
+      # A simple integration test using composer. Inject a value into all.settings.php and then test for it.
+      - run: echo 'print "'"${CIRCLE_SHA1}"'";' >> ./drupal/settings/all.settings.php
+      - run:
+          name: Setup codebase for composer/drush test
+          command: |
+            git checkout -b latest-package-"${CIRCLE_SHA1}"
+            git clone https://github.com/govCMS/govCMS8-scaffold-paas /app
+            composer --working-dir=/app config repositories.test path "/home/project"
+            composer --working-dir=/app update
+            composer --working-dir=/app require govcms/scaffold-tooling:dev-latest-package-"${CIRCLE_SHA1}" --ignore-platform-reqs
+      - run:
+          name: Test that all.settings.php is loaded on Drupal bootstrap
+          working_directory: /app
+          command: |
+            drush -l default core:status
+            [[ "${CIRCLE_SHA1}" == "$(drush -l default php:eval ' ')" ]]

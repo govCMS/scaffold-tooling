@@ -11,9 +11,9 @@
 /**
  * Include lagoon services file.
  */
-// phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-global $govcms_includes;
-$settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
+// Corresponding services.yml.
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+$settings['container_yamls'][] = $govcms_settings . '/lagoon.services.yml';
 
 $databases['default']['default'] = [
   'driver' => 'mysql',
@@ -45,14 +45,30 @@ $settings['varnish_version'] = 4;
 
 // Redis configuration.
 if (getenv('ENABLE_REDIS')) {
-  $settings['redis.connection']['interface'] = 'PhpRedis';
-  $settings['redis.connection']['host'] = getenv('REDIS_HOST') ?: 'redis';
-  $settings['redis.connection']['port'] = 6379;
+  $redis = new \Redis();
+  $redis_host = getenv('REDIS_HOST') ?: 'redis';
+  $redis_port = getenv('REDIS_PORT') ?: 6379;
+  // Redis should return in < 1s so this is a maximum time
+  // to ensure we don't hold the proc forever.
+  $redis_timeout = getenv('REDIS_CONNECT_TIMEOUT') ?: 2;
 
-  $settings['cache_prefix']['default'] = getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
+  try {
+    if (drupal_installation_attempted()) {
+      // Do not set the cache during installations of Drupal.
+      throw new \Exception('Drupal installation underway.');
+    }
 
-  // Do not set the cache during installations of Drupal.
-  if (!drupal_installation_attempted()) {
+    $redis->connect($redis_host, $redis_port, $redis_timeout);
+    $response = $redis->ping();
+    if (strpos($response, 'PONG') === FALSE) {
+      throw new \Exception('Redis could be reached but is not responding correctly.');
+    }
+
+    $settings['redis.connection']['interface'] = 'PhpRedis';
+    $settings['redis.connection']['host'] = $redis_host;
+    $settings['redis.connection']['port'] = $redis_port;
+    $settings['cache_prefix']['default'] = getenv('LAGOON_PROJECT') . '_' . getenv('LAGOON_GIT_SAFE_BRANCH');
+
     $settings['cache']['default'] = 'cache.backend.redis';
 
     // Include the default example.services.yml from the module, which will
@@ -67,6 +83,7 @@ if (getenv('ENABLE_REDIS')) {
     // Manually add the classloader path, this is required for the container
     // cache bin definition below and allows to use it without the redis module
     // being enabled.
+    // @see https://github.com/govCMS/scaffold-tooling/issues/30
     // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
     global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
@@ -105,54 +122,25 @@ if (getenv('ENABLE_REDIS')) {
       ],
     ];
   }
+  catch (\Exception $e) {
+    // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+    $settings['container_yamls'][] = "$govcms_includes/redis-unavailable.services.yml";
+    $settings['cache']['default'] = 'cache.backend.null';
+  }
 }
 
 // ClamAV settings.
-$config['clamav.settings']['scan_mode'] = 1;
-$config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/clamscan';
+$clam_mode = getenv('CLAMAV_MODE') ?: 1;
+
+if ($clam_mode == 0 || strtolower($clam_mode) == 'daemon') {
+  $config['clamav.settings']['scan_mode'] = 0;
+  $config['clamav.settings']['mode_daemon_tcpip']['hostname'] = getenv('CLAMAV_HOST') ?: 'localhost';
+  $config['clamav.settings']['mode_daemon_tcpip']['port'] = getenv('CLAMAV_PORT') ?: 3310;
+}
+else {
+  $config['clamav.settings']['scan_mode'] = 1;
+  $config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/clamscan';
+}
 
 // Hash Salt.
 $settings['hash_salt'] = hash('sha256', getenv('LAGOON_PROJECT'));
-
-// Environment specific settings files.
-if (getenv('LAGOON_ENVIRONMENT_TYPE')) {
-  if (file_exists(__DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php')) {
-    include __DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php';
-  }
-}
-
-// Stage file proxy URL from production URL.
-if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
-
-  if (getenv('LAGOON_PROJECT')) {
-    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
-    $config['stage_file_proxy.settings']['origin'] = $origin;
-  }
-
-  if (getenv('STAGE_FILE_PROXY_URL')) {
-    $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
-  }
-
-}
-
-// Stage file proxy URL from production URL.
-if (getenv('LAGOON_ENVIRONMENT_TYPE') != 'production') {
-
-  if (getenv('LAGOON_PROJECT')) {
-    $origin = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
-    $config['stage_file_proxy.settings']['origin'] = $origin;
-  }
-
-  if (getenv('STAGE_FILE_PROXY_URL')) {
-    $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
-  }
-
-  if (getenv('DEV_MODE')) {
-    if (!drupal_installation_attempted()) {
-      if (file_exists(__DIR__ . '/development.settings.php')) {
-        include __DIR__ . '/development.settings.php';
-      }
-    }
-  }
-
-}
