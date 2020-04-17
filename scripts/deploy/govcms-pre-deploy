@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-IFS=$'\n'
+IFS=$'\n\t'
 set -euo pipefail
 
 #
-# Pre-deploy commands
+# Pre-deploy commands.
 #
-# Allows projects to define some commands
+# Allows projects to define some commands.
 #
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
@@ -13,14 +13,13 @@ GOVCMS_DEPLOY_PRE_COMMANDS=${GOVCMS_DEPLOY_PRE_COMMANDS:-false}
 
 echo "GovCMS Deploy :: Pre-deploy commands"
 
-
 if [ ! $# -eq 0 ]; then
   GOVCMS_DEPLOY_PRE_COMMANDS=$1;
 fi
 
 if [ "$GOVCMS_DEPLOY_PRE_COMMANDS" = false ]; then
   # A pre-deploy update is not required so return early.
-  echo "[skip]: There are not pre-deploy commands to be run."
+  echo "[skip]: There are no pre-deploy commands to be run."
   exit 0;
 fi
 

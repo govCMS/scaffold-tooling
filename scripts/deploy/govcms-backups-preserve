@@ -17,7 +17,6 @@ echo "GovCMS Deploy :: Preserve backups"
 
 if [ -f "$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz" ]; then
   echo "[info]: Moved $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz to $GOVCMS_BACKUP_DIR/pre-deploy-dump-last-good.sql.gz"
-
   mv "$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz" "$GOVCMS_BACKUP_DIR/pre-deploy-dump-last-good.sql.gz"
 else
   echo "[info]: $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz was not found."
