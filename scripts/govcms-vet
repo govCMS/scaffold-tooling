@@ -13,9 +13,11 @@ SCAFFOLD="${WORKSPACE}/scaffold"
 CLIENTCODE="${WORKSPACE}/clientcode"
 SOURCE="$PWD"
 
-# Flavour (saas/paas) can be passed in to test a codebase.
-FLAVOUR=$(grep  "^type: " .version.yml | awk -F ": " '{print $2}')
+# Flavour (saas/paas) and version can be passed in to test a codebase.
+FLAVOUR=$(yq read .version.yml type)
 FLAVOUR=${1:-"$FLAVOUR"}
+VERSION=$(yq read .version.yml scaffold)
+VERSION=${2:-"$VERSION"}
 
 if [[ "$FLAVOUR" = "paas" ]] ; then
     # By default PaaS users will see green in their CI, but can inspect the job to see all warnings.
@@ -32,7 +34,7 @@ fi
 # Prepare files for comparison.
 rm -Rf "$WORKSPACE"
 mkdir -p "$CLIENTCODE"
-git clone --depth=1 --quiet "$SCAFFOLD_REPO" "$SCAFFOLD"
+git clone --depth=1 --quiet --branch="$VERSION" "$SCAFFOLD_REPO" "$SCAFFOLD"
 git --work-tree="$CLIENTCODE" checkout HEAD -- .
 
 exit_code=0
