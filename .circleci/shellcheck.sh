@@ -8,6 +8,8 @@ while IFS=  read -r -d $'\0'; do
 done < <(
   find \
     scripts \
+    tests/bats \
+    .circleci/bats.sh \
     .circleci/phpcs.sh \
     .circleci/shellcheck.sh \
     ! -name "README.*" \
