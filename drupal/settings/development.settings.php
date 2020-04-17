@@ -8,7 +8,10 @@
 /**
  * Include development services yml.
  */
-$settings['container_yamls'][] = $govcms_includes . '/development.services.yml';
+
+// Corresponding services.yml.
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+$settings['container_yamls'][] = $govcms_settings . '/development.services.yml';
 
 /**
  * Show all error messages, with backtrace information.
@@ -35,7 +38,15 @@ $config['system.performance']['css']['preprocess'] = FALSE;
 $config['system.performance']['js']['preprocess'] = FALSE;
 
 /**
- * Disable render caches, necessary for twig files to be reloaded on every page view.
+ * Disable render caches for twig files to be reloaded on every page view.
  */
 $settings['cache']['bins']['render'] = 'cache.backend.null';
 $settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
+
+// Stage file proxy.
+if (getenv('STAGE_FILE_PROXY_URL')) {
+  $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
+}
+elseif (getenv('LAGOON_PROJECT')) {
+  $config['stage_file_proxy.settings']['origin'] = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
+}

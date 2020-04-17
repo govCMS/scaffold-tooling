@@ -1,0 +1,10 @@
+name: Lagoon search
+description: Provides integration between your Drupal site and Lagoon solr.
+package: Lagoon
+version: 8.x-1.00
+
+type: module
+core: 8.x
+
+dependencies:
+  - search_api_solr:search_api_solr

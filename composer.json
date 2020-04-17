@@ -1,13 +1,12 @@
 {
     "name": "govcms/scaffold-tooling",
     "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
+    "license": "GPL-2.0-or-later",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
         "drupal/chosen_lib": "2.6.0",
         "drupal/clamav": "1.1.0",
-        "drupal/coder": "^8.3",
         "drupal/console": "^1.0.2",
-        "drupal/drupal-extension": "^3.4",
         "drupal/fast_404": "^1.0@alpha",
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"1.1.0",
@@ -20,12 +19,23 @@
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "bin": [
-        "scripts/tests/govcms-audit",
-        "scripts/tests/govcms-behat",
-        "scripts/tests/govcms-lint",
-        "scripts/tests/govcms-lint-distro",
-        "scripts/tests/govcms-phpunit",
-        "scripts/tests/govcms-vet",
-        "scripts/govcms-deploy"
+        "scripts/govcms-audit",
+        "scripts/govcms-behat",
+        "scripts/govcms-lint",
+        "scripts/govcms-lint-distro",
+        "scripts/govcms-phpunit",
+        "scripts/govcms-vet",
+        "scripts/govcms-deploy",
+        "scripts/deploy/govcms-backups-preserve",
+        "scripts/deploy/govcms-cache-rebuild",
+        "scripts/deploy/govcms-config-backup",
+        "scripts/deploy/govcms-config-import",
+        "scripts/deploy/govcms-db-backup",
+        "scripts/deploy/govcms-db-sync",
+        "scripts/deploy/govcms-db-update",
+        "scripts/deploy/govcms-enable_modules",
+        "scripts/deploy/govcms-pre-deploy",
+        "scripts/deploy/govcms-pre-deploy-db-update",
+        "scripts/deploy/govcms-update_site_alias"
     ]
 }

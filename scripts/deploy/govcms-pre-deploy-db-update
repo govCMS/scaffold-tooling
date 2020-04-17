@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# Pre-deploy database update.
+#
+# This will perform a "drush updb" on an environment when
+# the environment has the GOVCMS_DEPLOY_PRE_UPDB variable defined.
+#
+# In some use cases, database updates need to be performed early in
+# the deploy process, even before the site has been bootstrapped
+# (for example with drush status). This provides the deploy agent
+# the ability to perform updates early in the automated flow.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
+
+echo "GovCMS Deploy :: Pre-deploy database updates"
+
+if [ "$GOVCMS_DEPLOY_PRE_UPDB" = false ]; then
+  # A pre-deploy update is not required so return early.
+  echo "[skip]: Skipping pre-deployment db update."
+  exit 0;
+fi
+
+drush updatedb -y
+
+echo "[success]: Completed successfully."
