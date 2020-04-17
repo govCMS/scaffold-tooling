@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS prepare for deploy.
+#
+# This performs some perfunctory commands to ensure that the
+# sites are in a deployable state.
+#
+# @deprecated 1.0
+#
+# This is used in the legacy projects that have not been updated with the latest
+# scaffold.
+#
+
+echo "GovCMS Deploy :: Update site alias"
+
+if [ ! -f /app/drush/sites/govcms.site.yml ]; then
+  echo "[skip]: Site alias file does not exist."
+  exit 0;
+fi
+
+sed -i "s/%%PROJECT_NAME%%/\${LAGOON_PROJECT}/g" /app/drush/sites/govcms.site.yml
+
+echo "[success]: Completed successfully."

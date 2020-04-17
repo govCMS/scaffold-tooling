@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+IFS=$'\n\t'
 set -euo pipefail
 
 #
-# GovCMS enable required modules
+# GovCMS enable required modules.
 #
 # The GovCMS platform provides some modules to assist with running on
 # the platform, this will ensure they're enabled every deploy.
@@ -17,7 +18,6 @@ if [ "$GOVCMS_DEPLOY_ENABLE_MODULES" != "true" ]; then
   echo "[skip]: Enabling modules."
   exit 0
 fi
-
 
 MODULES=$(drush pm:list --status=enabled)
 NON_PROD_MODULES=("stage_file_proxy")

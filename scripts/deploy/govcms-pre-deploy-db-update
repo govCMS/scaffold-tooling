@@ -3,12 +3,12 @@ IFS=$'\n\t'
 set -euo pipefail
 
 #
-# Pre-deploy updb
+# Pre-deploy database update.
 #
-# This will perform an drush updb on an environment when
+# This will perform a "drush updb" on an environment when
 # the environment has the GOVCMS_DEPLOY_PRE_UPDB variable defined.
 #
-# In some use cases databaes updates need to be performed early in
+# In some use cases, database updates need to be performed early in
 # the deploy process, even before the site has been bootstrapped
 # (for example with drush status). This provides the deploy agent
 # the ability to perform updates early in the automated flow.

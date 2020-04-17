@@ -32,4 +32,5 @@ drush config:export sync -y --destination "$GOVCMS_BACKUP_DIR/config"
 tar -czf "$GOVCMS_BACKUP_DIR/$GOVCMS_CONFIG_BACKUP.tar.gz" -C "$GOVCMS_BACKUP_DIR/config" --remove-files
 
 echo "[info]: Saved to $GOVCMS_BACKUP_DIR/$GOVCMS_CONFIG_BACKUP.tar.gz"
+
 echo "[success]: Completed successfully."

@@ -3,7 +3,7 @@ IFS=$'\n\t'
 set -euo pipefail
 
 #
-# GovCMS update database
+# GovCMS update database.
 #
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
@@ -27,4 +27,5 @@ fi
 
 echo "[info]: Preparing database update."
 drush updatedb -y
+
 echo "[success]: Completed successfully."

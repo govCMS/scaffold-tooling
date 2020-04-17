@@ -3,7 +3,7 @@ IFS=$'\n\t'
 set -euo pipefail
 
 #
-# GovCMS configuration import
+# GovCMS configuration import.
 #
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}

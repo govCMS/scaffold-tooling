@@ -3,10 +3,9 @@ IFS=$'\n\t'
 set -euo pipefail
 
 #
-# GovCMS database sync
+# GovCMS database sync.
 #
-# This will pull a database from the production
-# environment.
+# This will pull a database from the production environment.
 #
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
@@ -26,8 +25,8 @@ echo "[info]: Alias path $GOVCMS_SITE_ALIAS_PATH"
 echo "[info]: Site alias $GOVCMS_SITE_ALIAS"
 
 if ! drush status --fields=bootstrap | grep -q "Successful"; then
-  # This will ensure that the databse is synchronised on the first deploy
-  # of an enviornment in lagoon.
+  # This will ensure that the database is synchronised on the first deploy
+  # of an environment in lagoon.
   echo "[info]: Site could not be bootstrapped... syncing."
   drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
   exit 0
@@ -45,7 +44,6 @@ echo "[info]: Environment type: $LAGOON_ENVIRONMENT_TYPE"
 echo "[info]: Preparing database sync"
 
 drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
+# @todo: Add sanitisation?
 
 echo "[success]: Completed successfully."
-exit 0
-# @TODO: sql-san?
