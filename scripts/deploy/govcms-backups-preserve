@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS backup preserve.
+#
+# If a backup has been taken during a previous deployment we
+# move that to a different location so that we have a potential
+# restore point if something goes wrong.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
+
+echo "GovCMS Deploy :: Preserve backups"
+
+if [ -f "$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz" ]; then
+  echo "[info]: Moved $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz to $GOVCMS_BACKUP_DIR/pre-deploy-dump-last-good.sql.gz"
+  mv "$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz" "$GOVCMS_BACKUP_DIR/pre-deploy-dump-last-good.sql.gz"
+else
+  echo "[info]: $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql.gz was not found."
+  exit 0
+fi
+
+echo "[success]: Completed successfully."

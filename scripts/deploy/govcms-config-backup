@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS config configuration.
+#
+# This will perform a configuration backup. It is intended to
+# be run as a pre-rollout task or early in the execution
+# flow.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
+GOVCMS_CONFIG_BACKUP=${GOVCMS_CONFIG_BACKUP:-pre-deploy-config}
+
+echo "GovCMS Deploy :: Backup configuration"
+
+if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
+  echo '[skip]: Configuration backup can only be done on production.'
+  exit 0
+fi
+
+if ! drush status --fields=bootstrap | grep -q "Successful"; then
+  echo '[skip]: Site is not available.'
+  exit 0
+fi
+
+echo "[info]: Preparing config backup"
+
+drush config:export sync -y --destination "$GOVCMS_BACKUP_DIR/config"
+tar -czf "$GOVCMS_BACKUP_DIR/$GOVCMS_CONFIG_BACKUP.tar.gz" -C "$GOVCMS_BACKUP_DIR/config" --remove-files
+
+echo "[info]: Saved to $GOVCMS_BACKUP_DIR/$GOVCMS_CONFIG_BACKUP.tar.gz"
+
+echo "[success]: Completed successfully."

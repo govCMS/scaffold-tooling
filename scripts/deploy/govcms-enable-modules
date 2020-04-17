@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS enable required modules.
+#
+# The GovCMS platform provides some modules to assist with running on
+# the platform, this will ensure they're enabled every deploy.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_DEPLOY_ENABLE_MODULES=${GOVCMS_DEPLOY_ENABLE_MODULES:-true}
+
+echo "GovCMS Deploy :: Enable modules"
+
+if [ "$GOVCMS_DEPLOY_ENABLE_MODULES" != "true" ]; then
+  echo "[skip]: Enabling modules."
+  exit 0
+fi
+
+MODULES=$(drush pm:list --status=enabled)
+NON_PROD_MODULES=("stage_file_proxy")
+PLATFORM_MODULES=(
+  "redis"
+  "fast404"
+  "clamav"
+  "robotstxt"
+  "lagoon_logs"
+  "environment_indicator"
+)
+
+MODULE_LIST=""
+
+if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
+  for MODULE in "${NON_PROD_MODULES[@]}"; do
+    if [[ $(echo "$MODULES" | grep -c "$MODULE") -eq 0 ]]; then
+      MODULE_LIST="$MODULE_LIST $MODULE"
+    fi
+  done
+fi
+
+# Enable Lagoon required modules in production.
+for MODULE in "${PLATFORM_MODULES[@]}"; do
+  if [[ $(echo "$MODULES" | grep -c "$MODULE") -eq 0 ]]; then
+    MODULE_LIST="$MODULE_LIST $MODULE"
+  fi
+done
+
+# If the modules are not enabled - then we must enable them.
+if [[ -n "$MODULE_LIST" ]]; then
+  MODULE_LIST=$(echo "$MODULE_LIST" | awk '{$1=$1};1')
+  # SC2086 expects quoted variables, we want to pass each in as a
+  # separate parameter so we disable this check.
+  # shellcheck disable=SC2086
+  drush pm:enable $MODULE_LIST -y
+  echo "[info]: Enabled $MODULE_LIST"
+fi
+
+echo "[success]: Completed successfully."

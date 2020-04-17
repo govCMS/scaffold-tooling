@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS database backups.
+#
+# This will perform a database backup. It is intended to
+# be run as a pre-rollout task or early in the execution
+# flow.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
+
+echo "GovCMS Deploy :: Backup database"
+
+# Backup processes only happen on production.
+if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
+  echo "[skip]: Non-production environment."
+  exit 0
+fi
+
+if ! drush status --fields=bootstrap | grep -q "Successful"; then
+  echo "[fail]: Drupal is not installed or operational."
+  exit 0 # Perhaps exit > 0 to fail the build?
+fi
+
+mkdir -p "$GOVCMS_BACKUP_DIR"
+drush sql:dump --gzip --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
+
+echo "[info]: Backup saved to $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql."
+
+echo "[success]: Completed successfully."
