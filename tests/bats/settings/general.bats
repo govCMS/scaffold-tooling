@@ -8,8 +8,8 @@ setup() {
 }
 
 settings() {
-  JSON=`./tests/drupal-settings-to-json.php`
-  echo $JSON
+  JSON=$(./tests/drupal-settings-to-json.php)
+  echo "$JSON"
 }
 
 @test "Shield settings allows CLI" {
@@ -45,8 +45,8 @@ settings() {
     DEV_MODE=true \
     settings | jq -rc '.config | "\(.["google_analytics.settings"])"'
   )
-  [ $(echo $DEV1 | jq -rc .account) == "UA-XXXXXXXX-YY" ]
-  [ $(echo $DEV2 | jq -rc .account) == "UA-XXXXXXXX-YY" ]
+  [ "$(echo "$DEV1" | jq -rc .account)" == "UA-XXXXXXXX-YY" ]
+  [ "$(echo "$DEV2" | jq -rc .account)" == "UA-XXXXXXXX-YY" ]
 }
 
 @test "GA settings for prod" {
@@ -63,7 +63,7 @@ settings() {
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq -rc '.config | "\(.["stage_file_proxy.settings"])"'
   )
-  [ $(echo $SFP | jq -rc .origin) == "false" ]
+  [ "$(echo "$SFP" | jq -rc .origin)" == "false" ]
 }
 
 @test "Stage file proxy settings for dev" {
@@ -79,8 +79,8 @@ settings() {
     settings | jq -rc '.config | "\(.["stage_file_proxy.settings"])"'
   )
 
-  [ $(echo $SFP_DEFAULT | jq -rc .origin) == "https://nginx-govcmsd8-master.govcms.amazee.io" ]
-  [ $(echo $SFP_OVERRIDE | jq -rc .origin) == "https://www.govcms.gov.au" ]
+  [ "$(echo "$SFP_DEFAULT" | jq -rc .origin)" == "https://nginx-govcmsd8-master.govcms.amazee.io" ]
+  [ "$(echo "$SFP_OVERRIDE" | jq -rc .origin)" == "https://www.govcms.gov.au" ]
 }
 
 @test "Solr settings" {
@@ -90,8 +90,8 @@ settings() {
     LAGOON=true \
     settings | jq -rc '.config | "\(.["search_api.server"])"'
   )
-  [ "$(echo $SOLR | jq -rc .backend_config.connector_config.host)" == "labradoodle" ]
-  [ "$(echo $SOLR | jq -rc .backend_config.connector_config.path)" == '/solr/endor' ]
+  [ "$(echo "$SOLR" | jq -rc .backend_config.connector_config.host)" == "labradoodle" ]
+  [ "$(echo "$SOLR" | jq -rc .backend_config.connector_config.path)" == '/solr/endor' ]
 }
 
 @test "Database settings are expected" {
@@ -104,12 +104,12 @@ settings() {
     settings | jq -rc '.databases.default.default'
   )
 
-  [ "$(echo $DB | jq -rc .driver)" == "mysql" ]
-  [ "$(echo $DB | jq -rc .database)" == "murdoch" ]
-  [ "$(echo $DB | jq -rc .username)" == "faceman" ]
-  [ "$(echo $DB | jq -rc .password)" == "baracus" ]
-  [ "$(echo $DB | jq -rc .host)" == "hannibal" ]
-  [ "$(echo $DB | jq -rc .port)" == "3306" ]
-  [ "$(echo $DB | jq -rc .charset)" == "utf8mb4" ]
-  [ "$(echo $DB | jq -rc .collation)" == "utf8mb4_general_ci" ]
+  [ "$(echo "$DB" | jq -rc .driver)" == "mysql" ]
+  [ "$(echo "$DB" | jq -rc .database)" == "murdoch" ]
+  [ "$(echo "$DB" | jq -rc .username)" == "faceman" ]
+  [ "$(echo "$DB" | jq -rc .password)" == "baracus" ]
+  [ "$(echo "$DB" | jq -rc .host)" == "hannibal" ]
+  [ "$(echo "$DB" | jq -rc .port)" == "3306" ]
+  [ "$(echo "$DB" | jq -rc .charset)" == "utf8mb4" ]
+  [ "$(echo "$DB" | jq -rc .collation)" == "utf8mb4_general_ci" ]
 }
