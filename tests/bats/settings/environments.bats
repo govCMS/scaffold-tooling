@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+load ../_helpers_govcms
+
 setup() {
   if [ ! -f "/tmp/bats/settings.php" ]; then
     mkdir -p /tmp/bats
