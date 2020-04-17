@@ -12,8 +12,8 @@ done < <(
     .circleci/bats.sh \
     .circleci/phpcs.sh \
     .circleci/shellcheck.sh \
-    ! -name "README.*" \
     -type f \
+    \( ! -name "README.*" -and ! -name "_bats-mock.bash" \) \
     -print0
   )
 
