@@ -1,10 +1,12 @@
 #!/usr/bin/env bats
 # shellcheck disable=SC2002
 
-HERE="$PWD"
-WORKSPACE=/tmp/bats/scaffold
+load _helpers_govcms
 
 setup() {
+  CUR_DIR="$PWD"
+  WORKSPACE="$BATS_TMPDIR/scaffold"
+
   if [ ! -d "$WORKSPACE/.git" ]; then
     rm -Rf "$WORKSPACE"
     git clone https://github.com/govCMS/govcms8-scaffold-paas "$WORKSPACE"
@@ -21,7 +23,7 @@ setup() {
 }
 
 vet() {
-  "$HERE"/scripts/govcms-vet
+  "$CUR_DIR"/scripts/govcms-vet
 }
 
 @test "User adds a custom repository [vet-001]" {
@@ -83,7 +85,7 @@ vet() {
 }
 
 @test "The user adds custom modules to the repo [vet-007]" {
-  cp -Rf "$HERE"/drupal/modules "$WORKSPACE"/web/custom-modules-anywhere
+  cp -Rf "$CUR_DIR"/drupal/modules "$WORKSPACE"/web/custom-modules-anywhere
   git add . && git commit -m"$(basename "$0")" --quiet
 
   RESULT=$(vet)
