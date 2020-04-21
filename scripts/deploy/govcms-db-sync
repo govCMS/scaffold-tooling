@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS database sync.
+#
+# This will pull a database from the production environment.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
+GOVCMS_SITE_ALIAS=${GOVCMS_SITE_ALIAS:-govcms.prod}
+GOVCMS_SITE_ALIAS_PATH=${GOVCMS_SITE_ALIAS_PATH:-/etc/drush/sites}
+
+echo "GovCMS Deploy :: Database synchronisation"
+
+if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
+  echo "[skip]: Production environment can't be synced."
+  exit 0
+fi
+
+echo "[info]: Check that the site can be bootstrapped."
+echo "[info]: Alias path $GOVCMS_SITE_ALIAS_PATH"
+echo "[info]: Site alias $GOVCMS_SITE_ALIAS"
+
+if ! drush status --fields=bootstrap | grep -q "Successful"; then
+  # This will ensure that the database is synchronised on the first deploy
+  # of an environment in lagoon.
+  echo "[info]: Site could not be bootstrapped... syncing."
+  drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
+  exit 0
+fi
+
+if [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
+  # Allow per environment overrides for the synchronisation flow, if the site
+  # has bootstrapped but the environment is not set to "import" for the workflow
+  # then we will not synchronise the database.
+  echo "[skip]: Site can be bootstrapped and the workflow is not set to import."
+  exit 0
+fi
+
+echo "[info]: Environment type: $LAGOON_ENVIRONMENT_TYPE"
+echo "[info]: Preparing database sync"
+
+drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
+# @todo: Add sanitisation?
+
+echo "[success]: Completed successfully."

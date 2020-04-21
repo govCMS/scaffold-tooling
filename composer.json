@@ -25,6 +25,17 @@
         "scripts/govcms-lint-distro",
         "scripts/govcms-phpunit",
         "scripts/govcms-vet",
-        "scripts/govcms-deploy"
+        "scripts/govcms-deploy",
+        "scripts/deploy/govcms-backups-preserve",
+        "scripts/deploy/govcms-cache-rebuild",
+        "scripts/deploy/govcms-config-backup",
+        "scripts/deploy/govcms-config-import",
+        "scripts/deploy/govcms-db-backup",
+        "scripts/deploy/govcms-db-sync",
+        "scripts/deploy/govcms-db-update",
+        "scripts/deploy/govcms-enable_modules",
+        "scripts/deploy/govcms-pre-deploy",
+        "scripts/deploy/govcms-pre-deploy-db-update",
+        "scripts/deploy/govcms-update_site_alias"
     ]
 }

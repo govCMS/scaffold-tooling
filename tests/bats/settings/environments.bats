@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+load ../_helpers_govcms
+
 setup() {
   if [ ! -f "/tmp/bats/settings.php" ]; then
     mkdir -p /tmp/bats
@@ -8,8 +10,8 @@ setup() {
 }
 
 settings() {
-  JSON=`./tests/drupal-settings-to-json.php`
-  echo $JSON
+  JSON=$(./tests/drupal-settings-to-json.php)
+  echo "$JSON"
 }
 
 @test "Correct includes in dev mode (not lagoon)" {
@@ -20,13 +22,14 @@ settings() {
     settings | jq .included_files
   )
 
-  [ $(echo $FILES | jq '. | has("all.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("lagoon.settings.php")') == "false" ]
-  [ $(echo $FILES | jq '. | has("production.settings.php")') == "false" ]
-  [ $(echo $FILES | jq '. | has("development.settings.php")') == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("all.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("lagoon.settings.php")')" == "false" ]
+  [ "$(echo "$FILES" | jq '. | has("production.settings.php")')" == "false" ]
+  [ "$(echo "$FILES" | jq '. | has("development.settings.php")')" == "true" ]
 }
 
 @test "Correct includes in dev mode (lagoon image)" {
+  # shellcheck disable=SC2034
   FILES=$(
     LAGOON=true \
     DEV_MODE=true \
@@ -34,10 +37,10 @@ settings() {
     settings | jq .included_files
   )
 
-  [ $(echo $FILES | jq '. | has("all.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("lagoon.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("production.settings.php")') == "false" ]
-  [ $(echo $FILES | jq '. | has("development.settings.php")') == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("all.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("lagoon.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("production.settings.php")')" == "false" ]
+  [ "$(echo "$FILES" | jq '. | has("development.settings.php")')" == "true" ]
 }
 
 @test "Correct includes in production mode (not lagoon)" {
@@ -46,10 +49,10 @@ settings() {
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq .included_files
   )
-  [ $(echo $FILES | jq '. | has("all.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("lagoon.settings.php")') == "false" ]
-  [ $(echo $FILES | jq '. | has("production.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("development.settings.php")') == "false" ]
+  [ "$(echo "$FILES" | jq '. | has("all.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("lagoon.settings.php")')" == "false" ]
+  [ "$(echo "$FILES" | jq '. | has("production.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("development.settings.php")')" == "false" ]
 }
 
 @test "Correct includes in production mode (lagoon image)" {
@@ -58,10 +61,10 @@ settings() {
     LAGOON=true \
     settings | jq .included_files
   )
-  [ $(echo $FILES | jq '. | has("all.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("lagoon.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("production.settings.php")') == "true" ]
-  [ $(echo $FILES | jq '. | has("development.settings.php")') == "false" ]
+  [ "$(echo "$FILES" | jq '. | has("all.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("lagoon.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("production.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("development.settings.php")')" == "false" ]
 }
 
 @test "Correct yamls dev mode" {

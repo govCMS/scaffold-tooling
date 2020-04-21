@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+load ../_helpers_govcms
+
 setup() {
   if [ ! -f "/tmp/bats/settings.php" ]; then
     mkdir -p /tmp/bats
@@ -8,8 +10,8 @@ setup() {
 }
 
 settings() {
-  JSON=`./tests/drupal-settings-to-json.php`
-  echo $JSON
+  JSON=$(./tests/drupal-settings-to-json.php)
+  echo "$JSON"
 }
 
 @test "Akamai friendly caching" {
@@ -17,8 +19,8 @@ settings() {
     LAGOON=true \
     settings | jq -rc .settings
   )
-  [ $(echo $SETTINGS | jq .page_cache_invoke_hooks) == "true" ]
-  [ $(echo $SETTINGS | jq .redirect_page_cache) == "true" ]
+  [ "$(echo "$SETTINGS" | jq .page_cache_invoke_hooks)" == "true" ]
+  [ "$(echo "$SETTINGS" | jq .redirect_page_cache)" == "true" ]
 }
 
 @test "Varnish settings" {
@@ -30,9 +32,9 @@ settings() {
     settings | jq -rc .settings
   )
 
-  [ "$(echo $SETTINGS | jq -rc .varnish_control_terminal)" == 'chip:4041 dale:4041' ]
-  [ "$(echo $SETTINGS | jq -rc .varnish_control_key)" == "shhhh" ]
-  [ "$(echo $SETTINGS | jq -rc .varnish_version)" == 4 ]
-  [ "$(echo $SETTINGS | jq -rc .reverse_proxy_addresses)" == '["chip","dale","varnish"]' ]
-  [ "$(echo $SETTINGS | jq -rc .reverse_proxy)" == "true" ]
+  [ "$(echo "$SETTINGS" | jq -rc .varnish_control_terminal)" == 'chip:4041 dale:4041' ]
+  [ "$(echo "$SETTINGS" | jq -rc .varnish_control_key)" == "shhhh" ]
+  [ "$(echo "$SETTINGS" | jq -rc .varnish_version)" == 4 ]
+  [ "$(echo "$SETTINGS" | jq -rc .reverse_proxy_addresses)" == '["chip","dale","varnish"]' ]
+  [ "$(echo "$SETTINGS" | jq -rc .reverse_proxy)" == "true" ]
 }

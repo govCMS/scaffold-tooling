@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS cache rebuild.
+#
+# Allow a cache-rebuild to be toggled at deploy time.
+#
+
+LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+
+GOVCMS_SKIP_CACHE_REBUILD=${GOVCMS_SKIP_CACHE_REBUILD:-}
+
+echo "GovCMS Deploy :: Cache rebuild"
+
+if [ -n "${GOVCMS_SKIP_CACHE_REBUILD}" ]; then
+  echo "[skip]: Cache rebuild disabled."
+  exit 0
+fi
+
+drush -y cache:rebuild
+
+echo "[success]: Completed successfully."
