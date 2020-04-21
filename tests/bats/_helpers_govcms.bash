@@ -4,7 +4,7 @@
 #
 # Include this file into every test file to access utilities and assertions.
 #
-# shellcheck disable=SC2119,SC2120
+# shellcheck disable=SC2119,SC2120,SC2034,SC2155
 
 load "${BASH_SOURCE[0]%/*}"/_helpers.bash
 load "${BASH_SOURCE[0]%/*}"/_bats-mock.bash
@@ -14,7 +14,18 @@ load "${BASH_SOURCE[0]%/*}"/_bats-mock.bash
 # implement setup() and call the same methods as in the code below (there is
 # no inheritance in Bash, so we cannot just extend parent setup()).
 setup() {
+  CUR_DIR="$PWD"
+
+  export TEST_APP_DIR=$(prepare_app_dir)
   setup_mock
+}
+
+# Prepare application directory to be used in tests.
+prepare_app_dir(){
+  APP_DIR="$BATS_TEST_TMPDIR/app"
+  rm -Rf "$APP_DIR" >/dev/null
+  mkdir -p "$APP_DIR"
+  echo "$APP_DIR"
 }
 
 # Setup mock support.
@@ -53,4 +64,14 @@ mock_command(){
   mock_file="${mock##*/}"
   ln -sf "${mock_path}/${mock_file}" "${mock_path}/${mocked_command}"
   echo "$mock"
+}
+
+fixture_config(){
+  local dir="${1?'App directory must be specified'}"
+  local count="${2?'Number of config files must be specified'}"
+
+  while [  "$count" -gt 0 ]; do
+    mktouch "$dir/config$count.yml"
+    count=$(( count - 1 ))
+  done
 }
