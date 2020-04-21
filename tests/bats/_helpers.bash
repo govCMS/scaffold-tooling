@@ -266,6 +266,11 @@ assert_output_not_contains(){
   assert_not_contains "${expected}" "${output}"
 }
 
+mktouch(){
+  local file="${1}"
+  mkdir -p "$(dirname "${file}")" && touch "${file}"
+}
+
 # Format error message with optional output, if present.
 format_error(){
   local message="${1}"
@@ -291,4 +296,8 @@ format_error(){
 # Run bats with `--tap` option to debug the output.
 debug(){
   echo "${1}" >&3
+}
+
+debug_output(){
+  debug "${output}"
 }
