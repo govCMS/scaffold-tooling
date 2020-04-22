@@ -8,7 +8,7 @@
 /**
  * Ensures that the solr configuration is up-to-date.
  *
- * The latest version of solr changes the path and core, we need to ensure that
+ * The Solr 7.5 version requires changes to path and core, we need to ensure that
  * all sites that are using Lagoon Search will have this updated. The install
  * configuration reflects the correct configuration.
  *
