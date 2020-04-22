@@ -103,6 +103,11 @@ $settings['redirect_page_cache'] = TRUE;
 // Ensure that administrators do not block drush access through the UI.
 $config['shield.settings']['allow_cli'] = TRUE;
 
+// Enforce correct solr server configuration (GOVCMS-4634).
+// Fix for 8.5.0 and the solr upgrade.
+$config['search_api.server.lagoon_solr']['backend_config']['connector_config']['path'] = '/';
+$config['search_api.server.lagoon_solr']['backend_config']['connector_config']['core'] = 'drupal';
+
 // Configure seckit to emit the HSTS headers when a user is likely visiting
 // govCMS using a domain with valid SSL.
 //
