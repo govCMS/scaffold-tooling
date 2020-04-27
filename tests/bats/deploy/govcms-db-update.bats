@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2002,SC2031,SC2030
 
 load ../_helpers_govcms
 
@@ -9,8 +10,9 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Deploy :: Update Database"
   assert_output_contains "[info]: Preparing database update."
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+
   assert_output_contains "[success]: Completed successfully."
+  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
 }
 
 @test "Update database: skip" {
@@ -22,8 +24,9 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Deploy :: Update Database"
   assert_output_contains "[skip]: Environment variable is set to skip."
   assert_output_not_contains "[info]: Preparing database update."
-  assert_equal 0 "$(mock_get_call_num "${mock_drush}")"
+
   assert_output_not_contains "[success]: Completed successfully."
+  assert_equal 0 "$(mock_get_call_num "${mock_drush}")"
 }
 
 @test "Update database: pre-deploy tasks" {
@@ -35,6 +38,7 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Deploy :: Update Database"
   assert_output_contains "[skip]: Pre-deploy updates were applied."
   assert_output_not_contains "[info]: Preparing database update."
-  assert_equal 0 "$(mock_get_call_num "${mock_drush}")"
+
   assert_output_not_contains "[success]: Completed successfully."
+  assert_equal 0 "$(mock_get_call_num "${mock_drush}")"
 }
