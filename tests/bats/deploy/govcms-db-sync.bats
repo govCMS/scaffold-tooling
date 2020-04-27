@@ -95,7 +95,7 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Site could not be bootstrapped... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/etc/drush/sites sql-sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/etc/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
@@ -123,7 +123,7 @@ load ../_helpers_govcms
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/etc/drush/othersites sql-sync @govcms.override @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/etc/drush/othersites sql:sync @govcms.override @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
@@ -151,7 +151,7 @@ load ../_helpers_govcms
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/etc/drush/sites sql-sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/etc/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
