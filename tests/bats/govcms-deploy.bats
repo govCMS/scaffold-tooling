@@ -13,10 +13,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -60,10 +62,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Failed" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -98,6 +102,61 @@ load _helpers_govcms
   assert_output_contains "Finished running govcms-deploy."
 }
 
+@test "Defaults, no config, DB replica available" {
+  APP="$TEST_APP_DIR"
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "table1\ntable2" 2
+  mock_set_output "${mock_drush}" "Successful" 3
+  mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 4
+
+  # Override values set in the current environment.
+  export LAGOON_ENVIRONMENT_TYPE=
+  export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
+  export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS="dbreplicahost1 dbreplicahost2"
+
+  export APP
+
+  assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
+
+  run "$CUR_DIR"/scripts/govcms-deploy
+  assert_success
+
+  assert_output_contains "Running govcms-deploy"
+  assert_output_contains "Environment type: production"
+  assert_output_contains "Config strategy:  import"
+  assert_output_contains "Content strategy: retain"
+  assert_output_contains "There are 0 config yaml files, and 0 dev yaml files."
+
+  assert_dir_exists "$APP/web/sites/default/files/private/tmp"
+
+  # Bootstrap.
+  assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
+
+  # Check DB replica.
+  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+
+  # Bootstrap 2.
+  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
+
+  # Database backup.
+  assert_output_contains "Making a database backup."
+  assert_dir_exists "$APP/web/sites/default/files/private/backups"
+  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
+
+  # Common deploy.
+  assert_output_not_contains "Performing content import."
+
+  assert_equal "updatedb -y" "$(mock_get_call_args "${mock_drush}" 5)"
+  assert_equal "cache:rebuild" "$(mock_get_call_args "${mock_drush}" 6)"
+
+  assert_output_not_contains "Performing config import."
+  assert_output_not_contains "Performing development config import on non-production site."
+  assert_output_not_contains "Enable stage_file_proxy in non-prod environments."
+
+  assert_output_contains "Finished running govcms-deploy."
+}
+
 ################################################################################
 #                               PRODUCTION                                     #
 ################################################################################
@@ -108,10 +167,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=production
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -155,10 +216,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=production
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -206,10 +269,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=production
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -253,10 +318,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=production
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -303,10 +370,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=production
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -354,10 +423,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Failed" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=production
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -392,6 +463,62 @@ load _helpers_govcms
   assert_output_contains "Finished running govcms-deploy."
 }
 
+@test "Production, no config, DB replica available" {
+  APP="$TEST_APP_DIR"
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "table1\ntable2" 2
+  mock_set_output "${mock_drush}" "Successful" 3
+  mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 4
+
+  # Override values set in the current environment.
+  export LAGOON_ENVIRONMENT_TYPE=production
+  export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
+  export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS="dbreplicahost1 dbreplicahost2"
+
+  export APP
+
+  assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
+
+  run "$CUR_DIR"/scripts/govcms-deploy
+  assert_success
+
+  assert_output_contains "Running govcms-deploy"
+  assert_output_contains "Environment type: production"
+  assert_output_contains "Config strategy:  import"
+  assert_output_contains "Content strategy: retain"
+  assert_output_contains "There are 0 config yaml files, and 0 dev yaml files."
+
+  assert_dir_exists "$APP/web/sites/default/files/private/tmp"
+
+  # Bootstrap.
+  assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
+
+  # Check DB replica.
+  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+
+  # Bootstrap 2.
+  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
+
+  # Database backup.
+  assert_output_contains "Making a database backup."
+  assert_dir_exists "$APP/web/sites/default/files/private/backups"
+  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
+
+  # Common deploy.
+  assert_output_not_contains "Performing content import."
+
+  assert_equal "updatedb -y" "$(mock_get_call_args "${mock_drush}" 5)"
+  assert_equal "cache:rebuild" "$(mock_get_call_args "${mock_drush}" 6)"
+
+  assert_output_not_contains "Performing config import."
+  assert_output_not_contains "Performing development config import on non-production site."
+  assert_output_not_contains "Enable stage_file_proxy in non-prod environments."
+
+  assert_output_contains "Finished running govcms-deploy."
+}
+
+
 ################################################################################
 #                               DEVELOPMENT                                    #
 ################################################################################
@@ -401,10 +528,12 @@ load _helpers_govcms
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "Successful" 2
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -448,10 +577,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -500,10 +631,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -547,10 +680,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -597,10 +732,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -650,10 +787,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Failed" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -694,6 +833,60 @@ load _helpers_govcms
   assert_output_contains "Finished running govcms-deploy."
 }
 
+@test "Development, no config, DB replica available" {
+  APP="$TEST_APP_DIR"
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "table1\ntable2" 2
+  mock_set_output "${mock_drush}" "Successful" 3
+
+  # Override values set in the current environment.
+  export LAGOON_ENVIRONMENT_TYPE=development
+  export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
+  export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS="dbreplicahost1 dbreplicahost2"
+
+  export APP
+
+  assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
+
+  run "$CUR_DIR"/scripts/govcms-deploy
+  assert_success
+
+  assert_output_contains "Running govcms-deploy"
+  assert_output_contains "Environment type: development"
+  assert_output_contains "Config strategy:  import"
+  assert_output_contains "Content strategy: retain"
+  assert_output_contains "There are 0 config yaml files, and 0 dev yaml files."
+
+  assert_dir_exists "$APP/web/sites/default/files/private/tmp"
+
+  # Bootstrap.
+  assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
+
+  # Check DB replica.
+  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+
+  # Bootstrap 2.
+  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
+
+  # Database backup.
+  assert_output_not_contains "Making a database backup."
+
+  # Common deploy.
+  assert_output_not_contains "Performing content import."
+
+  assert_equal "updatedb -y" "$(mock_get_call_args "${mock_drush}" 4)"
+  assert_equal "cache:rebuild" "$(mock_get_call_args "${mock_drush}" 5)"
+
+  assert_output_not_contains "Performing config import."
+  assert_output_not_contains "Performing development config import on non-production site."
+
+  assert_output_contains "Enable stage_file_proxy in non-prod environments."
+  assert_equal "pm:enable stage_file_proxy -y" "$(mock_get_call_args "${mock_drush}" 6)"
+
+  assert_output_contains "Finished running govcms-deploy."
+}
+
 ################################################################################
 #                                  LOCAL                                       #
 ################################################################################
@@ -703,10 +896,12 @@ load _helpers_govcms
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "Successful" 2
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=local
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -750,10 +945,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=local
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -802,10 +999,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=local
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
@@ -849,10 +1048,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=local
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -899,10 +1100,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=local
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   fixture_config "$APP/config/default" 3
@@ -951,10 +1154,12 @@ load _helpers_govcms
   mock_set_output "${mock_drush}" "Failed" 2
   mock_set_side_effect "${mock_drush}" "mkdir -p $APP/web/sites/default/files/private/backups && touch $APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" 3
 
-  # Remove any values set in the current environment.
+  # Override values set in the current environment.
   export LAGOON_ENVIRONMENT_TYPE=local
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export MARIADB_READREPLICA_HOSTS=
+
   export APP
 
   assert_dir_not_exists "$APP/web/sites/default/files/private/tmp"
