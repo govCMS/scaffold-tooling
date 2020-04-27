@@ -15,16 +15,42 @@
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $settings['container_yamls'][] = $govcms_settings . '/lagoon.services.yml';
 
-$databases['default']['default'] = [
+$db_conf = [
   'driver' => 'mysql',
   'database' => getenv('MARIADB_DATABASE') ?: 'drupal',
   'username' => getenv('MARIADB_USERNAME') ?: 'drupal',
   'password' => getenv('MARIADB_PASSWORD') ?: 'drupal',
-  'host' => getenv('MARIADB_HOST') ?: 'mariadb',
   'port' => 3306,
   'charset' => 'utf8mb4',
   'collation' => 'utf8mb4_general_ci',
 ];
+
+$databases['default']['default'] = array_merge($db_conf, [
+  'host' => getenv('MARIADB_HOST') ?: 'mariadb',
+]);
+
+if (getenv('MARIADB_READREPLICA_HOSTS')) {
+  $replica_hosts = explode(' ', getenv('MARIADB_READREPLICA_HOSTS'));
+  $replica_hosts = array_map('trim', $replica_hosts);
+
+  if (!empty($replica_hosts)) {
+    // Add a standalone connection to the read replica. This allows Drush to
+    // target the readers directly with --database=read.
+    $databases['read']['default'] = array_merge($db_conf, [
+      'host' => $replica_hosts[0],
+    ]);
+
+    foreach ($replica_hosts as $replica_host) {
+      // Add replica support to the default database connection. This allows
+      // services to use the database.replica service for particular operations.
+      // @TODO: Lagoon should expose MARAIDB replica hosts as an array so we can
+      // scale the replicas horizontally.
+      $databases['default']['replica'][] = array_merge($db_conf, [
+        'host' => $replica_host,
+      ]);
+    }
+  }
+}
 
 // Lagoon Solr connection.
 $config['search_api.server']['backend_config']['connector_config']['host'] = getenv('SOLR_HOST') ?: 'solr';
