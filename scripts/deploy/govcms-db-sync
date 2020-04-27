@@ -40,7 +40,7 @@ elif [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
 fi
 
 echo "[info]: Preparing database sync"
-drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
+drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql:sync @"$GOVCMS_SITE_ALIAS" @self -y
 # @todo: Add sanitisation?
 
 echo "[success]: Completed successfully."
