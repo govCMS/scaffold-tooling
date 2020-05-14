@@ -30,7 +30,7 @@ settings() {
 }
 
 @test "Tmp file path is correct" {
-  OUT=$(settings | jq -cr .settings.file_temporary_path)
+  OUT=$(settings | jq -cr .settings.file_temp_path)
   [ "$OUT" == "sites/default/files/private/tmp" ]
 }
 

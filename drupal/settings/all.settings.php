@@ -34,7 +34,7 @@ $settings['fast404_whitelist'] = ['robots.txt', 'system/files'];
 // Public, private and temporary files paths.
 $settings['file_public_path'] = 'sites/default/files';
 $settings['file_private_path'] = 'sites/default/files/private';
-$settings['file_temporary_path'] = 'sites/default/files/private/tmp';
+$settings['file_temp_path'] = 'sites/default/files/private/tmp';
 
 // Allow custom themes to provide custom 404 pages.
 // By placing a file called 404.html in the root of their theme repository.
