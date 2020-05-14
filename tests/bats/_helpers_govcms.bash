@@ -75,3 +75,31 @@ fixture_config(){
     count=$(( count - 1 ))
   done
 }
+
+prepare_fixture_dir(){
+  local dir="${1:-$(pwd)}"
+  rm -Rf "${dir}" > /dev/null
+  mkdir -p "${dir}"
+  assert_dir_exists "${dir}"
+}
+
+download_code_from_github(){
+  local user="${1?Required value}"
+  local repo="${2?Required value}"
+  curl --silent "https://api.github.com/repos/$user/$repo/releases/latest" |
+    grep '"tag_name":' |
+    sed -E 's/.*"([^"]+)".*/\1/' |
+    xargs -I {} curl -sL "https://github.com/$user/$repo/archive/"{}'.tar.gz' |
+    tar xvz -C "$(pwd)" --strip 1
+}
+
+# Copy source code at the latest commit to the destination directory.
+copy_code(){
+  local dst="${1:-${BUILD_DIR}}"
+  assert_dir_exists "${dst}"
+  pushd "${CUR_DIR}" > /dev/null || exit 1
+  # Copy latest commit to the build directory.
+  git archive --format=tar HEAD | (cd "${dst}" && tar -xf -)
+  cp -R .git "${dst}/"
+  popd > /dev/null || exit 1
+}
