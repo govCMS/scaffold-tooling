@@ -30,7 +30,7 @@ settings() {
 }
 
 @test "Tmp file path is correct" {
-  OUT=$(settings | jq -cr .settings.file_temporary_path)
+  OUT=$(settings | jq -cr .settings.file_temp_path)
   [ "$OUT" == "sites/default/files/private/tmp" ]
 }
 
@@ -99,19 +99,69 @@ settings() {
 @test "Database settings are expected" {
   DB=$(
     LAGOON=true \
-    MARIADB_DATABASE=murdoch \
-    MARIADB_USERNAME=faceman \
-    MARIADB_PASSWORD=baracus \
-    MARIADB_HOST=hannibal \
+    MARIADB_DATABASE=dbname1 \
+    MARIADB_USERNAME=dbusername1 \
+    MARIADB_PASSWORD=dbpassword1 \
+    MARIADB_HOST=dbreplicahost1 \
     settings | jq -rc '.databases.default.default'
   )
 
   [ "$(echo "$DB" | jq -rc .driver)" == "mysql" ]
-  [ "$(echo "$DB" | jq -rc .database)" == "murdoch" ]
-  [ "$(echo "$DB" | jq -rc .username)" == "faceman" ]
-  [ "$(echo "$DB" | jq -rc .password)" == "baracus" ]
-  [ "$(echo "$DB" | jq -rc .host)" == "hannibal" ]
+  [ "$(echo "$DB" | jq -rc .database)" == "dbname1" ]
+  [ "$(echo "$DB" | jq -rc .username)" == "dbusername1" ]
+  [ "$(echo "$DB" | jq -rc .password)" == "dbpassword1" ]
+  [ "$(echo "$DB" | jq -rc .host)" == "dbreplicahost1" ]
   [ "$(echo "$DB" | jq -rc .port)" == "3306" ]
   [ "$(echo "$DB" | jq -rc .charset)" == "utf8mb4" ]
   [ "$(echo "$DB" | jq -rc .collation)" == "utf8mb4_general_ci" ]
+}
+
+@test "Database settings with replica enabled" {
+  DB=$(
+    LAGOON=true \
+    MARIADB_DATABASE=dbname1 \
+    MARIADB_USERNAME=dbusername1 \
+    MARIADB_PASSWORD=dbpassword1 \
+    MARIADB_HOST=dbreplicahost1 \
+    MARIADB_READREPLICA_HOSTS="dbreplicahost1 dbreplicahost2" \
+    settings | jq -rc '.databases'
+  )
+
+  [ "$(echo "$DB" | jq -rc .default.default.driver)" == "mysql" ]
+  [ "$(echo "$DB" | jq -rc .default.default.database)" == "dbname1" ]
+  [ "$(echo "$DB" | jq -rc .default.default.username)" == "dbusername1" ]
+  [ "$(echo "$DB" | jq -rc .default.default.password)" == "dbpassword1" ]
+  [ "$(echo "$DB" | jq -rc .default.default.host)" == "dbreplicahost1" ]
+  [ "$(echo "$DB" | jq -rc .default.default.port)" == "3306" ]
+  [ "$(echo "$DB" | jq -rc .default.default.charset)" == "utf8mb4" ]
+  [ "$(echo "$DB" | jq -rc .default.default.collation)" == "utf8mb4_general_ci" ]
+
+  # Standalone connection to the read replica.
+  [ "$(echo "$DB" | jq -rc .read.default.driver)" == "mysql" ]
+  [ "$(echo "$DB" | jq -rc .read.default.database)" == "dbname1" ]
+  [ "$(echo "$DB" | jq -rc .read.default.username)" == "dbusername1" ]
+  [ "$(echo "$DB" | jq -rc .read.default.password)" == "dbpassword1" ]
+  [ "$(echo "$DB" | jq -rc .read.default.host)" == "dbreplicahost1" ]
+  [ "$(echo "$DB" | jq -rc .read.default.port)" == "3306" ]
+  [ "$(echo "$DB" | jq -rc .read.default.charset)" == "utf8mb4" ]
+  [ "$(echo "$DB" | jq -rc .read.default.collation)" == "utf8mb4_general_ci" ]
+
+  # Replica support to the default database connection (2 replica hosts).
+  [ "$(echo "$DB" | jq -rc .default.replica[0].driver)" == "mysql" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[0].database)" == "dbname1" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[0].username)" == "dbusername1" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[0].password)" == "dbpassword1" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[0].host)" == "dbreplicahost1" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[0].port)" == "3306" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[0].charset)" == "utf8mb4" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[0].collation)" == "utf8mb4_general_ci" ]
+
+  [ "$(echo "$DB" | jq -rc .default.replica[1].driver)" == "mysql" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[1].database)" == "dbname1" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[1].username)" == "dbusername1" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[1].password)" == "dbpassword1" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[1].host)" == "dbreplicahost2" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[1].port)" == "3306" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[1].charset)" == "utf8mb4" ]
+  [ "$(echo "$DB" | jq -rc .default.replica[1].collation)" == "utf8mb4_general_ci" ]
 }

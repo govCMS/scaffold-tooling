@@ -10,16 +10,17 @@ LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_WORKFLOW_CONFIG=${GOVCMS_DEPLOY_WORKFLOW_CONFIG:-import}
 # Determine the content strategy `import` vs `retain`.
 GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
-
-# Ensure tmp folder always exists.
-mkdir -p /app/web/sites/default/files/private/tmp/
+# Space-separated list of Db replica hosts.
+MARIADB_READREPLICA_HOSTS="${MARIADB_READREPLICA_HOSTS:-}"
+# The location of the application directory.
+APP="${APP:-/app}"
 
 # Check for presence of config files.
 set +e # Prevent script failure when assigning 0.
-# shellcheck disable=SC2012
-config_count=$(ls -1 /app/config/default/*.yml 2>/dev/null | wc -l)
-# shellcheck disable=SC2012
-dev_config_count=$(ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l)
+# shellcheck disable=SC2012,SC2086
+config_count=$(ls -1 $APP/config/default/*.yml 2>/dev/null | wc -l | tr -d ' ')
+# shellcheck disable=SC2012,SC2086
+dev_config_count=$(ls -1 $APP/config/dev/*.yml 2>/dev/null | wc -l | tr -d ' ')
 set -e
 
 echo "Running govcms-deploy"
@@ -27,13 +28,37 @@ echo "Environment type: $LAGOON_ENVIRONMENT_TYPE"
 echo "Config strategy:  $GOVCMS_DEPLOY_WORKFLOW_CONFIG"
 echo "Content strategy: $GOVCMS_DEPLOY_WORKFLOW_CONTENT"
 echo "There are ${config_count} config yaml files, and ${dev_config_count} dev yaml files."
+
+# Ensure tmp folder always exists.
+mkdir -p "$APP/web/sites/default/files/private/tmp"
+
 drush core:status
+
+# Database options to configure the remote to use the read replica when
+# performing read operations.
+sync_opts=""
+dump_opts=""
+read_replica_enabled () {
+  if [[ -z "$MARIADB_READREPLICA_HOSTS" ]]; then
+    return
+  fi
+
+  if tables=$(drush @ci.prod sqlq 'show tables;' --database=read 2> /dev/null) && [ -n "$tables" ]; then
+    echo "Replica is available, using for database operations."
+    sync_opts="--source-database=read"
+    # @todo: Enable below once Drush 9 has support for removed --database option.
+    # https://github.com/drush-ops/drush/issues/4274
+    # dump_opts="--database=read"
+  fi
+}
 
 # Database updates, cache rebuild, optional config imports.
 common_deploy () {
 
   if [[ "$LAGOON_ENVIRONMENT_TYPE" = "development" && "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" = "import" ]]; then
-    drush --alias-path=/etc/drush/sites sql-sync @ci.prod @self -y
+    echo "Performing content import."
+    # shellcheck disable=SC2086
+    drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self $sync_opts -y
   fi
 
   drush updatedb -y
@@ -56,11 +81,14 @@ common_deploy () {
 
 }
 
+read_replica_enabled
+
 if [[ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]]; then
 
   if drush status --fields=bootstrap | grep -q "Successful"; then
     echo "Making a database backup."
-    mkdir -p /app/web/sites/default/files/private/backups/ && drush sql-dump --gzip --result-file=/app/web/sites/default/files/private/backups/pre-deploy-dump.sql
+    # shellcheck disable=SC2086
+    mkdir -p "$APP/web/sites/default/files/private/backups/" && drush sql:dump $dump_opts --gzip --result-file="$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql"
     common_deploy
   else
     echo "Drupal is not installed or not operational."
@@ -76,7 +104,8 @@ else
     else
       # In a non-functioning development site, import the database from production before running import.
       # Note, this would destroy data in a dev site that was just broken temporarily. Review?
-      drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self -y
+      # shellcheck disable=SC2086
+      drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self $sync_opts -y
       common_deploy
     fi
   else
@@ -84,3 +113,5 @@ else
   fi
 
 fi
+
+echo "Finished running govcms-deploy."

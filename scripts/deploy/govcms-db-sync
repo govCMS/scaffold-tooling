@@ -12,6 +12,7 @@ LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
 GOVCMS_SITE_ALIAS=${GOVCMS_SITE_ALIAS:-govcms.prod}
 GOVCMS_SITE_ALIAS_PATH=${GOVCMS_SITE_ALIAS_PATH:-/etc/drush/sites}
+MARIADB_READREPLICA_HOSTS=${MARIADB_READREPLICA_HOSTS:-}
 
 echo "GovCMS Deploy :: Database synchronisation"
 
@@ -20,30 +21,37 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
   exit 0
 fi
 
+echo "[info]: Environment type: $LAGOON_ENVIRONMENT_TYPE"
+echo "[info]: Content strategy: $GOVCMS_DEPLOY_WORKFLOW_CONTENT"
+echo "[info]: Site alias:       $GOVCMS_SITE_ALIAS"
+echo "[info]: Alias path:       $GOVCMS_SITE_ALIAS_PATH"
+
 echo "[info]: Check that the site can be bootstrapped."
-echo "[info]: Alias path $GOVCMS_SITE_ALIAS_PATH"
-echo "[info]: Site alias $GOVCMS_SITE_ALIAS"
 
 if ! drush status --fields=bootstrap | grep -q "Successful"; then
   # This will ensure that the database is synchronised on the first deploy
-  # of an environment in lagoon.
+  # of an environment in Lagoon.
   echo "[info]: Site could not be bootstrapped... syncing."
-  drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
-  exit 0
-fi
-
-if [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
-  # Allow per environment overrides for the synchronisation flow, if the site
+elif [ "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" != "import" ]; then
+  # Allow per environment overrides for the synchronisation flow: if the site
   # has bootstrapped but the environment is not set to "import" for the workflow
   # then we will not synchronise the database.
-  echo "[skip]: Site can be bootstrapped and the workflow is not set to import."
+  echo "[skip]: Site can be bootstrapped and the content workflow is not set to \"import\"."
   exit 0
 fi
 
-echo "[info]: Environment type: $LAGOON_ENVIRONMENT_TYPE"
 echo "[info]: Preparing database sync"
 
-drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql-sync @"$GOVCMS_SITE_ALIAS" @self -y
+# Database options to configure the remote to use the read replica when
+# performing read operations.
+sync_opts=""
+if [ -n "$MARIADB_READREPLICA_HOSTS" ] && tables=$(drush @"$GOVCMS_SITE_ALIAS" sqlq 'show tables;' --database=read 2> /dev/null) && [ -n "$tables" ]; then
+  echo "[info]: Replica is available, using for database operations."
+  sync_opts="--source-database=read"
+fi
+
+# shellcheck disable=SC2086
+drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" $sync_opts sql:sync @"$GOVCMS_SITE_ALIAS" @self -y
 # @todo: Add sanitisation?
 
 echo "[success]: Completed successfully."
