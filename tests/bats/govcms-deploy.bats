@@ -134,7 +134,7 @@ load _helpers_govcms
   assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
 
   # Check DB replica.
-  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
 
   # Bootstrap 2.
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
@@ -142,7 +142,7 @@ load _helpers_govcms
   # Database backup.
   assert_output_contains "Making a database backup."
   assert_dir_exists "$APP/web/sites/default/files/private/backups"
-  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
+  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql --database=read" "$(mock_get_call_args "${mock_drush}" 4)"
 
   # Common deploy.
   assert_output_not_contains "Performing content import."
@@ -495,7 +495,7 @@ load _helpers_govcms
   assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
 
   # Check DB replica.
-  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
 
   # Bootstrap 2.
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
@@ -503,7 +503,7 @@ load _helpers_govcms
   # Database backup.
   assert_output_contains "Making a database backup."
   assert_dir_exists "$APP/web/sites/default/files/private/backups"
-  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
+  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql --database=read" "$(mock_get_call_args "${mock_drush}" 4)"
 
   # Common deploy.
   assert_output_not_contains "Performing content import."
@@ -864,7 +864,7 @@ load _helpers_govcms
   assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
 
   # Check DB replica.
-  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
 
   # Bootstrap 2.
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
