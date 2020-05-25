@@ -83,7 +83,7 @@ if [[ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]]; then
   if drush status --fields=bootstrap | grep -q "Successful"; then
     echo "Making a database backup."
     # shellcheck disable=SC2086
-    mkdir -p "$APP/web/sites/default/files/private/backups/" && drush sql:dump $dump_opts --gzip --result-file="$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" $dump_opts
+    mkdir -p "$APP/web/sites/default/files/private/backups/" && drush sql:dump $dump_opts --gzip --result-file="$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql"
     common_deploy
   else
     echo "Drupal is not installed or not operational."
