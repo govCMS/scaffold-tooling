@@ -11,7 +11,8 @@ set -euo pipefail
 #
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
-GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
+APP="${APP:-/app}"
+GOVCMS_BACKUP_DIR="${GOVCMS_BACKUP_DIR:-$APP/web/sites/default/files/private/backups}"
 
 echo "GovCMS Deploy :: Backup database"
 
@@ -26,8 +27,16 @@ if ! drush status --fields=bootstrap | grep -q "Successful"; then
   exit 0 # Perhaps exit > 0 to fail the build?
 fi
 
+# Database options to configure the backup to build from the configured
+# read replica.
+dump_opts=""
+if [ -n "$MARIADB_READREPLICA_HOSTS" ] && tables=$(drush sqlq 'show tables;' --database=read 2> /dev/null) && [ -n "$tables" ]; then
+  echo "[info]: Replica is available, using for database operations."
+  dump_opts="--database=read"
+fi
+
 mkdir -p "$GOVCMS_BACKUP_DIR"
-drush sql:dump --gzip --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
+drush sql:dump --gzip --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql" $dump_opts
 
 echo "[info]: Backup saved to $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql."
 
