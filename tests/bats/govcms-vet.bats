@@ -23,7 +23,8 @@ setup() {
 }
 
 vet() {
-  "$CUR_DIR"/scripts/govcms-vet paas develop
+  flavour=$(yq read .version.yml type)
+  "$CUR_DIR"/scripts/govcms-vet "$(flavour)" develop
 }
 
 @test "User adds a custom repository [vet-001]" {
