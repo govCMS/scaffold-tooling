@@ -42,16 +42,8 @@ fi
 
 echo "[info]: Preparing database sync"
 
-# Database options to configure the remote to use the read replica when
-# performing read operations.
-sync_opts=""
-if [ -n "$MARIADB_READREPLICA_HOSTS" ] && tables=$(drush @"$GOVCMS_SITE_ALIAS" sqlq 'show tables;' --database=read 2> /dev/null) && [ -n "$tables" ]; then
-  echo "[info]: Replica is available, using for database operations."
-  sync_opts="--source-database=read"
-fi
-
 # shellcheck disable=SC2086
-drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" $sync_opts sql:sync @"$GOVCMS_SITE_ALIAS" @self -y
+drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql:sync @"$GOVCMS_SITE_ALIAS" @self -y
 # @todo: Add sanitisation?
 
 echo "[success]: Completed successfully."
