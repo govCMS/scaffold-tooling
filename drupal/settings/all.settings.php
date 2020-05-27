@@ -9,6 +9,7 @@
  */
 
 // phpcs:disable Drupal.Classes.ClassFileName.NoMatch
+$govcms_settings = __DIR__;
 
 // Corresponding services.yml.
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
