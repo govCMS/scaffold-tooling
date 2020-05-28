@@ -8,12 +8,15 @@
  * the platform.).
  */
 
-/**
- * Include lagoon services file.
- */
-// Corresponding services.yml.
+// See comment in all.settings.php.
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$settings['container_yamls'][] = $govcms_settings . '/lagoon.services.yml';
+$govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
+
+/**
+ * Include the corresponding *.services.yml.
+ */
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+$settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
 
 $db_conf = [
   'driver' => 'mysql',
