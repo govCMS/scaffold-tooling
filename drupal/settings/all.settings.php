@@ -9,11 +9,17 @@
  */
 
 // phpcs:disable Drupal.Classes.ClassFileName.NoMatch
-$govcms_settings = __DIR__;
 
-// Corresponding services.yml.
+// This variable may be set from settings.php. Fallback to current directory.
+// @see https://github.com/govCMS/govcms8-scaffold-paas/blob/57cddd8/web/sites/default/settings.php#L48
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$settings['container_yamls'][] = $govcms_settings . '/all.services.yml';
+$govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
+
+/**
+ * Include the corresponding *.services.yml.
+ */
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+$settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
 
 // Drupal 8 config.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '../config/default';
