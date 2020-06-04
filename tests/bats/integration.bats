@@ -36,6 +36,7 @@ load _helpers_govcms
   composer config repositories.test path "${REPO_DIR}"
 
   # Update composer.lock to pick up the changes to repositories.
+  export COMPOSER_MEMORY_LIMIT=-1
   composer update --ignore-platform-reqs --lock
 
   # Add the repo at the checked out version.
