@@ -765,7 +765,7 @@ load _helpers_govcms
 
   # Common deploy.
   assert_output_contains "Performing content import."
-  assert_equal "--alias-path=/etc/drush/sites sql:sync @ci.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
+  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
 
   assert_equal "updatedb -y" "$(mock_get_call_args "${mock_drush}" 4)"
   assert_equal "cache:rebuild" "$(mock_get_call_args "${mock_drush}" 5)"
@@ -816,7 +816,7 @@ load _helpers_govcms
   assert_output_not_contains "Making a database backup."
 
   assert_output_contains "Drupal is not installed or not operational."
-  assert_equal "--alias-path=/etc/drush/sites sql:sync @ci.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
+  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
 
   # Common deploy.
   assert_output_not_contains "Performing content import."
