@@ -53,7 +53,7 @@ common_deploy () {
   if [[ "$LAGOON_ENVIRONMENT_TYPE" = "development" && "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" = "import" ]]; then
     echo "Performing content import."
     # shellcheck disable=SC2086
-    drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self -y
+    drush --alias-path=/app/drush/sites sql:sync @govcms.prod @self -y
   fi
 
   drush updatedb -y
@@ -100,7 +100,7 @@ else
       # In a non-functioning development site, import the database from production before running import.
       # Note, this would destroy data in a dev site that was just broken temporarily. Review?
       # shellcheck disable=SC2086
-      drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self -y
+      drush --alias-path=/app/drush/sites sql:sync @govcms.prod @self -y
       common_deploy
     fi
   else

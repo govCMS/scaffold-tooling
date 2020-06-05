@@ -66,7 +66,7 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Environment type: development"
   assert_output_contains "[info]: Content strategy: retain"
   assert_output_contains "[info]: Site alias:       govcms.prod"
-  assert_output_contains "[info]: Alias path:       /etc/drush/sites"
+  assert_output_contains "[info]: Alias path:       /app/drush/sites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
@@ -92,14 +92,14 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Environment type: development"
   assert_output_contains "[info]: Content strategy: import"
   assert_output_contains "[info]: Site alias:       govcms.prod"
-  assert_output_contains "[info]: Alias path:       /etc/drush/sites"
+  assert_output_contains "[info]: Alias path:       /app/drush/sites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
   assert_output_contains "[info]: Site could not be bootstrapped... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/etc/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
@@ -112,7 +112,7 @@ load ../_helpers_govcms
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
   export GOVCMS_SITE_ALIAS=govcms.override
-  export GOVCMS_SITE_ALIAS_PATH=/etc/drush/othersites
+  export GOVCMS_SITE_ALIAS_PATH=/app/drush/othersites
   export MARIADB_READREPLICA_HOSTS=
 
   run scripts/deploy/govcms-db-sync >&3
@@ -122,13 +122,13 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Environment type: development"
   assert_output_contains "[info]: Content strategy: import"
   assert_output_contains "[info]: Site alias:       govcms.override"
-  assert_output_contains "[info]: Alias path:       /etc/drush/othersites"
+  assert_output_contains "[info]: Alias path:       /app/drush/othersites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/etc/drush/othersites sql:sync @govcms.override @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/othersites sql:sync @govcms.override @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
@@ -151,13 +151,13 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Environment type: development"
   assert_output_contains "[info]: Content strategy: import"
   assert_output_contains "[info]: Site alias:       govcms.prod"
-  assert_output_contains "[info]: Alias path:       /etc/drush/sites"
+  assert_output_contains "[info]: Alias path:       /app/drush/sites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/etc/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
