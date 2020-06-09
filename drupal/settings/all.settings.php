@@ -10,9 +10,16 @@
 
 // phpcs:disable Drupal.Classes.ClassFileName.NoMatch
 
-// Corresponding services.yml.
+// This variable may be set from settings.php. Fallback to current directory.
+// @see https://github.com/govCMS/govcms8-scaffold-paas/blob/57cddd8/web/sites/default/settings.php#L48
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$settings['container_yamls'][] = $govcms_settings . '/all.services.yml';
+$govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
+
+/**
+ * Include the corresponding *.services.yml.
+ */
+// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+$settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
 
 // Drupal 8 config.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '../config/default';
@@ -34,7 +41,7 @@ $settings['fast404_whitelist'] = ['robots.txt', 'system/files'];
 // Public, private and temporary files paths.
 $settings['file_public_path'] = 'sites/default/files';
 $settings['file_private_path'] = 'sites/default/files/private';
-$settings['file_temporary_path'] = 'sites/default/files/private/tmp';
+$settings['file_temp_path'] = 'sites/default/files/private/tmp';
 
 // Allow custom themes to provide custom 404 pages.
 // By placing a file called 404.html in the root of their theme repository.

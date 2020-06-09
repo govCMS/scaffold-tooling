@@ -49,7 +49,7 @@ done
 
 # If the modules are not enabled - then we must enable them.
 if [[ -n "$MODULE_LIST" ]]; then
-  MODULE_LIST=$(echo "$MODULE_LIST" | awk '{$1=$1};1')
+  MODULE_LIST=$(echo "$MODULE_LIST" | awk '{$1=$1};1' | sed 's/ /, /g')
   # SC2086 expects quoted variables, we want to pass each in as a
   # separate parameter so we disable this check.
   # shellcheck disable=SC2086

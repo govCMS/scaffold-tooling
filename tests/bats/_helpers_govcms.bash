@@ -4,7 +4,7 @@
 #
 # Include this file into every test file to access utilities and assertions.
 #
-# shellcheck disable=SC2119,SC2120
+# shellcheck disable=SC2119,SC2120,SC2034,SC2155
 
 load "${BASH_SOURCE[0]%/*}"/_helpers.bash
 load "${BASH_SOURCE[0]%/*}"/_bats-mock.bash
@@ -14,7 +14,18 @@ load "${BASH_SOURCE[0]%/*}"/_bats-mock.bash
 # implement setup() and call the same methods as in the code below (there is
 # no inheritance in Bash, so we cannot just extend parent setup()).
 setup() {
+  CUR_DIR="$PWD"
+
+  export TEST_APP_DIR=$(prepare_app_dir)
   setup_mock
+}
+
+# Prepare application directory to be used in tests.
+prepare_app_dir(){
+  APP_DIR="$BATS_TEST_TMPDIR/app"
+  rm -Rf "$APP_DIR" >/dev/null
+  mkdir -p "$APP_DIR"
+  echo "$APP_DIR"
 }
 
 # Setup mock support.
@@ -53,4 +64,42 @@ mock_command(){
   mock_file="${mock##*/}"
   ln -sf "${mock_path}/${mock_file}" "${mock_path}/${mocked_command}"
   echo "$mock"
+}
+
+fixture_config(){
+  local dir="${1?'App directory must be specified'}"
+  local count="${2?'Number of config files must be specified'}"
+
+  while [  "$count" -gt 0 ]; do
+    mktouch "$dir/config$count.yml"
+    count=$(( count - 1 ))
+  done
+}
+
+prepare_fixture_dir(){
+  local dir="${1:-$(pwd)}"
+  rm -Rf "${dir}" > /dev/null
+  mkdir -p "${dir}"
+  assert_dir_exists "${dir}"
+}
+
+download_code_from_github(){
+  local user="${1?Required value}"
+  local repo="${2?Required value}"
+  curl --silent "https://api.github.com/repos/$user/$repo/releases/latest" |
+    grep '"tag_name":' |
+    sed -E 's/.*"([^"]+)".*/\1/' |
+    xargs -I {} curl -sL "https://github.com/$user/$repo/archive/"{}'.tar.gz' |
+    tar xvz -C "$(pwd)" --strip 1
+}
+
+# Copy source code at the latest commit to the destination directory.
+copy_code(){
+  local dst="${1:-${BUILD_DIR}}"
+  assert_dir_exists "${dst}"
+  pushd "${CUR_DIR}" > /dev/null || exit 1
+  # Copy latest commit to the build directory.
+  git archive --format=tar HEAD | (cd "${dst}" && tar -xf -)
+  cp -R .git "${dst}/"
+  popd > /dev/null || exit 1
 }
