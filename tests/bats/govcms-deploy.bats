@@ -134,7 +134,7 @@ load _helpers_govcms
   assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
 
   # Check DB replica.
-  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
 
   # Bootstrap 2.
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
@@ -142,7 +142,7 @@ load _helpers_govcms
   # Database backup.
   assert_output_contains "Making a database backup."
   assert_dir_exists "$APP/web/sites/default/files/private/backups"
-  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
+  assert_equal "sql:dump --database=read --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
 
   # Common deploy.
   assert_output_not_contains "Performing content import."
@@ -495,7 +495,7 @@ load _helpers_govcms
   assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
 
   # Check DB replica.
-  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
 
   # Bootstrap 2.
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"
@@ -503,7 +503,7 @@ load _helpers_govcms
   # Database backup.
   assert_output_contains "Making a database backup."
   assert_dir_exists "$APP/web/sites/default/files/private/backups"
-  assert_equal "sql:dump --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
+  assert_equal "sql:dump --database=read --gzip --result-file=$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql" "$(mock_get_call_args "${mock_drush}" 4)"
 
   # Common deploy.
   assert_output_not_contains "Performing content import."
@@ -765,7 +765,7 @@ load _helpers_govcms
 
   # Common deploy.
   assert_output_contains "Performing content import."
-  assert_equal "--alias-path=/etc/drush/sites sql:sync @ci.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
+  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
 
   assert_equal "updatedb -y" "$(mock_get_call_args "${mock_drush}" 4)"
   assert_equal "cache:rebuild" "$(mock_get_call_args "${mock_drush}" 5)"
@@ -816,7 +816,7 @@ load _helpers_govcms
   assert_output_not_contains "Making a database backup."
 
   assert_output_contains "Drupal is not installed or not operational."
-  assert_equal "--alias-path=/etc/drush/sites sql:sync @ci.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
+  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 3)"
 
   # Common deploy.
   assert_output_not_contains "Performing content import."
@@ -864,7 +864,7 @@ load _helpers_govcms
   assert_equal "core:status" "$(mock_get_call_args "${mock_drush}" 1)"
 
   # Check DB replica.
-  assert_equal "@ci.prod sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "sqlq show tables; --database=read" "$(mock_get_call_args "${mock_drush}" 2)"
 
   # Bootstrap 2.
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 3)"

@@ -36,19 +36,14 @@ drush core:status
 
 # Database options to configure the remote to use the read replica when
 # performing read operations.
-sync_opts=""
 dump_opts=""
 read_replica_enabled () {
   if [[ -z "$MARIADB_READREPLICA_HOSTS" ]]; then
     return
   fi
 
-  if tables=$(drush @ci.prod sqlq 'show tables;' --database=read 2> /dev/null) && [ -n "$tables" ]; then
-    echo "Replica is available, using for database operations."
-    sync_opts="--source-database=read"
-    # @todo: Enable below once Drush 9 has support for removed --database option.
-    # https://github.com/drush-ops/drush/issues/4274
-    # dump_opts="--database=read"
+  if tables=$(drush sqlq 'show tables;' --database=read 2> /dev/null) && [ -n "$tables" ]; then
+    dump_opts="--database=read"
   fi
 }
 
@@ -58,7 +53,7 @@ common_deploy () {
   if [[ "$LAGOON_ENVIRONMENT_TYPE" = "development" && "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" = "import" ]]; then
     echo "Performing content import."
     # shellcheck disable=SC2086
-    drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self $sync_opts -y
+    drush --alias-path=/app/drush/sites sql:sync @govcms.prod @self -y
   fi
 
   drush updatedb -y
@@ -105,7 +100,7 @@ else
       # In a non-functioning development site, import the database from production before running import.
       # Note, this would destroy data in a dev site that was just broken temporarily. Review?
       # shellcheck disable=SC2086
-      drush --alias-path=/etc/drush/sites sql:sync @ci.prod @self $sync_opts -y
+      drush --alias-path=/app/drush/sites sql:sync @govcms.prod @self -y
       common_deploy
     fi
   else
