@@ -35,9 +35,9 @@ load _helpers_govcms
   # Override scaffold repo path with a path to our version.
   composer config repositories.test path "${REPO_DIR}"
 
-  # Update composer.lock to pick up the changes to repositories.
+  # Generate composer.lock and validate fresh install with latest dependencies.
   export COMPOSER_MEMORY_LIMIT=-1
-  composer update --ignore-platform-reqs --lock
+  composer install --ignore-platform-reqs
 
   # Add the repo at the checked out version.
   composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs
