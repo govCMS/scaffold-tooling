@@ -40,7 +40,7 @@ load _helpers_govcms
   composer install --ignore-platform-reqs
 
   # Add the repo at the checked out version.
-  composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs
+  composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs --update-with-dependencies
 
   # Assert that modified settings file was included after 'composer update'.
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
