@@ -20,6 +20,7 @@ setup() {
   git --version
   git reset --hard --quiet rollback
   git clean -fd --quiet
+  rm composer.lock
 }
 
 vet() {
