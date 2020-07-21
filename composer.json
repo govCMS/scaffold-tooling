@@ -7,7 +7,7 @@
         "drupal/chosen_lib": "2.6.0",
         "drupal/clamav": "1.1.0",
         "drupal/console": "^1.0.2",
-        "drupal/fast_404": "^1.0@alpha",
+        "drupal/fast_404": "^2.0@alpha",
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"1.1.0",
         "drupal/stage_file_proxy":"1.0.0-alpha3",
