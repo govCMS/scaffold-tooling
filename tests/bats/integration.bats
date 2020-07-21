@@ -59,7 +59,7 @@ load _helpers_govcms
   assert_file_exists vendor/bin/govcms-db-update
   assert_file_exists vendor/bin/govcms-enable-modules
   assert_file_exists vendor/bin/govcms-pre-deploy
-  assert_file_exists vendor/bin/govcms-pre-redeploy-db-update
+  assert_file_exists vendor/bin/govcms-pre-deploy-db-update
   assert_file_exists vendor/bin/govcms-update-site-alias
 
   # Assert that modified settings file was included after 'composer update'.
