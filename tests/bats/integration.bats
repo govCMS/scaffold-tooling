@@ -43,42 +43,24 @@ load _helpers_govcms
   composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs --update-with-dependencies
 
   # Ensure the binaries are available.
-  run ls vendor/bin | grep govcms-audit -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-behat -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-lint -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-lint-distro -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-phpunit -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-vet -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-deploy -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-backups-preserve -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-cache-rebuild -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-config-backup -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-config-import -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-db-backup -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-db-sync -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-db-update -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-enable-modules -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-pre-deploy -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-pre-deploy-db-update -c
-  assert_output_contains 1
-  run ls vendor/bin | grep govcms-update-site-alias -c
-  assert_output_contains 1
+  assert_file_exists vendor/bin/govcms-audit
+  assert_file_exists vendor/bin/govcms-behat
+  assert_file_exists vendor/bin/govcms-lint
+  assert_file_exists vendor/bin/govcms-lint-distro
+  assert_file_exists vendor/bin/govcms-phpunit
+  assert_file_exists vendor/bin/govcms-vet
+  assert_file_exists vendor/bin/govcms-deploy
+  assert_file_exists vendor/bin/govcms-backups-preserve
+  assert_file_exists vendor/bin/govcms-cache-rebuild
+  assert_file_exists vendor/bin/govcms-config-backup
+  assert_file_exists vendor/bin/govcms-config-import
+  assert_file_exists vendor/bin/govcms-db-backup
+  assert_file_exists vendor/bin/govcms-db-sync
+  assert_file_exists vendor/bin/govcms-db-update
+  assert_file_exists vendor/bin/govcms-enable-modules
+  assert_file_exists vendor/bin/govcms-pre-deploy
+  assert_file_exists vendor/bin/govcms-pre-redeploy-db-update
+  assert_file_exists vendor/bin/govcms-update-site-alias
 
   # Assert that modified settings file was included after 'composer update'.
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
