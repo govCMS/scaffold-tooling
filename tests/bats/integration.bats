@@ -57,10 +57,10 @@ load _helpers_govcms
   assert_file_exists vendor/bin/govcms-db-backup
   assert_file_exists vendor/bin/govcms-db-sync
   assert_file_exists vendor/bin/govcms-db-update
-  assert_file_exists vendor/bin/govcms-enable-modules
+  assert_file_exists vendor/bin/govcms-enable_modules
   assert_file_exists vendor/bin/govcms-pre-deploy
   assert_file_exists vendor/bin/govcms-pre-deploy-db-update
-  assert_file_exists vendor/bin/govcms-update-site-alias
+  assert_file_exists vendor/bin/govcms-update_site_alias
 
   # Assert that modified settings file was included after 'composer update'.
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
