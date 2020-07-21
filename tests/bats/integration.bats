@@ -43,41 +43,41 @@ load _helpers_govcms
   composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs --update-with-dependencies
 
   # Ensure the binaries are available.
-  run ls vendor/bin | grep govcms-audit | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-audit -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-behat | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-behat -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-lint | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-lint -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-lint-distro | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-lint-distro -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-phpunit | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-phpunit -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-vet | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-vet -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-deploy | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-deploy -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-backups-preserve | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-backups-preserve -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-cache-rebuild | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-cache-rebuild -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-config-backup | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-config-backup -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-config-import | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-config-import -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-db-backup | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-db-backup -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-db-sync | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-db-sync -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-db-update | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-db-update -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-enable-modules | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-enable-modules -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-pre-deploy | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-pre-deploy -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-pre-deploy-db-update | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-pre-deploy-db-update -c
   assert_output_contains 1
-  run ls vendor/bin | grep govcms-update-site-alias | wc -l | tr -d ' '
+  run ls vendor/bin | grep govcms-update-site-alias -c
   assert_output_contains 1
 
   # Assert that modified settings file was included after 'composer update'.
