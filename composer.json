@@ -33,9 +33,9 @@
         "scripts/deploy/govcms-db-backup",
         "scripts/deploy/govcms-db-sync",
         "scripts/deploy/govcms-db-update",
-        "scripts/deploy/govcms-enable_modules",
+        "scripts/deploy/govcms-enable-modules",
         "scripts/deploy/govcms-pre-deploy",
         "scripts/deploy/govcms-pre-deploy-db-update",
-        "scripts/deploy/govcms-update_site_alias"
+        "scripts/deploy/govcms-update-site-alias"
     ]
 }
