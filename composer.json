@@ -4,8 +4,6 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "drupal/chosen_lib": "~2",
-        "drupal/clamav": "~1",
-        "drupal/fast_404": "^2.0@alpha",
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"^1.4",
         "drupal/stage_file_proxy":"~1",
