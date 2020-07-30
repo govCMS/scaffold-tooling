@@ -8,6 +8,8 @@
  * the platform.).
  */
 
+use Drupal\Core\Installer\InstallerKernel;
+
 // See comment in all.settings.php.
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
@@ -82,7 +84,7 @@ if (getenv('ENABLE_REDIS')) {
   $redis_timeout = getenv('REDIS_CONNECT_TIMEOUT') ?: 2;
 
   try {
-    if (drupal_installation_attempted()) {
+    if (InstallerKernel::installationAttempted()) {
       // Do not set the cache during installations of Drupal.
       throw new \Exception('Drupal installation underway.');
     }
