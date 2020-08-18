@@ -17,7 +17,7 @@ set -euo pipefail
 echo "GovCMS Deploy :: Update site alias"
 
 # Ensure directories are available.
-mkdir -p /app/web/sites/default/files/private/{backups,tmp
+mkdir -p /app/web/sites/default/files/private/{backups,tmp}
 
 if [ ! -f /app/drush/sites/govcms.site.yml ]; then
   echo "[skip]: Site alias file does not exist."
