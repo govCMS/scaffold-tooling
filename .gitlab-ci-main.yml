@@ -28,6 +28,9 @@ variables:
       docker network prune -f && docker network create amazeeio-network
       docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
+      # Some local overrides are prefixed with '###' and we remove them here.
+      sed -i -e "/###/d" docker-compose.yml
+
       docker-compose up -d mariadb
       docker-compose up -d cli
       docker-compose ps
