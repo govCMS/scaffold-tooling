@@ -16,6 +16,13 @@ set -euo pipefail
 
 echo "GovCMS Deploy :: Update site alias"
 
+# When a new environment is created a new mount is provisioned. This
+# overrides the standard files directory created by the base containers.
+# Drupal doesn't create the directories and expects them to exist so
+# that it can use them. This is a stopgap fix to ensure that the files
+# directory is available for all containers.
+mkdir -p /app/web/sites/default/files/private/{backups,tmp}
+
 if [ ! -f /app/drush/sites/govcms.site.yml ]; then
   echo "[skip]: Site alias file does not exist."
   exit 0;
