@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export GOVCMS_ROLE_PATTERN=${GOVCMS_ROLE_PATTERN:-user.role.*.yml}
+find /app/config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.site_administrator.yml' \) -print0 | while read -d $'\0' file;
+do
+    if [ $(cat $file | grep -c -e "administer permissions" -e "administer modules" -e "administer software updates") -ne 0 ]; then
+      echo "[fail] $file has restricted permissions";
+      exit 1;
+    fi
+    if [[ $(yq r $file 'is_admin') == 'true' ]]; then
+      echo "[fail] $file is listed as an admin role";
+      exit 1;
+    fi
+done
