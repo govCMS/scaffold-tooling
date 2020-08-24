@@ -7,15 +7,15 @@
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"^1.4",
         "drupal/stage_file_proxy":"~1",
-        "drush/drush": "~9 || ~10",
-        "zaporylie/composer-drupal-optimizations": "^1.0"
+        "drush/drush": "~9 || ~10"
     },
     "require-dev": {
         "phar-io/manifest": "~1",
         "phar-io/version": "~1",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.6"
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.6",
+        "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "bin": [
         "scripts/govcms-audit",
