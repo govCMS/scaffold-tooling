@@ -2,7 +2,35 @@
 
 <?php
 
-require '/app/vendor/autoload.php';
+$vendor_dir = getenv('COMPOSER_VENDOR_DIR');
+
+if (empty($vendor_dir)) {
+    $depth = 5;
+    while($depth > 0) {
+        $vendor_dir = dirname(__FILE__, $depth);
+        if (file_exists("$vendor_dir/autoload.php")) {
+            define('GOVCMS_AUTOLOAD', "$vendor_dir/autoload.php");
+            break;
+        }
+        $depth--;
+    }
+} else {
+    if (file_exists("$vendor_dir")) {
+        define('GOVCMS_AUTOLOAD', "$vendor_dir/autoload.php");
+    }
+}
+
+if (!defined('GOVCMS_AUTOLOAD')) {
+    fwrite(
+        STDERR,
+        'You need to install scaffold-tooling and dependencies using Composer:' . PHP_EOL . PHP_EOL .
+        '       composer install' . PHP_EOL . PHP_EOL .
+        'You can learn all about Composer on https://getcomposer.org/.' . PHP_EOL
+    );
+    die(1);
+}
+
+require GOVCMS_AUTOLOAD;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Yaml\Command\LintCommand;
