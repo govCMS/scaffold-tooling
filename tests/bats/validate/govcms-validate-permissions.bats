@@ -3,10 +3,6 @@
 
 load ../_helpers_govcms
 
-################################################################################
-#                               DEFAULTS                                       #
-################################################################################
-
 @test "Check disallowed permissions: defaults" {
   run scripts/validate/govcms-validate-permissions >&3
   assert_output_contains "GovCMS Validate :: Disallowed permissions"

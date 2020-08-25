@@ -11,6 +11,8 @@ set -euo pipefail
 
 GOVCMS_PLATFORM_FILES=${GOVCMS_PLATFORM_FILES:-}
 
+echo "GovCMS Validate :: Yaml lint platform files"
+
 if [ -z "${GOVCMS_PLATFORM_FILES}" ]; then
   GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' -or -name 'docker-compose.yml' \))
 fi
@@ -19,7 +21,7 @@ IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_PLATFORM_FILES; do
-  if $(yaml-lint "$file") -ne 0; then
+  if ! yaml-lint "$file"; then
     echo "[fail]: $file has invalid YAML";
     exit 1;
   fi
