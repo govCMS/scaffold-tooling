@@ -56,3 +56,13 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
   assert_output_contains "[fail]: $GOVCMS_FILE_LIST is listed as an admin role"
 }
+
+@test "Check disallowed permissions: multiple files" {
+  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.example.yml" -or -name "user.role.is_admin.yml" \))
+
+  run scripts/validate/govcms-validate-permissions >&3
+
+  assert_output_contains "GovCMS Validate :: Disallowed permissions"
+  assert_output_contains "[info]: tests/bats/validate/fixtures/user.role.example.yml is valid"
+  assert_output_contains "[fail]: tests/bats/validate/fixtures/user.role.is_admin.yml is listed as an admin role"
+}

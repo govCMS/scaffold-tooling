@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+#
+# GovCMS validate platform yaml.
+#
+# Ensures that the necessary Platform files contain
+# valid yaml.
+#
+
+GOVCMS_PLATFORM_FILES=${GOVCMS_PLATFORM_FILES:-}
+
+if [ -z "${GOVCMS_PLATFORM_FILES}" ]; then
+  GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' -or -name 'docker-compose.yml' \))
+fi
+
+IFS_BAK="$IFS"
+IFS=$'\n'
+
+for file in $GOVCMS_PLATFORM_FILES; do
+  if $(yaml-lint "$file") -ne 0; then
+    echo "[fail]: $file has invalid YAML";
+    exit 1;
+  fi
+done
+
+IFS=$IFS_BAK
+echo "[success]: No YAML issues in platform files."

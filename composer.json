@@ -38,6 +38,8 @@
         "scripts/deploy/govcms-pre-deploy-db-update",
         "scripts/deploy/govcms-update_site_alias",
         "scripts/validate/govcms-validate-permissions",
-        "scripts/validate/govcms-validate-yaml-lint"
+        "scripts/validate/govcms-validate-platform-yml",
+        "scripts/validate/govcms-validate-theme-yml",
+        "scripts/validate/yaml-lint"
     ]
 }

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#
+# GovCMS validate theme yaml files.
+#
+# Ensure files in the theme directory contain valid YAML.
+#
+
+GOVCMS_THEME_FILES=${GOVCMS_THEME_FILES:-}
+
+if [ -z "${GOVCMS_THEME_FILES}" ]; then
+  GOVCMS_THEME_FILES=$(find themes -type f -name "*.yml")
+fi
+
+IFS_BAK="$IFS"
+IFS=$'\n'
+
+for file in $GOVCMS_THEME_FILES; do
+  if yaml-lint "$file" -ne 0; then
+    echo "[fail]: $file failed lint";
+    exit 1;
+  fi
+done
+
+IFS=$IFS_BAK
+echo "[success]: No YAML issues in theme files."
