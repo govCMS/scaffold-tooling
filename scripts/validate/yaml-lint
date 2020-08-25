@@ -13,4 +13,3 @@ use Symfony\Component\Yaml\Command\LintCommand;
     ->getApplication()
     ->setDefaultCommand('lint:yaml', true)
     ->run();
-

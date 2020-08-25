@@ -13,7 +13,7 @@ done < <(
     .circleci/phpcs.sh \
     .circleci/shellcheck.sh \
     -type f \
-    \( ! -name "README.*" -and ! -name "_bats-mock.bash" \) \
+    \( ! -name "README.*" -and ! -name "_bats-mock.bash" -and ! -name "yaml-lint" \) \
     -print0
   )
 

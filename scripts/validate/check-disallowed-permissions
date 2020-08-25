@@ -1,15 +1,37 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2162,SC2046,SC2002
 set -euo pipefail
 
-export GOVCMS_ROLE_PATTERN=${GOVCMS_ROLE_PATTERN:-user.role.*.yml}
-find /app/config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.site_administrator.yml' \) -print0 | while read -d $'\0' file;
-do
-    if [ $(cat $file | grep -c -e "administer permissions" -e "administer modules" -e "administer software updates") -ne 0 ]; then
-      echo "[fail] $file has restricted permissions";
+#
+# GovCMS disallowed permissions check.
+#
+# This will lint exported configuration files to identify if
+# permissions will been given to users via exports.
+#
+
+GOVCMS_ROLE_PATTERN=${GOVCMS_ROLE_PATTERN:-user.role.*.yml}
+GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+
+echo "GovCMS Validate :: Disallowed permissions"
+
+# We will need to export this during automated testing.
+if [ -z "${GOVCMS_FILE_LIST}" ]; then
+  GOVCMS_FILE_LIST=$(find /app/config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.site_administrator.yml' \) -print0)
+fi
+
+IFS_BAK="$IFS"
+IFS=$'\n'
+
+for file in $GOVCMS_FILE_LIST; do
+    if [ $(cat "$file" | grep -c -e "administer permissions" -e "administer modules" -e "administer software updates") -ne 0 ]; then
+      echo "[fail]: $file has restricted permissions";
       exit 1;
     fi
-    if [[ $(yq r $file 'is_admin') == 'true' ]]; then
-      echo "[fail] $file is listed as an admin role";
+    if [[ $(yq r "$file" 'is_admin') == 'true' ]]; then
+      echo "[fail]: $file is listed as an admin role";
       exit 1;
     fi
 done
+
+IFS=$IFS_BAK
+echo "[success]: No elevated permissions detected in configuration."
