@@ -5,7 +5,7 @@ load ../_helpers_govcms
 
 @test "Validate theme yaml: defaults" {
   run scripts/validate/govcms-validate-theme-yml >&3
-  eassert_output_contains "GovCMS Validate :: Yaml lint theme files"
+  assert_output_contains "GovCMS Validate :: Yaml lint theme files"
 }
 
 @test "Validate theme yaml: valid yaml" {
@@ -13,8 +13,8 @@ load ../_helpers_govcms
 
   run scripts/validate/govcms-validate-theme-yml >&3
 
-  eassert_output_contains "GovCMS Validate :: Yaml lint theme files"
-  eassert_output_contains "[success]: No elevated permissions detected in configuration."
+  assert_output_contains "GovCMS Validate :: Yaml lint theme files"
+  assert_output_contains "[success]: No YAML issues in theme files."
 }
 
 @test "Validate theme yaml: invalid yaml" {
@@ -22,6 +22,6 @@ load ../_helpers_govcms
 
   run scripts/validate/govcms-validate-theme-yml >&3
 
-  eassert_output_contains "GovCMS Validate :: Yaml lint theme files"
-  eassert_output_contains "[fail]: $GOVCMS_FILE_LIST has invalid YAML"
+  assert_output_contains "GovCMS Validate :: Yaml lint theme files"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST failed lint"
 }
