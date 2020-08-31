@@ -40,6 +40,6 @@
         "scripts/validate/govcms-validate-permissions",
         "scripts/validate/govcms-validate-platform-yml",
         "scripts/validate/govcms-validate-theme-yml",
-        "scripts/validate/yaml-lint"
+        "scripts/validate/govcms-yaml_lint"
     ]
 }

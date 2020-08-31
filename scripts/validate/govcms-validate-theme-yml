@@ -8,18 +8,26 @@ set -euo pipefail
 #
 
 GOVCMS_THEME_FILES=${GOVCMS_THEME_FILES:-}
+GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
 
 echo "GovCMS Validate :: Yaml lint theme files"
 
 if [ -z "${GOVCMS_THEME_FILES}" ]; then
-  GOVCMS_THEME_FILES=$(find themes -type f -name "*.yml")
+  GOVCMS_THEME_FILES=$(find ./web/themes -type f -name "*.yml")
+fi
+
+if [ -z "${GOVCMS_YAML_LINT}" ]; then
+  GOVCMS_YAML_LINT=govcms-yaml_lint
+  if ! command -v "$GOVCMS_YAML_LINT" > /dev/null 2>&1; then
+    GOVCMS_YAML_LINT=/app/vendor/bin/govcms-yaml_lint
+  fi
 fi
 
 IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_THEME_FILES; do
-  if ! yaml-lint "$file"; then
+  if ! $GOVCMS_YAML_LINT "$file"; then
     echo "[fail]: $file failed lint";
     exit 1;
   fi
