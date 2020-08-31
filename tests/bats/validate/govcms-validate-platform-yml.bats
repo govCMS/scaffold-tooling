@@ -3,25 +3,32 @@
 
 load ../_helpers_govcms
 
-@test "Validate platform yaml: defaults" {
+@test "Validate theme yaml: defaults" {
   run scripts/validate/govcms-validate-platform-yml >&3
-  eassert_output_contains "GovCMS Validate :: Yaml lint platform files"
+  assert_output_contains "GovCMS Validate :: Yaml lint platform files"
 }
 
-@test "Validate platform yaml: valid yaml" {
-  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "yaml-valid.yml" \) -print0)
+@test "Validate theme yaml: valid yaml" {
+  export GOVCMS_PLATFORM_FILES=$(find tests/bats/validate/fixtures -type f \( -name "yaml-valid.yml" \) -print0)
+
+  mock_yaml_lint=$(mock_command yaml-lint)
+  mock_set_output "${mock_yaml_lint}" "No lint errors found" 1
 
   run scripts/validate/govcms-validate-platform-yml >&3
 
-  eassert_output_contains "GovCMS Validate :: Yaml lint platform files"
-  eassert_output_contains "[success]: No elevated permissions detected in configuration."
+  assert_output_contains "GovCMS Validate :: Yaml lint platform files"
+  assert_output_contains "[success]: No YAML issues in platform files."
 }
 
-@test "Validate platform yaml: invalid yaml" {
-  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "yaml-invalid.yml" \) -print0)
+@test "Validate theme yaml: invalid yaml" {
+  export GOVCMS_PLATFORM_FILES=$(find tests/bats/validate/fixtures -type f \( -name "yaml-invalid.yml" \) -print0)
+
+  mock_yaml_lint=$(mock_command yaml-lint)
+  mock_set_output "${mock_yaml_lint}" "Errors found" 1
+  mock_set_status "${mock_yaml_lint}" 1 1
 
   run scripts/validate/govcms-validate-platform-yml >&3
 
-  eassert_output_contains "GovCMS Validate :: Yaml lint platform files"
-  eassert_output_contains "[fail]: $GOVCMS_FILE_LIST has invalid YAML"
+  assert_output_contains "GovCMS Validate :: Yaml lint platform files"
+  assert_output_contains "[fail]: $GOVCMS_PLATFORM_FILES failed lint"
 }

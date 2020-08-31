@@ -22,7 +22,7 @@ IFS=$'\n'
 
 for file in $GOVCMS_PLATFORM_FILES; do
   if ! yaml-lint "$file"; then
-    echo "[fail]: $file has invalid YAML";
+    echo "[fail]: $file failed lint";
     exit 1;
   fi
 done
