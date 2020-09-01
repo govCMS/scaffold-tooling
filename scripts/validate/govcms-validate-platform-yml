@@ -15,7 +15,7 @@ GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
 echo "GovCMS Validate :: Yaml lint platform files"
 
 if [ -z "${GOVCMS_PLATFORM_FILES}" ]; then
-  GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' -or -name 'docker-compose.yml' \))
+  GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' \))
 fi
 
 if [ -z "${GOVCMS_YAML_LINT}" ]; then
