@@ -21,7 +21,7 @@ fi
 if [ -z "${GOVCMS_YAML_LINT}" ]; then
   GOVCMS_YAML_LINT=govcms-yaml_lint
   if ! command -v "$GOVCMS_YAML_LINT" > /dev/null 2>&1; then
-    GOVCMS_YAML_LINT=/app/vendor/bin/yaml-lint
+    GOVCMS_YAML_LINT=/app/vendor/bin/govcms-yaml_lint
   fi
 fi
 

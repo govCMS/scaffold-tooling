@@ -9,11 +9,19 @@ set -euo pipefail
 
 GOVCMS_THEME_FILES=${GOVCMS_THEME_FILES:-}
 GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
+GOVCMS_THEME_DIR=${GOVCMS_THEME_DIR:-}
 
 echo "GovCMS Validate :: Yaml lint theme files"
 
+if [ -z "${GOVCMS_THEME_DIR}" ]; then
+  GOVCMS_THEME_DIR=./web/themes
+  if [ ! -d ./web ]; then
+    GOVCMS_THEME_DIR=./themes
+  fi
+fi
+
 if [ -z "${GOVCMS_THEME_FILES}" ]; then
-  GOVCMS_THEME_FILES=$(find ./web/themes -type f -name "*.yml")
+  GOVCMS_THEME_FILES=$(find ${GOVCMS_THEME_DIR} -type f -name "*.yml")
 fi
 
 if [ -z "${GOVCMS_YAML_LINT}" ]; then
