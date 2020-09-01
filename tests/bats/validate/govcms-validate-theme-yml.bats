@@ -34,3 +34,32 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Validate :: Yaml lint theme files"
   assert_output_contains "[fail]: $GOVCMS_THEME_FILES failed lint"
 }
+
+@test "Validate theme yaml: Exlude node_modules" {
+  export GOVCMS_THEME_FILES=$(find tests/bats/validate/fixtures -type f)
+  export GOVCMS_YAML_LINT=govcms-yaml_lint
+
+  mock_yaml_lint=$(mock_command govcms-yaml_lint)
+  mock_set_output "${mock_yaml_lint}" "No lint errors found" 1
+
+  run scripts/validate/govcms-validate-theme-yml >&3
+
+  assert_output_contains "GovCMS Validate :: Yaml lint theme files"
+  assert_output_contains "[info]: Skip tests/bats/validate/fixtures/node_modules/test.yml"
+  assert_equal 7 "$(mock_get_call_num "${mock_yaml_lint}")"
+}
+
+@test "Validate theme yaml: Custom exclusion list" {
+  export GOVCMS_THEME_FILES=$(find tests/bats/validate/fixtures -type f)
+  export GOVCMS_YAML_LINT=govcms-yaml_lint
+  export GOVCMS_LINT_EXCLUDE_PATTERN="(fixtures)"
+
+  mock_yaml_lint=$(mock_command govcms-yaml_lint)
+  mock_set_output "${mock_yaml_lint}" "No lint errors found" 1
+
+  run scripts/validate/govcms-validate-theme-yml >&3
+
+  assert_output_contains "GovCMS Validate :: Yaml lint theme files"
+  assert_output_contains "[info]: Skip tests/bats/validate/fixtures/node_modules/test.yml"
+  assert_equal 0 "$(mock_get_call_num "${mock_yaml_lint}")"
+}

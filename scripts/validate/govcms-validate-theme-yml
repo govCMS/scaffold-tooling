@@ -10,6 +10,7 @@ set -euo pipefail
 GOVCMS_THEME_FILES=${GOVCMS_THEME_FILES:-}
 GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
 GOVCMS_THEME_DIR=${GOVCMS_THEME_DIR:-}
+GOVCMS_LINT_EXCLUDE_PATTERN=${GOVCMS_LINT_EXCLUDE_PATTERN:-}
 
 echo "GovCMS Validate :: Yaml lint theme files"
 
@@ -31,10 +32,19 @@ if [ -z "${GOVCMS_YAML_LINT}" ]; then
   fi
 fi
 
+if [ -z "${GOVCMS_LINT_EXCLUDE_PATTERN}" ]; then
+  GOVCMS_LINT_EXCLUDE_PATTERN="(node_modules)"
+fi
+
 IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_THEME_FILES; do
+  if [[ "$file" =~ ${GOVCMS_LINT_EXCLUDE_PATTERN} ]]; then
+    echo "[info]: Skip $file"
+    continue
+  fi
+
   if ! $GOVCMS_YAML_LINT "$file"; then
     echo "[fail]: $file failed lint";
     exit 1;
