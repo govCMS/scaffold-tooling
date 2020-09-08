@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: quay.io/govcms/govcms-ci
     steps:
-      - add_ssh_key:
+      - add_ssh_keys:
           fingerprints:
             - "f8:55:27:d9:5f:73:4a:af:99:a6:c3:eb:9e:a3:18:be"
       - checkout
