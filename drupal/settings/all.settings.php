@@ -49,6 +49,7 @@ $settings['file_temp_path'] = 'sites/default/files/private/tmp';
 // measure to ensure transfer, memory usage and disk reads are manageable.
 // @todo include a class file, not inline like this.
 if (!class_exists('GovCms404Page')) {
+  // phpcs:ignore Drupal.Commenting.ClassComment.Short
   /**
    * Class GovCms404Page.
    */
