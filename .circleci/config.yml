@@ -6,7 +6,7 @@ jobs:
     steps:
       - run:
           name: Reset SSH agent
-          command: eval $(ssh-agent); ssh-add -d;
+          command: eval $(ssh-agent) && ssh-add -d || true
       - add_ssh_keys:
           fingerprints:
             - "f8:55:27:d9:5f:73:4a:af:99:a6:c3:eb:9e:a3:18:be"
