@@ -62,10 +62,9 @@ $config['search_api.server']['backend_config']['connector_config']['host'] = get
 $config['search_api.server']['backend_config']['connector_config']['path'] = '/solr/' . getenv('SOLR_CORE') ?: 'drupal';
 
 // Lagoon Varnish & reverse proxy settings.
-$varnish_control_port = getenv('VARNISH_CONTROL_PORT') ?: '6082';
 $varnish_hosts = explode(',', getenv('VARNISH_HOSTS') ?: 'varnish');
-array_walk($varnish_hosts, function (&$value, $key) use ($varnish_control_port) {
-  $value .= ":$varnish_control_port";
+array_walk($varnish_hosts, function (&$value, $key) {
+  $value .= ':' . getenv('VARNISH_CONTROL_PORT') ?: '6082';
 });
 
 $settings['reverse_proxy'] = TRUE;
