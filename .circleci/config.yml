@@ -8,6 +8,9 @@ jobs:
           fingerprints:
             - "f8:55:27:d9:5f:73:4a:af:99:a6:c3:eb:9e:a3:18:be"
       - checkout
+      - run:
+          name: Reset SSH agent
+          command: eval $(ssh-agent); ssh-add -d; ssh-add ~/.ssh/id_rsa
       - run: composer validate --strict --no-check-all
       - run: .circleci/shellcheck.sh
       - run: .circleci/phpcs.sh
