@@ -9,6 +9,8 @@ setup() {
 
   if [ ! -d "$WORKSPACE/.git" ]; then
     rm -Rf "$WORKSPACE"
+    # Lagoon image forces ssh for HTTPS connections via gitconfig.
+    git config --global --unset url.ssh://git@github.com.insteadof || true
     git clone https://github.com/govCMS/govcms8-scaffold-paas "$WORKSPACE"
     cd "$WORKSPACE" || exit
     git tag -f rollback

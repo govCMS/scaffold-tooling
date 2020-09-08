@@ -4,8 +4,6 @@ jobs:
     docker:
       - image: quay.io/govcms/govcms-ci
     steps:
-      # Lagoon container forces ssh for HTTPS connections via gitconfig.
-      - run: git config --global --unset url.ssh://git@github.com.insteadof
       - checkout
       - run: composer validate --strict --no-check-all
       - run: .circleci/shellcheck.sh
