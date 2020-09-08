@@ -8,6 +8,8 @@
  * the platform.).
  */
 
+// phpcs:disable Drupal.Classes.UseGlobalClass.RedundantUseStatement
+
 // See comment in all.settings.php.
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
