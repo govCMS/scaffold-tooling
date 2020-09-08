@@ -4,6 +4,9 @@ jobs:
     docker:
       - image: quay.io/govcms/govcms-ci
     steps:
+      - add_ssh_key:
+          fingerprints:
+            - "f8:55:27:d9:5f:73:4a:af:99:a6:c3:eb:9e:a3:18:be"
       - checkout
       - run: composer validate --strict --no-check-all
       - run: .circleci/shellcheck.sh
