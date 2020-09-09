@@ -35,7 +35,7 @@ load ../_helpers_govcms
   assert_output_contains "[fail]: $GOVCMS_THEME_FILES failed lint"
 }
 
-@test "Validate theme yaml: Exlude node_modules" {
+@test "Validate theme yaml: Exclude node_modules" {
   export GOVCMS_THEME_FILES=$(find tests/bats/validate/fixtures -type f)
   export GOVCMS_YAML_LINT=govcms-yaml_lint
 
