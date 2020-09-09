@@ -134,7 +134,7 @@ function check_module($module, $version, array &$data) {
 
 // Attempt to verify composer dependencies.
 $composer_modules = shell_exec('composer show -f json');
-$composer_modules = json_decode($modules, TRUE);
+$composer_modules = @json_decode($composer_modules, TRUE);
 
 if (isset($composer_modules['installed'])) {
   foreach ($composer_modules['installed'] as $def) {
@@ -146,7 +146,7 @@ if (isset($composer_modules['installed'])) {
 }
 
 // Verify directly with Drupal.
-$modules = shell_exec('docker-compose exec cli drush pml --no-core --format=json');
+$modules = shell_exec('docker-compose exec cli -T drush pml --no-core --format=json');
 $modules = json_decode($modules, TRUE);
 
 foreach ($modules as $module => $def) {
