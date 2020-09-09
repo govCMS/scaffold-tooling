@@ -149,11 +149,18 @@ if (isset($composer_modules['installed'])) {
 $modules = shell_exec('docker-compose exec cli -T drush pml --no-core --format=json');
 $modules = json_decode($modules, TRUE);
 
-foreach ($modules as $module => $def) {
-  echo "Finding data for $module\n";
-  if (!check_module($module, $def['version'], $data)) {
-    echo "\t- Unable to verify $module\n";
+if (is_array($modules)) {
+  foreach ($modules as $module => $def) {
+    echo "Finding data for $module\n";
+    if (!check_module($module, $def['version'], $data)) {
+      echo "\t- Unable to verify $module\n";
+    }
   }
+}
+
+if (count($data) == 1) {
+  echo "[fail]: Unable to gather module information.";
+  exit(1);
 }
 
 $loc = getenv('CSV_LOCATION') ?: 'modules.csv';
