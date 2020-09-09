@@ -1,0 +1,163 @@
+#!/usr/bin/env php
+
+<?php
+
+$data = [['Application module', 'Installed version', 'Installed version release date', 'Current version', 'Current version release date', 'Status']];
+
+/**
+ * Query Drupals API for module version information.
+ *
+ * @param string $module
+ *   The module name to query for.
+ *
+ * @return SimpleXMLElement
+ *   The XML class.
+ */
+function get_release_info($module) {
+  $ver = get_core_version();
+  $url = "https://updates.drupal.org/release-history/$module/$ver.x";
+  $file = @file_get_contents($url);
+  $xml = simplexml_load_string($file);
+  return empty($xml->releases) ? false : $xml;
+}
+
+/**
+ * Get the Drupal version.
+ *
+ * @return int
+ *   The version prefix (eg. 7, 8);
+ */
+function get_core_version() {
+  $op = shell_exec('docker-compose exec cli drush status --format=json');
+  $status = json_decode($op, TRUE);
+  $version = getenv('GOVCMS_VERSION') ?: (isset($status['drupal-version']) ? $status['drupal-version'] : 8);
+  return substr($version, 0, 1);
+}
+
+/**
+ * Standard timestamp conversion method.
+ *
+ * @param int $ts
+ *   The timestamp to convert.
+ *
+ * @return string
+ *   The formatted date string.
+ */
+function timestamp_to_date($ts) {
+  return date('Y-m-d H:i:s', (int) $ts);
+}
+
+/**
+ * Version comparison.
+ *
+ * @param string $first
+ *   The first version.
+ * @param string $second
+ *   The second version.
+ *
+ * @return bool
+ *   If the version is the same or not.
+ */
+function drupal_composer_version_compare($first, $second) {
+  $ver = get_core_version();
+  $first = str_replace("$ver.x-", '', $first);
+  $second = str_replace("$ver.x-", '', $second);
+
+  // Direct comparison.
+  if (version_compare($first, $second) == 0) {
+    return TRUE;
+  }
+  // Try semver matching for the first parameter.
+  if (version_compare("$first.0", $second) == 0) {
+    return TRUE;
+  }
+  // Try semver matching for the last parameter.
+  if (version_compare($first, "$second.0") == 0) {
+    return TRUE;
+  }
+  // Remove trailing .0's from the version string. Drupal
+  // and composer versions are't aligned sometimes will be
+  // 8.4-beta4 and 8.4.0-beta4 we try and account for that.
+  $f1 = preg_replace('((.*)\.0)', '$1', $first);
+  $s1 = preg_replace('((.*)\.0)', '$1', $second);
+
+  if ($f1 == $second || $first == $s1 || $f1 == $s1) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Checks an installed module with release info from the Drupal API.
+ *
+ * @param string $module
+ *   The module name.
+ * @param string $version
+ *   The module version.
+ * @param array &$data
+ *   The output data.
+ *
+ * @return bool
+ *   If the module could be checked.
+ */
+function check_module($module, $version, array &$data) {
+  // Fetch info from the API.
+  $info = get_release_info($module);
+
+  if (empty($info)) {
+    return FALSE;
+  }
+
+  $data[$module] = [$module, $version];
+
+  // Module release leaves from the API.
+  $latest = $info->releases->release[0];
+  $installed = FALSE;
+
+  // Attempt to locate release information for the installed verison.
+  foreach ($info->releases->release as $leaf) {
+    if (drupal_composer_version_compare($leaf->version, $version)) {
+      $installed = $leaf;
+      break;
+    }
+  }
+
+  $data[$module][] = $installed ? timestamp_to_date($installed->date[0]) : '';
+  $data[$module][] = $latest->version[0];
+  $data[$module][] = timestamp_to_date($latest->date[0]);
+  $data[$module][] = $info->project_status[0];
+
+  return TRUE;
+}
+
+
+// Attempt to verify composer dependencies.
+$composer_modules = shell_exec('composer show -f json');
+$composer_modules = json_decode($modules, TRUE);
+
+if (isset($composer_modules['installed'])) {
+  foreach ($composer_modules['installed'] as $def) {
+    echo "Finding data for {$def['name']}\n";
+    if (!check_module($def['name'], $def['version'], $data)) {
+      echo "\t- Unable to verify {$def['name']}\n";
+    }
+  }
+}
+
+// Verify directly with Drupal.
+$modules = shell_exec('docker-compose exec cli drush pml --no-core --format=json');
+$modules = json_decode($modules, TRUE);
+
+foreach ($modules as $module => $def) {
+  echo "Finding data for $module\n";
+  if (!check_module($module, $def['version'], $data)) {
+    echo "\t- Unable to verify $module\n";
+  }
+}
+
+$loc = getenv('CSV_LOCATION') ?: 'modules.csv';
+$out = fopen($loc, 'w');
+foreach ($data as $row) {
+  @fputcsv($out, $row);
+}
