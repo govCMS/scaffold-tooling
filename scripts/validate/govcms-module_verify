@@ -168,3 +168,5 @@ $out = fopen($loc, 'w');
 foreach ($data as $row) {
   @fputcsv($out, $row);
 }
+
+echo "[success]: Wrote output to file $loc";
