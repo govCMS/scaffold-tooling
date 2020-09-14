@@ -3,7 +3,6 @@
     "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
     "license": "GPL-2.0-or-later",
     "require": {
-        "drupal/chosen_lib": "~2",
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"^1.4",
         "drupal/stage_file_proxy":"~1",
