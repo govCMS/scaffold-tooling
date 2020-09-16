@@ -36,6 +36,11 @@
         "scripts/deploy/govcms-enable_modules",
         "scripts/deploy/govcms-pre-deploy",
         "scripts/deploy/govcms-pre-deploy-db-update",
-        "scripts/deploy/govcms-update_site_alias"
+        "scripts/deploy/govcms-update_site_alias",
+        "scripts/validate/govcms-validate-permissions",
+        "scripts/validate/govcms-validate-platform-yml",
+        "scripts/validate/govcms-validate-theme-yml",
+        "scripts/validate/govcms-yaml_lint",
+        "scripts/validate/govcms-module_verify"
     ]
 }
