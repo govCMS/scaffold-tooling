@@ -8,7 +8,7 @@
  * all environments.
  */
 
-// phpcs:disable Drupal.Classes.ClassFileName.NoMatch
+// phpcs:disable Drupal.Classes.ClassFileName.NoMatch,Drupal.Commenting.ClassComment.Short
 
 // This variable may be set from settings.php. Fallback to current directory.
 // @see https://github.com/govCMS/govcms8-scaffold-paas/blob/57cddd8/web/sites/default/settings.php#L48
