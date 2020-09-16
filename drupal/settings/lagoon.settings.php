@@ -171,5 +171,5 @@ else {
   $config['clamav.settings']['mode_executable']['executable_path'] = '/usr/bin/clamscan';
 }
 
-// Hash Salt.
-$settings['hash_salt'] = hash('sha256', getenv('LAGOON_PROJECT'));
+// Non-deterministic hash salt.
+$settings['hash_salt'] = hash('sha256', getenv('MARIADB_HOST'));
