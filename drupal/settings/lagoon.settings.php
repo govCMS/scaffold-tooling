@@ -9,6 +9,7 @@
  */
 
 use Drupal\Core\Installer\InstallerKernel;
+
 // phpcs:disable Drupal.Classes.UseGlobalClass.RedundantUseStatement
 
 // See comment in all.settings.php.
