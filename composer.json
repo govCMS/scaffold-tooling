@@ -5,7 +5,7 @@
     "require": {
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"^1.4",
-        "drupal/stage_file_proxy":"~1",
+        "drupal/stage_file_proxy":"1.x-dev#284b4edd",
         "drush/drush": "~9 || ~10"
     },
     "require-dev": {
