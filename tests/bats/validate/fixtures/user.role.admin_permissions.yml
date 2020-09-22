@@ -1,0 +1,11 @@
+uuid: 82e501d8-c648-4478-a256-9e236a6adea8
+langcode: en
+status: true
+dependencies: {  }
+id: anonymous
+label: 'Anonymous user'
+weight: -6
+is_admin: false
+permissions:
+  - 'access content'
+  - 'administer permissions'

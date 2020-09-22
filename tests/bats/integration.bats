@@ -42,6 +42,26 @@ load _helpers_govcms
   # Add the repo at the checked out version.
   composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs --update-with-dependencies
 
+  # Ensure the binaries are available.
+  assert_file_exists vendor/bin/govcms-audit
+  assert_file_exists vendor/bin/govcms-behat
+  assert_file_exists vendor/bin/govcms-lint
+  assert_file_exists vendor/bin/govcms-lint-distro
+  assert_file_exists vendor/bin/govcms-phpunit
+  assert_file_exists vendor/bin/govcms-vet
+  assert_file_exists vendor/bin/govcms-deploy
+  assert_file_exists vendor/bin/govcms-backups-preserve
+  assert_file_exists vendor/bin/govcms-cache-rebuild
+  assert_file_exists vendor/bin/govcms-config-backup
+  assert_file_exists vendor/bin/govcms-config-import
+  assert_file_exists vendor/bin/govcms-db-backup
+  assert_file_exists vendor/bin/govcms-db-sync
+  assert_file_exists vendor/bin/govcms-db-update
+  assert_file_exists vendor/bin/govcms-enable_modules
+  assert_file_exists vendor/bin/govcms-pre-deploy
+  assert_file_exists vendor/bin/govcms-pre-deploy-db-update
+  assert_file_exists vendor/bin/govcms-update_site_alias
+
   # Assert that modified settings file was included after 'composer update'.
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
 
