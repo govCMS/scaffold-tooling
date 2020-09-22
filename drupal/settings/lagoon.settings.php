@@ -77,7 +77,7 @@ $settings['varnish_version'] = 4;
 if (getenv('ENABLE_REDIS')) {
   $redis = new \Redis();
   $redis_host = getenv('REDIS_HOST') ?: 'redis';
-  $redis_port = getenv('REDIS_SERVICE_PORT') ?: '6379';
+  $redis_port = getenv('REDIS_SERVICE_PORT') ?: 6379;
   // Redis should return in < 1s so this is a maximum time
   // to ensure we don't hold the proc forever.
   $redis_timeout = getenv('REDIS_CONNECT_TIMEOUT') ?: 2;
