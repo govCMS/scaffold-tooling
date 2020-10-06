@@ -16,7 +16,8 @@
         "phar-io/version": "1.0.1",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
-        "zaporylie/composer-drupal-optimizations": "^1.0"
+        "zaporylie/composer-drupal-optimizations": "^1.0",
+        "drupal/core-composer-scaffold": "*"
     },
     "bin": [
         "scripts/govcms-audit",
@@ -42,5 +43,24 @@
         "scripts/validate/govcms-validate-theme-yml",
         "scripts/validate/govcms-yaml_lint",
         "scripts/validate/govcms-module_verify"
-    ]
+    ],
+    "extra": {
+        "drupal_scaffold": {
+            "file-mapping": {
+                "[web-root]/sites/default/lagoon.services.yml": "drupal/settings/lagoon.services.yml",
+                "[web-root]/sites/default/redis-unavailable.services.yml": "drupal/settings/redis-unavailable.services.yml",
+                "[web-root]/sites/default/lagoon.settings.php": "drupal/settings/lagoon.settings.php",
+                "[web-root]/sites/default/production.services.yml": "drupal/settings/production.services.yml",
+                "[web-root]/sites/default/production.settings.php": "drupal/settings/production.settings.php",
+                "[web-root]/sites/default/development.services.yml": "drupal/settings/development.services.yml",
+                "[web-root]/sites/default/development.settings.php": "drupal/settings/development.settings.php",
+                "[web-root]/sites/default/all.services.yml": "drupal/settings/all.services.yml",
+                "[web-root]/sites/default/settings.php": {
+                    "mode": "replace",
+                    "overwrite": false,
+                    "path": "drupal/settings/all.settings.php"
+                }
+            }
+        }
+    }
 }

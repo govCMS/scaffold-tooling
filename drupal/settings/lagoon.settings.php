@@ -8,17 +8,14 @@
  * the platform.).
  */
 
-// phpcs:disable Drupal.Classes.UseGlobalClass.RedundantUseStatement
-
-// See comment in all.settings.php.
-// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
+$lagoon_environment_type = getenv('LAGOON_ENVIRONMENT_TYPE');
+putenv('GOVCMS_ENVIRONMENT_TYPE', $lagoon_environment_type);
 
 /**
  * Include the corresponding *.services.yml.
  */
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$settings['container_yamls'][] = $govcms_includes . '/lagoon.services.yml';
+$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/default/lagoon.services.yml';
 
 $db_conf = [
   'driver' => 'mysql',
@@ -154,7 +151,7 @@ if (getenv('ENABLE_REDIS')) {
   }
   catch (\Exception $e) {
     // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-    $settings['container_yamls'][] = "$govcms_includes/redis-unavailable.services.yml";
+    $settings['container_yamls'][] = DRUPAL_ROOT . "/sites/default/redis-unavailable.services.yml";
     $settings['cache']['default'] = 'cache.backend.null';
   }
 }

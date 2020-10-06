@@ -10,16 +10,11 @@
 
 // phpcs:disable Drupal.Classes.ClassFileName.NoMatch,Drupal.Commenting.ClassComment.Short
 
-// This variable may be set from settings.php. Fallback to current directory.
-// @see https://github.com/govCMS/govcms8-scaffold-paas/blob/57cddd8/web/sites/default/settings.php#L48
-// phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
-
 /**
  * Include the corresponding *.services.yml.
  */
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
+$settings['container_yamls'][] = DRUPAL_ROOT . '/sites/default/all.services.yml';
 
 // Drupal 8 config.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '../config/default';
@@ -139,4 +134,22 @@ else {
   $config['seckit.settings']['seckit_ssl']['hsts'] = FALSE;
   $config['seckit.settings']['seckit_ssl']['hsts_max_age'] = 0;
   $config['seckit.settings']['seckit_ssl']['hsts_subdomains'] = FALSE;
+}
+
+/**
+ * Include additional settings files if required.
+ */
+if (getenv('LAGOON_ENVIRONMENT_TYPE') && file_exists(__DIR__ . '/lagoon.settings.php')) {
+  include __DIR__ . '/lagoon.settings.php';
+}
+
+// Too keep govCMS portable we rely on a different environment variable to
+// determine the state of the environment and what additional settings we
+// should include to assist with a standard experience.
+$environment_type = getenv('GOVCMS_ENVIRONEMNT_TYPE');
+
+if ($environment_type && file_exists(__DIR__ . "/{$environment_type}.settings.php")) {
+  include __DIR__ . "/{$environment_type}.settings.php";
+} elseif (file_exists(__DIR__ . '/settings.local.php')) {
+  include __DIR__ . '/settings.local.php';
 }
