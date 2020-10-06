@@ -45,7 +45,7 @@
         "scripts/validate/govcms-module_verify"
     ],
     "extra": {
-        "drupal_scaffold": {
+        "drupal-scaffold": {
             "file-mapping": {
                 "[web-root]/sites/default/lagoon.services.yml": "drupal/settings/lagoon.services.yml",
                 "[web-root]/sites/default/redis-unavailable.services.yml": "drupal/settings/redis-unavailable.services.yml",
