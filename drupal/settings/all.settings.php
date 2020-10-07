@@ -150,6 +150,7 @@ $environment_type = getenv('GOVCMS_ENVIRONEMNT_TYPE');
 
 if ($environment_type && file_exists(__DIR__ . "/{$environment_type}.settings.php")) {
   include __DIR__ . "/{$environment_type}.settings.php";
-} elseif (file_exists(__DIR__ . '/settings.local.php')) {
+}
+elseif (file_exists(__DIR__ . '/settings.local.php')) {
   include __DIR__ . '/settings.local.php';
 }
