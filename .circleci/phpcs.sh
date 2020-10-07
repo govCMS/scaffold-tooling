@@ -16,5 +16,5 @@ composer global require drupal/coder
 composer global require dealerdirect/phpcodesniffer-composer-installer
 
 for file in "${targets[@]}"; do
-  [ -f "${file}" ] && phpcs --standard=Drupal,DrupalPractice -s --colors "${file}"
+  [ -f "${file}" ] && /home/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice -s --colors "${file}"
 done;
