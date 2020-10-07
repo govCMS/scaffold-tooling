@@ -15,9 +15,6 @@ done < <(
 composer global require drupal/coder
 composer global require dealerdirect/phpcodesniffer-composer-installer
 
-which phpcs
-phpcs -i
-
 for file in "${targets[@]}"; do
-  [ -f "${file}" ] && phpcs --standard=Drupal,DrupalPractice -s --colors "${file}"
+  [ -f "${file}" ] && /home/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice -s --colors "${file}"
 done;
