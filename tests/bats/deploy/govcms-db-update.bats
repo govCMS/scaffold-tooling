@@ -5,6 +5,7 @@ load ../_helpers_govcms
 
 @test "Update database: defaults" {
   mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "Successful" 1
 
   run scripts/deploy/govcms-db-update >&3
 
@@ -12,7 +13,7 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Preparing database update."
 
   assert_output_contains "[success]: Completed successfully."
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 }
 
 @test "Update database: skip" {
@@ -54,5 +55,5 @@ load ../_helpers_govcms
   assert_output_not_contains "[info]: Preparing database update."
 
   assert_output_not_contains "[success]: Completed successfully."
-  assert_equal 0 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
 }
