@@ -4,7 +4,6 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-        "drupal/chosen_lib": "2.6.0",
         "drupal/clamav": "1.1.0",
         "drupal/console": "^1.0.2",
         "drupal/fast_404": "^2.0@alpha",
@@ -36,6 +35,7 @@
         "scripts/validate/govcms-validate-permissions",
         "scripts/validate/govcms-validate-platform-yml",
         "scripts/validate/govcms-validate-theme-yml",
+        "scripts/validate/govcms-prevent-theme-modules",
         "scripts/validate/govcms-yaml_lint",
         "scripts/validate/govcms-module_verify"
     ],
