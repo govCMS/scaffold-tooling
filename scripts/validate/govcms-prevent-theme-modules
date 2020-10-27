@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2162,SC2046,SC2002
+set -euo pipefail
+
+#
+# GovCMS prevent module inclusions in theme dirs.
+#
+# Inspect the .info.yml files in the repo to determine if there
+# are modules preset.
+#
+
+GOVCMS_PREVENT_THEME_MODULES=${GOVCMS_PREVENT_THEME_MODULES:-true}
+GOVCMS_INFO_FILE_LIST=${GOVCMS_INFO_FILE_LIST:-}
+DRUPAL_DIR=${DRUPAL_DIR:-web}
+
+echo "GovCMS Validate :: Scan themes for modules"
+
+# We will need to export this during automated testing.
+if [ -z "${GOVCMS_INFO_FILE_LIST}" ]; then
+  if [ -d "$DRUPAL_DIR/themes" ]; then
+    GOVCMS_INFO_FILE_LIST=$(find "$DRUPAL_DIR/themes" -type f -name "*.info.yml")
+  else
+    GOVCMS_INFO_FILE_LIST=$(find themes -type f -name "*.info.yml")
+  fi
+fi
+
+if [ "$GOVCMS_PREVENT_THEME_MODULES" = "false" ]; then
+  echo "[skip]: Module detection is disabled."
+  exit 0;
+fi
+
+IFS_BAK="$IFS"
+IFS=$'\n'
+
+for file in $GOVCMS_INFO_FILE_LIST; do
+  if [[ $(yq r "$file" 'type') == 'module' ]]; then
+    echo "[fail]: Module detected with $file"
+    exit 1;
+  fi
+  echo "[info]: $file is valid"
+done
+
+IFS=$IFS_BAK
+echo "[success]: No modules detected."

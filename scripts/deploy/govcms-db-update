@@ -13,7 +13,7 @@ GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
 echo "GovCMS Deploy :: Update Database"
 
 if [ "$GOVCMS_DEPLOY_UPDB" != "true" ]; then
-  # Skip the databae updates for this deploy.
+  # Skip the database updates for this deploy.
   echo "[skip]: Environment variable is set to skip."
   exit 0
 fi
@@ -22,6 +22,11 @@ if [ "$GOVCMS_DEPLOY_PRE_UPDB" != "false" ]; then
   # If we have the pre_updb task configured for this deployment
   # then we don't need to re-run the databases updates.
   echo "[skip]: Pre-deploy updates were applied."
+  exit 0
+fi
+
+if ! drush status --fields=bootstrap | grep -q "Successful"; then
+  echo '[skip]: Site is not available.'
   exit 0
 fi
 

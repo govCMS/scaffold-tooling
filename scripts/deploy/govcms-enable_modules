@@ -19,6 +19,11 @@ if [ "$GOVCMS_DEPLOY_ENABLE_MODULES" != "true" ]; then
   exit 0
 fi
 
+if ! drush status --fields=bootstrap | grep -q "Successful"; then
+  echo '[skip]: Site is not available.'
+  exit 0
+fi
+
 MODULES=$(drush pm:list --status=enabled)
 NON_PROD_MODULES=("stage_file_proxy")
 PLATFORM_MODULES=(
