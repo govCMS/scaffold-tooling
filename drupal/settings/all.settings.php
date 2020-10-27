@@ -23,6 +23,8 @@ $settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
 
 // Drupal 8 config.
 $config_directories[CONFIG_SYNC_DIRECTORY] = '../config/default';
+// Drupal 8 (only) partial overrides.
+$config_directories['dev'] = '../config/dev';
 // Drupal 9 ready.
 $settings['config_sync_directory'] = '../config/default';
 
