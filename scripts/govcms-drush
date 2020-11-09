@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2162,SC2046,SC2002,SC2086
+set -euo pipefail
+
+#
+# GovCMS Drush
+#
+# Trap drush commands so that failures can be caught and sent
+# to configured email addresses for further investigation.
+#
+
+TO='govcms.devops@salsadigital.com.au'
+FROM="drush-notifications@govcms.gov.au"
+
+# Comma separated list of emails.
+GOVCMS_DRUSH_RECIPIENTS=${GOVCMS_DRUSH_RECIPIENTS:-}
+GOVCMS_DRUSH_NOTIFICATION_ENABLE=${GOVCMS_DRUSH_NOTIFICATION_ENABLE:-false}
+
+TMP=$(mktemp)
+COMMAND="drush $*"
+
+echo "GovCMS Drush"
+
+send_errors() {
+  ERROR=$(<$TMP)
+  SUBJECT="GovCMS Drush failure for $LAGOON_SAFE_PROJECT $LAGOON_GIT_BRANCH"
+
+  echo "[fail]: Command failed sending notifications."
+
+  sendmail $TO <<EOF
+Subject: $SUBJECT
+From: $FROM
+
+GovCMS Drush command failed to complete successfully.
+Command: $COMMAND
+Error:
+$ERROR
+
+Please contact your development partner or support for assistance.
+EOF
+}
+
+if $COMMAND 2> >(tee $TMP); then
+  echo "[success]: Command completed successfully"
+  exit
+fi
+
+if [ "$GOVCMS_DRUSH_NOTIFICATION_ENABLE" != "true" ]; then
+  echo "[fail]: Command failed, notifications not enabled. Skipping."
+  exit 1
+fi
+
+send_errors
+rm $TMP
+exit 1

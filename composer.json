@@ -25,6 +25,7 @@
         "scripts/govcms-phpunit",
         "scripts/govcms-vet",
         "scripts/govcms-deploy",
+        "scripts/govcms-drush",
         "scripts/deploy/govcms-backups-preserve",
         "scripts/deploy/govcms-cache-rebuild",
         "scripts/deploy/govcms-config-backup",
