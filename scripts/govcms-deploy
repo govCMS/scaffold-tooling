@@ -53,7 +53,10 @@ common_deploy () {
   if [[ "$LAGOON_ENVIRONMENT_TYPE" = "development" && "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" = "import" ]]; then
     echo "Performing content import."
     # shellcheck disable=SC2086
-    drush --alias-path=/app/drush/sites sql:sync @govcms.prod @self -y
+    drush --alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --result-file=/tmp/sync.sql -y
+    drush rsync --alias-path=/app/drush/sites @govcms.prod:/tmp/sync.sql.gz /tmp/ -y
+    gunzip < /tmp/sync.sql.gz | drush sqlc
+    rm /tmp/sync.sql.gz
   fi
 
   drush updatedb -y

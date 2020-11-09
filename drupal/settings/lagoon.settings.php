@@ -48,8 +48,6 @@ if (getenv('MARIADB_READREPLICA_HOSTS')) {
     foreach ($replica_hosts as $replica_host) {
       // Add replica support to the default database connection. This allows
       // services to use the database.replica service for particular operations.
-      // @TODO: Lagoon should expose MARAIDB replica hosts as an array so we can
-      // scale the replicas horizontally.
       $databases['default']['replica'][] = array_merge($db_conf, [
         'host' => $replica_host,
       ]);
