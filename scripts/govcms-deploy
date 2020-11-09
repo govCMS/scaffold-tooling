@@ -59,8 +59,8 @@ common_deploy () {
     rm /tmp/sync.sql.gz
   fi
 
-  drush updatedb -y
   drush cache:rebuild
+  drush updatedb -y
 
   # Base configuration import with development environment overrides.
   if [[ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" = "import" && "$config_count" -gt 0 ]]; then

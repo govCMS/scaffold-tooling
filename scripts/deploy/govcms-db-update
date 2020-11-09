@@ -9,7 +9,8 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_UPDB=${GOVCMS_DEPLOY_UPDB:-true}
 GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
-GOVCMS_CACHE_REBUILD_PRE_UPDB=${GOVCMS_CACHE_REBUILD_PRE_UPDB:-false}
+# Temporarily enabled by default to resolve 'the theme * does not exist'.
+GOVCMS_CACHE_REBUILD_PRE_UPDB=${GOVCMS_CACHE_REBUILD_PRE_UPDB:-true}
 
 echo "GovCMS Deploy :: Update Database"
 
@@ -40,9 +41,7 @@ if drush status --format=json | grep drupal-version | grep -q "\"9"; then
     echo "[info]: Running cache-rebuild prior to database update."
     drush cr
   fi
-fi
-
-if [ "$GOVCMS_CACHE_REBUILD_PRE_UPDB" != "false" ]; then
+elif [ "$GOVCMS_CACHE_REBUILD_PRE_UPDB" != "false" ]; then
   # Allow forced cache-rebuild prior to database updates.
   drush cr
 fi
