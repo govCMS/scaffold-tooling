@@ -56,6 +56,9 @@ variables:
       docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
       docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
 
+      # Some local overrides are prefixed with '###' and we remove them here.
+      sed -i -e "/###/d" docker-compose.yml
+
       docker-compose up -d mariadb
       docker-compose up -d
       docker-compose ps
