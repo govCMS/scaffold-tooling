@@ -41,6 +41,7 @@
         "scripts/validate/govcms-validate-theme-yml",
         "scripts/validate/govcms-prevent-theme-modules",
         "scripts/validate/govcms-yaml_lint",
-        "scripts/validate/govcms-module_verify"
+        "scripts/validate/govcms-module_verify",
+        "scripts/validate/govcms-illegal-files"
     ]
 }
