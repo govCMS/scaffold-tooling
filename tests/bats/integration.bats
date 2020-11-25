@@ -67,6 +67,7 @@ load _helpers_govcms
   assert_file_exists vendor/bin/govcms-prevent-theme-modules
   assert_file_exists vendor/bin/govcms-yaml_lint
   assert_file_exists vendor/bin/govcms-module_verify
+  assert_file_exists vendor/bin/govcms-illegal-files
 
   # Assert that modified settings file was included after 'composer update'.
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
