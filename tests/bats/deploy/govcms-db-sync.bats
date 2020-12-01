@@ -1,7 +1,15 @@
 #!/usr/bin/env bats
-# shellcheck disable=SC2002,SC2031,SC2030
+# shellcheck disable=SC2002,SC2031,SC2030,SC2034,SC2155
 
 load ../_helpers_govcms
+
+setup() {
+  CUR_DIR="$PWD"
+  export TEST_APP_DIR=$(prepare_app_dir)
+  setup_mock
+
+  touch /tmp/sync.sql.gz
+}
 
 ################################################################################
 #                               DEFAULTS                                       #
@@ -9,6 +17,7 @@ load ../_helpers_govcms
 
 @test "Database sync: defaults" {
   mock_drush=$(mock_command "drush")
+  mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
@@ -30,6 +39,7 @@ load ../_helpers_govcms
 
 @test "Database sync: production" {
   mock_drush=$(mock_command "drush")
+  mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=production
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
@@ -78,6 +88,7 @@ load ../_helpers_govcms
 @test "Database sync: development, no existing site" {
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "Failed" 1
+  mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
@@ -99,15 +110,16 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Site could not be bootstrapped... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
-  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }
 
 @test "Database sync: development, alias overrides" {
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "Successful" 1
+  mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
@@ -128,15 +140,16 @@ load ../_helpers_govcms
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/othersites sql:sync @govcms.override @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/othersites @govcms.override sql:dump --gzip --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
-  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }
 
 @test "Database sync: development, import content" {
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "Successful" 1
+  mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
@@ -157,8 +170,8 @@ load ../_helpers_govcms
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites sql:sync @govcms.prod @self -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
-  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }

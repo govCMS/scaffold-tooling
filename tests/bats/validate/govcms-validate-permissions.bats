@@ -59,6 +59,5 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[info]: tests/bats/validate/fixtures/user.role.example.yml is valid"
   assert_output_contains "[fail]: tests/bats/validate/fixtures/user.role.is_admin.yml is listed as an admin role"
 }
