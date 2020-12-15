@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2162,SC2046,SC2002
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
 set -euo pipefail
 
 #
@@ -46,7 +46,7 @@ done
 
 IFS=$IFS_BAK
 
-FILE_LFS=$(join_char , $GOVCMS_INFO_FILE_LIST)
+FILE_LFS=$(join_char , "${GOVCMS_INFO_FILE_LIST}")
 govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.FindModule"
 
 if [ -z "${FAILURES}" ]; then

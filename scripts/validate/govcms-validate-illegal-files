@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
 set -euo pipefail
 
 #
@@ -43,7 +43,7 @@ find . -name "*.php" -print0 | while read -rd $'\0' file; do
   fi
 done
 
-FILE_LFS=$(join_char , $GOVCMS_FILE_LIST)
+FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
 govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalFiles"
 
 if [ -z "${FAILURES}" ]; then
