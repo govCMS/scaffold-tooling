@@ -46,8 +46,10 @@ done
 
 IFS=$IFS_BAK
 
-FILE_LFS=$(join_char , "${GOVCMS_INFO_FILE_LIST}")
-govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.FindModule"
+if [ -x govcms-prepare-xml ]; then
+  FILE_LFS=$(join_char , "${GOVCMS_INFO_FILE_LIST}")
+  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.FindModule"
+fi
 
 if [ -z "${FAILURES}" ]; then
   echo "[success]: No modules detected."

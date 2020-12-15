@@ -41,8 +41,10 @@ done
 
 IFS=$IFS_BAK
 
-FILE_LFS=$(join_char , "${GOVCMS_PLATFORM_FILES}")
-govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
+if [ -x govcms-prepare-xml ]; then
+  FILE_LFS=$(join_char , "${GOVCMS_PLATFORM_FILES}")
+  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
+fi
 
 if [ -z "${FAILURES}" ]; then
   echo "[success]: No YAML issues in platform files."

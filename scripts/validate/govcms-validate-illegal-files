@@ -20,9 +20,11 @@ function illegal_file {
   return 1
 }
 
-function fail {
-  echo "[fail]: Illegal file found [$1]"
-  FAILURES="${FAILURES},{$1}"
+function illegal_file {
+  if [[ "$1" =~ $GOVCMS_ILLEGAL_FILE_PATTERN(.+)?\.php ]]; then
+    return 0
+  fi
+  return 1
 }
 
 echo "GovCMS Validate :: Illegal files"
@@ -30,21 +32,25 @@ echo "GovCMS Validate :: Illegal files"
 if [ -n "${GOVCMS_FILE_LIST}" ]; then
   for file in $GOVCMS_FILE_LIST; do
     if illegal_file "$file" -eq 0; then
-      fail "$file"
+      echo "[fail]: Illegal file found [$file]"
+      FAILURES="${FAILURES},${1}"
     fi
   done
   echo "[success]: No illegal files."
   exit 0
 fi
 
-find . -name "*.php" -print0 | while read -rd $'\0' file; do
+while read -rd $'\0' file; do
   if illegal_file "$file"; then
-    fail "$file"
+    echo "[fail]: Illegal file found [$file]"
+    FAILURES="${FAILURES},${file}"
   fi
-done
+done < <(find . -name "*.php" -print0)
 
-FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
-govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalFiles"
+if [ -x govcms-prepare-xml ]; then
+  FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
+  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalFiles"
+fi
 
 if [ -z "${FAILURES}" ]; then
   echo "[success]: No illegal files."
