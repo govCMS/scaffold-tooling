@@ -11,7 +11,11 @@ set -euo pipefail
 
 GOVCMS_PREVENT_THEME_MODULES=${GOVCMS_PREVENT_THEME_MODULES:-true}
 GOVCMS_INFO_FILE_LIST=${GOVCMS_INFO_FILE_LIST:-}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-prevent-theme-modules}
 DRUPAL_DIR=${DRUPAL_DIR:-web}
+
+FAILURES=""
+function join_char { local IFS="$1" shift; echo "$*"; }
 
 echo "GovCMS Validate :: Scan themes for modules"
 
@@ -35,10 +39,20 @@ IFS=$'\n'
 for file in $GOVCMS_INFO_FILE_LIST; do
   if [[ $(yq r "$file" 'type') == 'module' ]]; then
     echo "[fail]: Module detected with $file"
-    exit 1;
+    FAILURES="$FAILURES,$file"
   fi
   echo "[info]: $file is valid"
 done
 
 IFS=$IFS_BAK
-echo "[success]: No modules detected."
+
+FILE_LFS=$(join_char , $GOVCMS_INFO_FILE_LIST)
+govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.FindModule"
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: No modules detected."
+  exit 0
+fi
+
+echo "[fail]: Modules detected"
+exit 1

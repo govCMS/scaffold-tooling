@@ -11,6 +11,10 @@ GOVCMS_THEME_FILES=${GOVCMS_THEME_FILES:-}
 GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
 GOVCMS_THEME_DIR=${GOVCMS_THEME_DIR:-}
 GOVCMS_LINT_EXCLUDE_PATTERN=${GOVCMS_LINT_EXCLUDE_PATTERN:-}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-theme-yml}
+
+FAILURES=""
+function join_char { local IFS="$1" shift; echo "$*"; }
 
 echo "GovCMS Validate :: Yaml lint theme files"
 
@@ -47,9 +51,19 @@ for file in $GOVCMS_THEME_FILES; do
 
   if ! $GOVCMS_YAML_LINT "$file"; then
     echo "[fail]: $file failed lint";
-    exit 1;
+    FAILURES="$FAILURES,$file"
   fi
 done
 
 IFS=$IFS_BAK
-echo "[success]: No YAML issues in theme files."
+
+FILE_LFS=$(join_char , $GOVCMS_THEME_FILES)
+govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.InvalidThemeYml"
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: No YAML issues in theme files."
+  exit 0
+fi
+
+echo "[fail]: YAML issues in theme files."
+exit 1

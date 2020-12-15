@@ -8,6 +8,10 @@ set -euo pipefail
 
 GOVCMS_ILLEGAL_FILE_PATTERN=${GOVCMS_ILLEGAL_FILE_PATTERN:-"(adminer|phpmyadmin|bigdump)"}
 GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-illegal-files}
+
+FAILURES=""
+function join_char { local IFS="$1" shift; echo "$*"; }
 
 function illegal_file {
   if [[ "$1" =~ $GOVCMS_ILLEGAL_FILE_PATTERN(.+)?\.php ]]; then
@@ -18,7 +22,7 @@ function illegal_file {
 
 function fail {
   echo "[fail]: Illegal file found [$1]"
-  exit 1
+  FAILURES="${FAILURES},{$1}"
 }
 
 echo "GovCMS Validate :: Illegal files"
@@ -39,5 +43,13 @@ find . -name "*.php" -print0 | while read -rd $'\0' file; do
   fi
 done
 
-echo "[success]: No illegal files."
-exit 0
+FILE_LFS=$(join_char , $GOVCMS_FILE_LIST)
+govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalFiles"
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: No illegal files."
+  exit 0
+fi
+
+echo "[fail]: Illegal files detected"
+exit 1
