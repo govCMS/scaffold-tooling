@@ -12,12 +12,19 @@ set -euo pipefail
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
+GOVCMS_SKIP_DATABASE_BACKUP=${GOVCMS_SKIP_DATABASE_BACKUP:-}
 
 echo "GovCMS Deploy :: Backup database"
 
 # Backup processes only happen on production.
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   echo "[skip]: Non-production environment."
+  exit 0
+fi
+
+# Allow optional database backup bypass.
+if [ -n "${GOVCMS_SKIP_DATABASE_BACKUP}" ]; then
+  echo "[skip]: Skipping database backup."
   exit 0
 fi
 
