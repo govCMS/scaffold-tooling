@@ -22,28 +22,28 @@
  *
  *   You can use "project.settings.php" to add any variables you need. Or better
  *   to include an additional file eg web/sites/default/lando.settings.php. Make
- *   sure the LAGOON environment variable is not set. And set LAGOON_ENVIRONMENT_TYPE
- *   to 'local'.
+ *   sure the LAGOON environment variable is not set. And set
+ *   LAGOON_ENVIRONMENT_TYPE to 'local'.
  *
- * `I don't like these settings, my project is PaaS, and I want to have lot more control.
+ * `I don't like these settings, my project is PaaS, and I want to more control.
  *
  *   Have a look at lagoon.settings.php to understand what needs to be set to
  *   run a site on Lagoon. Our recommendation is that you include this file and
  *   override it at the project.settings.php level.
  *
- * `I feel like there are some settings that should be the same for every GovCMS site.
+ * `I think there are settings that should be the same for every GovCMS site.
  *
  *   We welcome your observations! Check out [link to come].
  */
 
 // Set by Drupal core.
-/* @var $app_root string */
+/** @var $app_root string */
 
 // Path to standardized platform-wide settings includes.
-/* @var $govcms_includes string */
+/** @var $govcms_includes string */
 
 // Set to 'local', 'development', 'production'.
-/* @var $govcms_env string */
+/** @var $govcms_env string */
 
 $govcms_includes = $app_root . '/../vendor/govcms/scaffold-tooling/drupal/settings';
 
