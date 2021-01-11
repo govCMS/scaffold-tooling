@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+#
+# GovCMS illegal files.
+#
+
+GOVCMS_ILLEGAL_FILE_PATTERN=${GOVCMS_ILLEGAL_FILE_PATTERN:-"(adminer|phpmyadmin|bigdump)"}
+GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+
+function illegal_file {
+  if [[ "$1" =~ $GOVCMS_ILLEGAL_FILE_PATTERN(.+)?\.php ]]; then
+    return 0
+  fi
+  return 1
+}
+
+function fail {
+  echo "[fail]: Illegal file found [$1]"
+  exit 1
+}
+
+echo "GovCMS Validate :: Illegal files"
+
+if [ -n "${GOVCMS_FILE_LIST}" ]; then
+  for file in $GOVCMS_FILE_LIST; do
+    if illegal_file "$file" -eq 0; then
+      fail "$file"
+    fi
+  done
+  echo "[success]: No illegal files."
+  exit 0
+fi
+
+find . -name "*.php" -print0 | while read -rd $'\0' file; do
+  if illegal_file "$file"; then
+    fail "$file"
+  fi
+done
+
+echo "[success]: No illegal files."
+exit 0

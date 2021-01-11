@@ -13,7 +13,7 @@ load ../_helpers_govcms
   assert_output_contains "[info]: Preparing database update."
 
   assert_output_contains "[success]: Completed successfully."
-  assert_equal 3 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }
 
 @test "Update database: skip" {
