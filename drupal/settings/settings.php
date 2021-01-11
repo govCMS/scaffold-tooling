@@ -36,14 +36,23 @@
  *   We welcome your observations! Check out [link to come].
  */
 
-// Set by Drupal core.
-/** @var $app_root string */
+/**
+ * Set by Drupal core.
+ *
+ * @var string $app_root
+ */
 
-// Path to standardized platform-wide settings includes.
-/** @var $govcms_includes string */
+/**
+ * Path to standardized platform-wide settings includes.
+ *
+ * @var string $govcms_includes
+ */
 
-// Set to 'local', 'development', 'production'.
-/** @var $govcms_env string */
+/**
+ * Set to 'local', 'development', 'production'.
+ *
+ * @var string $govcms_env
+ */
 
 $govcms_includes = $app_root . '/../vendor/govcms/scaffold-tooling/drupal/settings';
 
