@@ -57,10 +57,6 @@ if (getenv('MARIADB_READREPLICA_HOSTS')) {
   }
 }
 
-// Lagoon Solr connection.
-$config['search_api.server']['backend_config']['connector_config']['host'] = getenv('SOLR_HOST') ?: 'solr';
-$config['search_api.server']['backend_config']['connector_config']['path'] = '/solr/' . getenv('SOLR_CORE') ?: 'drupal';
-
 // Lagoon Varnish & reverse proxy settings.
 $varnish_hosts = explode(',', getenv('VARNISH_HOSTS') ?: 'varnish');
 array_walk($varnish_hosts, function (&$value, $key) {
@@ -115,7 +111,6 @@ if (getenv('ENABLE_REDIS')) {
     // being enabled.
     // @see https://github.com/govCMS/scaffold-tooling/issues/30
     // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-    global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
 
     // Use redis for container cache.

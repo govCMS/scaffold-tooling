@@ -125,8 +125,6 @@ if (defined('STDIN') || in_array(PHP_SAPI, ['cli', 'cli-server'])) {
   }
 }
 
-// Enforce correct solr server configuration (GOVCMS-4634).
-// Fix for 8.5.0 and the solr upgrade.
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['path'] = '/';
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['core'] = 'drupal';
 

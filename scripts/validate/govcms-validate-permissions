@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2162,SC2046,SC2002
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
 set -euo pipefail
 
 #
@@ -11,6 +11,10 @@ set -euo pipefail
 
 GOVCMS_ROLE_PATTERN=${GOVCMS_ROLE_PATTERN:-user.role.*.yml}
 GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-permissions}
+
+FAILURES=""
+function join_char { local IFS="$1" shift; echo "$*"; }
 
 echo "GovCMS Validate :: Disallowed permissions"
 
@@ -25,14 +29,28 @@ IFS=$'\n'
 for file in $GOVCMS_FILE_LIST; do
     if [ $(cat "$file" | grep -c -e "administer permissions" -e "administer modules" -e "administer software updates" -e "administer site configuration" -e "use PHP for google analytics tracking visibility" -e "import configuration") -ne 0 ]; then
       echo "[fail]: $file has restricted permissions";
-      exit 1;
+      FAILURES="$FAILURES,$file"
+      continue
     fi
     if [[ $(yq r "$file" 'is_admin') == 'true' ]]; then
       echo "[fail]: $file is listed as an admin role";
-      exit 1;
+      FAILURES="$FAILURES,$file"
+      continue
     fi
     echo "[info]: $file is valid"
 done
 
 IFS=$IFS_BAK
-echo "[success]: No elevated permissions detected in configuration."
+
+if [ -x govcms-prepare-xml ]; then
+  FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
+  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
+fi
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: No elevated permissions detected in configuration."
+  exit 0
+fi
+
+echo "[fail]: Elevated permissions detected"
+exit 1
