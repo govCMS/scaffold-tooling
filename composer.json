@@ -23,6 +23,7 @@
         "scripts/govcms-lint",
         "scripts/govcms-lint-distro",
         "scripts/govcms-phpunit",
+        "scripts/govcms-prepare-xml",
         "scripts/govcms-vet",
         "scripts/govcms-deploy",
         "scripts/govcms-drush",

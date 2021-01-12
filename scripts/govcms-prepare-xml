@@ -1,0 +1,82 @@
+#!/usr/bin/env php
+
+<?php
+
+$options = getopt('', [
+  'failures:',
+  'total:',
+  'name:',
+  'fail-message:',
+]);
+
+extract($options);
+
+if (empty($total) && empty($failures) && empty($name)) {
+  echo "GovCMS Prepare XML report\n";
+  echo "Prepare valid junit output for simple CSV lists\n\n";
+  echo "Usage: govcms-prepare-xml [--total csv] [--failures csv] [--name outfile]\n\n";
+  echo "Arguments:\n";
+  echo "  --total CSV list of processed items\n";
+  echo "  --failures CSV list of failure items\n";
+  echo "  --name Outfile name\n";
+  return;
+}
+
+$total = empty($total) ? [] : explode(',', $total);
+$failures = empty($failures) ? [] : explode(',', $failures);
+
+$total = array_filter($total);
+$failures = array_filter($failures);
+
+$success = array_diff($total, $failures);
+
+$xml = new XMLWriter();
+$xml->openUri("{$name}.xml");
+$xml->openMemory();
+$xml->startDocument("1.0", 'UTF-8');
+
+// Prepare the testsuites container.
+$xml->startElement('testsuites');
+$xml->writeAttribute('name', $name);
+$xml->writeAttribute('errors', 0);
+$xml->writeAttribute('tests', count($total));
+$xml->writeAttribute('failures', count($failures));
+
+foreach ($success as $success) {
+  $xml->startElement('testsuite');
+  $xml->writeAttribute('name', $success);
+  $xml->writeAttribute('errors', 0);
+  $xml->writeAttribute('tests', 1);
+  $xml->writeAttribute('failures', 0);
+  $xml->startElement('testcase');
+  $xml->writeAttribute('name', $success);
+  $xml->startElement('success');
+  $xml->writeAttribute('type', 'success');
+  $xml->writeAttribute('message', "{$options['fail-message']} at $failure");
+  $xml->endElement();
+  $xml->endElement();
+}
+
+foreach ($failures as $failure) {
+  $xml->startElement('testsuite');
+  $xml->writeAttribute('name', $failure);
+  $xml->writeAttribute('errors', 0);
+  $xml->writeAttribute('tests', 1);
+  $xml->writeAttribute('failures', 1);
+  $xml->startElement('testcase');
+  $xml->writeAttribute('name', $failure);
+  $xml->startElement('failure');
+  $xml->writeAttribute('type', 'error');
+  $xml->writeAttribute('message', "{$options['fail-message']} at $failure");
+  $xml->endElement();
+  $xml->endElement();
+  $xml->endElement();
+}
+
+$xml->endElement();
+$xml->endDocument();
+$file = $xml->outputMemory();
+
+file_put_contents("{$name}.xml", $file);
+echo "GovCMS Prepare XML report\n";
+echo "Successfully generated {$name}.xml\n\n";
