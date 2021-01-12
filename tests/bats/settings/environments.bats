@@ -8,6 +8,26 @@ setup() {
     (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/settings.php)
     sed -i.bak 's/govcms_includes =.*/govcms_includes = "\/tmp\/bats";/g' /tmp/bats/settings.php
   fi
+
+  if [ ! -f "/tmp/bats/all.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+  fi
+
+  if [ ! -f "/tmp/bats/development.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/development.settings.php)
+  fi
+
+  if [ ! -f "/tmp/bats/production.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/production.settings.php)
+  fi
+
+  if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
+  fi
 }
 
 settings() {
