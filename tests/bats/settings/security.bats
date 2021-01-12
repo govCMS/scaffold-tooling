@@ -3,14 +3,14 @@
 load ../_helpers_govcms
 
 setup() {
-  if [ ! -f "/tmp/bats/settings.php" ]; then
+  if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
     (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
   fi
 }
 
 settings() {
-  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/settings.php)
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/all.settings.php)
   echo "$JSON"
 }
 
