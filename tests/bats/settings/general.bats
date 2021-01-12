@@ -123,7 +123,6 @@ lagoon_settings() {
     all_settings | jq -rc '.config | "\(.["search_api.server.lagoon_solr"])"'
   )
 
-  echo $SOLR
   [ "$(echo "$SOLR" | jq -rc .backend_config.connector_config.path)" == '/' ]
   [ "$(echo "$SOLR" | jq -rc .backend_config.connector_config.core)" == 'drupal' ]
 }
