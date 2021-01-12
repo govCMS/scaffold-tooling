@@ -47,6 +47,7 @@ settings() {
 @test "Correct includes in production mode (not lagoon)" {
   FILES=$(
     unset LAGOON
+    unset DEV_MODE
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq .included_files
   )
@@ -58,6 +59,7 @@ settings() {
 
 @test "Correct includes in production mode (lagoon image)" {
   FILES=$(
+    unset DEV_MODE
     LAGOON_ENVIRONMENT_TYPE=production \
     LAGOON=true \
     settings | jq .included_files
@@ -83,6 +85,7 @@ settings() {
 
 @test "Correct yamls production mode" {
   YAMLS=$(
+    unset DEV_MODE
     LAGOON=true \
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq -rc .settings.container_yamls

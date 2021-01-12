@@ -7,10 +7,20 @@ setup() {
     mkdir -p /tmp/bats
     (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
   fi
+
+  if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
+  fi
 }
 
 settings() {
   JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/all.settings.php)
+  echo "$JSON"
+}
+
+lagoon_settings() {
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/lagoon.settings.php)
   echo "$JSON"
 }
 
@@ -45,7 +55,7 @@ settings() {
 @test "Clam AV settings" {
   SOLR=$(
     LAGOON=true \
-    settings | jq -rc '.config | "\(.["clamav.settings"])"'
+    lagoon_settings | jq -rc '.config | "\(.["clamav.settings"])"'
   )
   [ "$(echo "$SOLR" | jq -rc .scan_mode)" == 1 ]
   [ "$(echo "$SOLR" | jq -rc .mode_executable.executable_path)" == "/usr/bin/clamscan" ]
