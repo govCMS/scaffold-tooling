@@ -5,12 +5,12 @@ load ../_helpers_govcms
 setup() {
   if [ ! -f "/tmp/bats/settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/simesy/govcms8-scaffold/paas-saas-mash-up/web/sites/default/settings.php)
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
   fi
 }
 
 settings() {
-  JSON=$(./tests/drupal-settings-to-json.php)
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/settings.php)
   echo "$JSON"
 }
 

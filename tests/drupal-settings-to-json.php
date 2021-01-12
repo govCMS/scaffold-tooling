@@ -1,6 +1,16 @@
 #!/usr/bin/env php
 <?php
 
+ini_set('display_errors',0);
+
+// Argument 1 must contain path to settings file to parse.
+if (empty($argv[1])) {
+  echo "FAILED: Must provide settings filename as a first parameter.";
+  exit(1);
+}
+
+$settings_file = $argv[1];
+
 // Test contexts.
 $http_host = getenv('HTTP_HOST') ?: 'test.gov.au';
 $installation_attempted = getenv('INSTALLATION_ATTEMPTED') ?: FALSE;
@@ -31,7 +41,7 @@ else {
 putenv('GOVCMS_DRUPAL_SETTINGS=./drupal/settings');
 
 // Copy of settings.php from scaffold placed during bats `setup`
-$scaffold_settings_dot_php = '/tmp/bats/settings.php';
+$scaffold_settings_dot_php = $argv[1];
 if (!file_exists($scaffold_settings_dot_php)) {
   echo 'See drupal-settings.bats setup() for how download and setup ' . $scaffold_settings_dot_php;
 }

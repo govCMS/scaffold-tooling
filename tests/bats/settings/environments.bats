@@ -5,20 +5,21 @@ load ../_helpers_govcms
 setup() {
   if [ ! -f "/tmp/bats/settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/simesy/govcms8-scaffold/paas-saas-mash-up/web/sites/default/settings.php)
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/settings.php)
+    sed -i.bak 's/govcms_includes =.*/govcms_includes = "\/tmp\/bats";/g' /tmp/bats/settings.php
   fi
 }
 
 settings() {
-  JSON=$(./tests/drupal-settings-to-json.php)
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/settings.php)
   echo "$JSON"
 }
 
 @test "Correct includes in dev mode (not lagoon)" {
   FILES=$(
     unset LAGOON
-    DEV_MODE=true \
-    LAGOON_ENVIRONMENT_TYPE=production \
+    DEV_MODE='true' \
+    LAGOON_ENVIRONMENT_TYPE=development \
     settings | jq .included_files
   )
 
@@ -33,7 +34,7 @@ settings() {
   FILES=$(
     LAGOON=true \
     DEV_MODE=true \
-    LAGOON_ENVIRONMENT_TYPE=production \
+    LAGOON_ENVIRONMENT_TYPE=development \
     settings | jq .included_files
   )
 
