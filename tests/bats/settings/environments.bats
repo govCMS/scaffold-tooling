@@ -5,20 +5,41 @@ load ../_helpers_govcms
 setup() {
   if [ ! -f "/tmp/bats/settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/simesy/govcms8-scaffold/paas-saas-mash-up/web/sites/default/settings.php)
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/settings.php)
+    sed -i.bak 's/govcms_includes =.*/govcms_includes = "\/tmp\/bats";/g' /tmp/bats/settings.php
+  fi
+
+  if [ ! -f "/tmp/bats/all.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+  fi
+
+  if [ ! -f "/tmp/bats/development.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/development.settings.php)
+  fi
+
+  if [ ! -f "/tmp/bats/production.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/production.settings.php)
+  fi
+
+  if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
   fi
 }
 
 settings() {
-  JSON=$(./tests/drupal-settings-to-json.php)
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/settings.php)
   echo "$JSON"
 }
 
 @test "Correct includes in dev mode (not lagoon)" {
   FILES=$(
     unset LAGOON
-    DEV_MODE=true \
-    LAGOON_ENVIRONMENT_TYPE=production \
+    DEV_MODE='true' \
+    LAGOON_ENVIRONMENT_TYPE=development \
     settings | jq .included_files
   )
 
@@ -33,7 +54,7 @@ settings() {
   FILES=$(
     LAGOON=true \
     DEV_MODE=true \
-    LAGOON_ENVIRONMENT_TYPE=production \
+    LAGOON_ENVIRONMENT_TYPE=development \
     settings | jq .included_files
   )
 
@@ -46,6 +67,7 @@ settings() {
 @test "Correct includes in production mode (not lagoon)" {
   FILES=$(
     unset LAGOON
+    unset DEV_MODE
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq .included_files
   )
@@ -57,6 +79,7 @@ settings() {
 
 @test "Correct includes in production mode (lagoon image)" {
   FILES=$(
+    unset DEV_MODE
     LAGOON_ENVIRONMENT_TYPE=production \
     LAGOON=true \
     settings | jq .included_files
@@ -82,6 +105,7 @@ settings() {
 
 @test "Correct yamls production mode" {
   YAMLS=$(
+    unset DEV_MODE
     LAGOON=true \
     LAGOON_ENVIRONMENT_TYPE=production \
     settings | jq -rc .settings.container_yamls

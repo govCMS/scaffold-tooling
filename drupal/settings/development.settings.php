@@ -49,10 +49,19 @@ $config['system.performance']['js']['preprocess'] = FALSE;
 $settings['cache']['bins']['render'] = 'cache.backend.null';
 $settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
 
-// Stage file proxy.
+/**
+ * Configure stage file proxy.
+ */
 if (getenv('STAGE_FILE_PROXY_URL')) {
   $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
 }
 elseif (getenv('LAGOON_PROJECT')) {
   $config['stage_file_proxy.settings']['origin'] = 'https://nginx-' . getenv('LAGOON_PROJECT') . '-master.govcms.amazee.io';
 }
+
+/**
+ * Configure Environment indicator.
+ */
+$config['environment_indicator.indicator']['bg_color'] = '#006600';
+$config['environment_indicator.indicator']['fg_color'] = '#FFFFFF';
+$config['environment_indicator.indicator']['name'] = 'Non-production';

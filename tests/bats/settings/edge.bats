@@ -3,21 +3,31 @@
 load ../_helpers_govcms
 
 setup() {
-  if [ ! -f "/tmp/bats/settings.php" ]; then
+  if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/simesy/govcms8-scaffold/paas-saas-mash-up/web/sites/default/settings.php)
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+  fi
+
+  if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
   fi
 }
 
-settings() {
-  JSON=$(./tests/drupal-settings-to-json.php)
+all_settings() {
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/all.settings.php)
+  echo "$JSON"
+}
+
+lagoon_settings() {
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/lagoon.settings.php)
   echo "$JSON"
 }
 
 @test "Akamai friendly caching" {
   SETTINGS=$(
     LAGOON=true \
-    settings | jq -rc .settings
+    all_settings | jq -rc .settings
   )
   [ "$(echo "$SETTINGS" | jq .page_cache_invoke_hooks)" == "true" ]
   [ "$(echo "$SETTINGS" | jq .redirect_page_cache)" == "true" ]
@@ -29,7 +39,7 @@ settings() {
     VARNISH_CONTROL_PORT="4041" \
     VARNISH_HOSTS="chip,dale" \
     VARNISH_SECRET=shhhh \
-    settings | jq -rc .settings
+    lagoon_settings | jq -rc .settings
   )
 
   [ "$(echo "$SETTINGS" | jq -rc .varnish_control_terminal)" == 'chip:4041 dale:4041' ]

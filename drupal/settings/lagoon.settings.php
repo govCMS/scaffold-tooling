@@ -8,6 +8,8 @@
  * the platform.).
  */
 
+use Drupal\Core\Installer\InstallerKernel;
+
 // phpcs:disable Drupal.Classes.UseGlobalClass.RedundantUseStatement
 
 // See comment in all.settings.php.
@@ -55,10 +57,6 @@ if (getenv('MARIADB_READREPLICA_HOSTS')) {
   }
 }
 
-// Lagoon Solr connection.
-$config['search_api.server']['backend_config']['connector_config']['host'] = getenv('SOLR_HOST') ?: 'solr';
-$config['search_api.server']['backend_config']['connector_config']['path'] = '/solr/' . getenv('SOLR_CORE') ?: 'drupal';
-
 // Lagoon Varnish & reverse proxy settings.
 $varnish_hosts = explode(',', getenv('VARNISH_HOSTS') ?: 'varnish');
 array_walk($varnish_hosts, function (&$value, $key) {
@@ -81,7 +79,7 @@ if (getenv('ENABLE_REDIS')) {
   $redis_timeout = getenv('REDIS_CONNECT_TIMEOUT') ?: 2;
 
   try {
-    if (drupal_installation_attempted()) {
+    if (InstallerKernel::installationAttempted()) {
       // Do not set the cache during installations of Drupal.
       throw new \Exception('Drupal installation underway.');
     }
