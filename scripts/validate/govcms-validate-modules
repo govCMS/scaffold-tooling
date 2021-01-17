@@ -31,10 +31,10 @@ for file in $config_file; do
   ## the first sed command captures everything between `module:` and `theme:` keys in the file.
   ## the returned result inclues `module:` and `theme:` so the second command removes the first and the last lines.
   ## the final command removes tab indents.
-  enabled_modules=$(sed -n '/module:/,/theme:/p' $file | sed '1d;$d' | sed -e 's/[ \t]*//')
+  enabled_modules=$(sed -n '/module:/,/theme:/p' "$file" | sed '1d;$d' | sed -e 's/[ \t]*//')
 
   for module_name in $GOVCMS_DISALLOWED_MODULES; do
-    if [ $(is_module_enabled $module_name "$enabled_modules") -gt 0 ]; then
+    if [ $(is_module_enabled "$module_name" "$enabled_modules") -gt 0 ]; then
        FAILURES="$FAILURES, $module_name"
     fi
   done
