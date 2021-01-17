@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
+set -euo pipefail
+
+#
+# GovCMS disallowed modules check.
+#
+# This will lint exported configuration files to identify if
+# any disallowed module has been enabled via exports.
+#
+
+GOVCMS_CORE_EXTENTION_FILE_NAME=core.extension.yml
+GOVCMS_DISALLOWED_MODULES=${GOVCMS_DISALLOWED_MODULES:-""}
+
+config_file=$(find config -type f \( -name "$GOVCMS_CORE_EXTENTION_FILE_NAME" \))
+
+# Find the module name in a list (passed as a string).
+function is_module_enabled() {
+  echo "$2" | grep -c -E "^$1:?\s*\d"
+}
+
+if [ -z "${config_file}" ]; then
+  echo "Coudn't find core.extension.yml file."
+  exit 0
+fi
+
+FAILURES=""
+
+for file in $config_file; do
+  # Extract the list of enabled modules from core.extenions.yml:
+  ## the first sed command captures everything between `module:` and `theme:` keys in the file.
+  ## the returned result inclues `module:` and `theme:` so the second command removes the first and the last lines.
+  ## the final command removes tab indents.
+  enabled_modules=$(sed -n '/module:/,/theme:/p' $file | sed '1d;$d' | sed -e 's/[ \t]*//')
+
+  for module_name in $GOVCMS_DISALLOWED_MODULES; do
+    if [ $(is_module_enabled $module_name "$enabled_modules") -gt 0 ]; then
+       FAILURES="$FAILURES, $module_name"
+    fi
+  done
+
+done
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: No disallowed module found in the exported config files."
+  exit 0
+fi
+
+echo "[fail]: Found disallowed modules in the exported config files: ${FAILURES:2}."
+exit 1
