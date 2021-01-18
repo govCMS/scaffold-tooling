@@ -9,20 +9,21 @@ set -euo pipefail
 # any disallowed module has been enabled via exports.
 #
 
-GOVCMS_CORE_EXTENTION_FILE_NAME=core.extension.yml
-GOVCMS_DISALLOWED_MODULES=${GOVCMS_DISALLOWED_MODULES:-""}
+GOVCMS_CONFIG_FOLDER_PATH=${GOVCMS_CONFIG_FOLDER_PATH:-"config"}
+GOVCMS_CORE_EXTENTION_FILE_NAME=${GOVCMS_CORE_EXTENTION_FILE_NAME:-"core.extension.yml"}
+GOVCMS_DISALLOWED_MODULES=${GOVCMS_DISALLOWED_MODULES:-}
 
-config_file=$(find config -type f \( -name "$GOVCMS_CORE_EXTENTION_FILE_NAME" \))
-
-# Find the module name in a list (passed as a string).
-function is_module_enabled() {
-  echo "$2" | grep -c -E "^$1:?\s*\d"
-}
+config_file=$(find "$GOVCMS_CONFIG_FOLDER_PATH" -type f \( -name "$GOVCMS_CORE_EXTENTION_FILE_NAME" \))
 
 if [ -z "${config_file}" ]; then
   echo "Coudn't find core.extension.yml file."
   exit 0
 fi
+
+# Find the module name in a list (passed as a string).
+function is_module_enabled() {
+  echo "$2" | grep -c -E "^$1:?\s*\d"
+}
 
 FAILURES=""
 

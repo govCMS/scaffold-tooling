@@ -1,0 +1,12 @@
+---
+version: '2.3'
+x-volumes:
+  &default-volumes
+    volumes:
+      - .:/app/
+volumes:
+  app: {}
+services:
+  test:
+    image: quay.io/govcms/govcms-ci
+    << : *default-volumes
