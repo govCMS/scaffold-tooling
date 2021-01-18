@@ -53,7 +53,7 @@ common_deploy () {
   if [[ "$LAGOON_ENVIRONMENT_TYPE" = "development" && "$GOVCMS_DEPLOY_WORKFLOW_CONTENT" = "import" ]]; then
     echo "Performing content import."
     # shellcheck disable=SC2086
-    drush --alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --result-file=/tmp/sync.sql -y
+    drush --alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y
     drush rsync --alias-path=/app/drush/sites @govcms.prod:/tmp/sync.sql.gz /tmp/ -y
     gunzip < /tmp/sync.sql.gz | drush sqlc
     rm /tmp/sync.sql.gz
@@ -86,7 +86,7 @@ if [[ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]]; then
   if drush status --fields=bootstrap | grep -q "Successful"; then
     echo "Making a database backup."
     # shellcheck disable=SC2086
-    mkdir -p "$APP/web/sites/default/files/private/backups/" && drush sql:dump $dump_opts --gzip --result-file="$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql"
+    mkdir -p "$APP/web/sites/default/files/private/backups/" && drush sql:dump $dump_opts --gzip --extra-dump=--no-tablespaces --result-file="$APP/web/sites/default/files/private/backups/pre-deploy-dump.sql"
     common_deploy
   else
     echo "Drupal is not installed or not operational."
@@ -103,7 +103,7 @@ else
       # In a non-functioning development site, import the database from production before running import.
       # Note, this would destroy data in a dev site that was just broken temporarily. Review?
       # shellcheck disable=SC2086
-      drush --alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --result-file=/tmp/sync.sql -y
+      drush --alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y
       drush rsync --alias-path=/app/drush/sites @govcms.prod:/tmp/sync.sql.gz /tmp/ -y
       gunzip < /tmp/sync.sql.gz | drush sqlc
       rm /tmp/sync.sql.gz
