@@ -16,7 +16,6 @@ load ../_helpers_govcms
 }
 
 @test "Config has a disallowed module." {
-  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures/module -type f)
   export GOVCMS_CONFIG_FOLDER_PATH="tests/bats/validate/fixtures/config"
   export GOVCMS_CORE_EXTENTION_FILE_NAME="core.extension-with-disallowed-modules.yml"
   export GOVCMS_DISALLOWED_MODULES="update
@@ -29,7 +28,6 @@ load ../_helpers_govcms
 }
 
 @test "Config doesn't have a disallowed module." {
-  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures/module -type f)
   export GOVCMS_CONFIG_FOLDER_PATH="tests/bats/validate/fixtures/config"
   export GOVCMS_CORE_EXTENTION_FILE_NAME="core.extension-no-disallowed-modules.yml"
   export GOVCMS_DISALLOWED_MODULES="update
