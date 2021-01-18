@@ -46,7 +46,7 @@ fi
 echo "[info]: Preparing database sync"
 
 # shellcheck disable=SC2086
-drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump --gzip --result-file=/tmp/sync.sql -y
+drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y
 drush rsync --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS":/tmp/sync.sql.gz /tmp/ -y
 gunzip < /tmp/sync.sql.gz | drush sqlc
 rm /tmp/sync.sql.gz
