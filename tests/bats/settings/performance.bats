@@ -3,14 +3,14 @@
 load ../_helpers_govcms
 
 setup() {
-  if [ ! -f "/tmp/bats/settings.php" ]; then
+  if [ ! -f "/tmp/bats/production.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/simesy/govcms8-scaffold/paas-saas-mash-up/web/sites/default/settings.php)
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/production.settings.php)
   fi
 }
 
 settings() {
-  JSON=$(./tests/drupal-settings-to-json.php)
+  JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/production.settings.php)
   echo "$JSON"
 }
 

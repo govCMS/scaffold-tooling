@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
 set -euo pipefail
 
 #
@@ -11,6 +11,10 @@ set -euo pipefail
 
 GOVCMS_PLATFORM_FILES=${GOVCMS_PLATFORM_FILES:-}
 GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-platform}
+
+FAILURES=""
+function join_char { local IFS="$1" shift; echo "$*"; }
 
 echo "GovCMS Validate :: Yaml lint platform files"
 
@@ -31,9 +35,21 @@ IFS=$'\n'
 for file in $GOVCMS_PLATFORM_FILES; do
   if ! $GOVCMS_YAML_LINT "$file"; then
     echo "[fail]: $file failed lint";
-    exit 1;
+    FAILURES="$FAILURES,$file"
   fi
 done
 
 IFS=$IFS_BAK
-echo "[success]: No YAML issues in platform files."
+
+if [ -x govcms-prepare-xml ]; then
+  FILE_LFS=$(join_char , "${GOVCMS_PLATFORM_FILES}")
+  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
+fi
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: No YAML issues in platform files."
+  exit 0
+fi
+
+echo "[fail]: YAML problems detected"
+exit 1
