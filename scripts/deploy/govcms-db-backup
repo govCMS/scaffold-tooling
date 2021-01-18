@@ -34,7 +34,7 @@ if ! drush status --fields=bootstrap | grep -q "Successful"; then
 fi
 
 mkdir -p "$GOVCMS_BACKUP_DIR"
-drush sql:dump --gzip --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
+drush sql:dump --gzip --extra-dump=--no-tablespaces --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
 
 echo "[info]: Backup saved to $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql."
 
