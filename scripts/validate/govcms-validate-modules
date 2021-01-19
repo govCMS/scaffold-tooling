@@ -15,7 +15,7 @@ GOVCMS_DISALLOWED_MODULES=${GOVCMS_DISALLOWED_MODULES:-"update,dblog"}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-modules}
 
 config_file=$(find "$GOVCMS_CONFIG_FOLDER_PATH" -type f \( -name "$GOVCMS_CORE_EXTENTION_FILE_NAME" \))
-
+echo "GovCMS Validate :: Verify enabled modules"
 if [ -z "${config_file}" ]; then
   echo "Coudn't find core.extension.yml file."
   exit 0
