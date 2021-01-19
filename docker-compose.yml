@@ -8,5 +8,5 @@ volumes:
   app: {}
 services:
   test:
-    image: quay.io/govcms/govcms-ci
+    image: govcms/govcms-ci
     << : *default-volumes
