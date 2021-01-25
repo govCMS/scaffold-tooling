@@ -9,9 +9,9 @@ set -euo pipefail
 APP_DIR="${APP_DIR:-$PWD}"
 
 # Skip if parent folder does not exist
-if [[ ! -d "${APP_DIR}"/"$*" ]]
+if [[ ! -d ${APP_DIR}/$* ]]
 then
-  echo "[info]: Cannot lint "${APP_DIR}"/"$*" - does not exist"
+  echo "[info]: Cannot lint ${APP_DIR}/$* - does not exist"
   exit 0
 fi
 
