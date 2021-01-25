@@ -28,6 +28,11 @@ setup() {
     mkdir -p /tmp/bats
     (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
   fi
+
+  if [ ! -f "/tmp/bats/dev-mode.settings.php" ]; then
+    mkdir -p /tmp/bats
+    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/dev-mode.settings.php)
+  fi
 }
 
 settings() {
