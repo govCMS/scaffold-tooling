@@ -8,6 +8,13 @@ set -euo pipefail
 # Allow path override.
 APP_DIR="${APP_DIR:-$PWD}"
 
+# Skip if parent folder does not exist
+if [[ ! -d "${APP_DIR}"/"$*" ]]
+then
+  echo "[info]: Cannot lint "${APP_DIR}"/"$*" - does not exist"
+  exit 0
+fi
+
 # Lint code.
 touch "${APP_DIR}"/"$*"/index.php # Avoid "no files found" error. @see https://github.com/JakubOnderka/PHP-Parallel-Lint/issues/108
 "${APP_DIR}"/vendor/bin/parallel-lint --exclude ./tests/vendor -e php,inc,module,theme,install,profile,test "${APP_DIR}"/"$*"
