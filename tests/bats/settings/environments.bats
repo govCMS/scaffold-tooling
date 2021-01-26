@@ -52,6 +52,7 @@ settings() {
   [ "$(echo "$FILES" | jq '. | has("lagoon.settings.php")')" == "false" ]
   [ "$(echo "$FILES" | jq '. | has("production.settings.php")')" == "false" ]
   [ "$(echo "$FILES" | jq '. | has("development.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("dev-mode.settings.php")')" == "true" ]
 }
 
 @test "Correct includes in dev mode (lagoon image)" {
@@ -67,6 +68,7 @@ settings() {
   [ "$(echo "$FILES" | jq '. | has("lagoon.settings.php")')" == "true" ]
   [ "$(echo "$FILES" | jq '. | has("production.settings.php")')" == "false" ]
   [ "$(echo "$FILES" | jq '. | has("development.settings.php")')" == "true" ]
+  [ "$(echo "$FILES" | jq '. | has("dev-mode.settings.php")')" == "true" ]
 }
 
 @test "Correct includes in production mode (not lagoon)" {
