@@ -23,8 +23,11 @@ echo "GovCMS Validate :: Scan themes for modules"
 if [ -z "${GOVCMS_INFO_FILE_LIST}" ]; then
   if [ -d "$DRUPAL_DIR/themes" ]; then
     GOVCMS_INFO_FILE_LIST=$(find "$DRUPAL_DIR/themes" -type f -name "*.info.yml")
-  else
+  elif [ -d "themes" ]; then
     GOVCMS_INFO_FILE_LIST=$(find themes -type f -name "*.info.yml")
+  else
+    echo "[info]: No theme folders found."
+    exit 0
   fi
 fi
 
