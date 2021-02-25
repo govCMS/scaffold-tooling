@@ -4,7 +4,7 @@ image: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci${GOVCMS_CI_I
 services:
   - name: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci/dind:latest
     command: ["--tls=false"]
-    
+
 stages:
   - static
   - preflight
