@@ -16,6 +16,11 @@ if [ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" != "import" ]; then
   exit 0
 fi
 
+if [[ "$LAGOON_GIT_SAFE_BRANCH" = internal-govcms-update* ]]; then
+  echo "[skip]: Configuration cannot be imported on update branches."
+  exit 0
+fi
+
 # Check that there are configuration files.
 set +e
 # shellcheck disable=SC2012

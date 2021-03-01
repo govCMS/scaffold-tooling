@@ -175,3 +175,35 @@ setup() {
   assert_output_contains "[success]: Completed successfully."
   assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }
+
+@test  "Database sync: always sync upgrade environments" {
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "Successful" 1
+  mock_gunzip=$(mock_command "gunzip")
+  mock_gunzip=$(mock_command "gunzip")
+
+  export LAGOON_ENVIRONMENT_TYPE=development
+  export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export GOVCMS_SITE_ALIAS=
+  export GOVCMS_SITE_ALIAS_PATH=
+  export MARIADB_READREPLICA_HOSTS=
+  export LAGOON_GIT_SAFE_BRANCH=internal-govcms-update-2-x-master
+
+  run scripts/deploy/govcms-db-sync >&3
+
+  assert_output_contains "GovCMS Deploy :: Database synchronisation"
+
+  assert_output_contains "[info]: Environment type: development"
+  assert_output_contains "[info]: Content strategy: retain"
+  assert_output_contains "[info]: Site alias:       govcms.prod"
+  assert_output_contains "[info]: Alias path:       /app/drush/sites"
+
+  assert_output_contains "[info]: Check that the site can be bootstrapped."
+  assert_output_contains "[info]: Upgrade branch... syncing."
+
+  assert_output_contains "[info]: Preparing database sync"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 1)"
+
+  assert_output_contains "[success]: Completed successfully."
+  assert_equal 3 "$(mock_get_call_num "${mock_drush}")"
+}
