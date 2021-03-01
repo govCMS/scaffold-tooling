@@ -56,6 +56,7 @@ load ../_helpers_govcms
 
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
   export CONFIG_DEFAULT_DIR="tests/bats/deploy/fixtures/config/default"
+  export CONFIG_DEV_DIR="/tmp/nodir"
 
   run scripts/deploy/govcms-config-import >&3
 
@@ -73,6 +74,7 @@ load ../_helpers_govcms
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "Successful" 1
 
+  export LAGOON_ENVIRONMENT_TYPE="production"
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
   export CONFIG_DEV_DIR="tests/bats/deploy/fixtures/config/dev"
 
@@ -113,6 +115,7 @@ load ../_helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 1
 
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
+  export LAGOON_ENVIRONMENT_TYPE="production"
   export CONFIG_DEFAULT_DIR="tests/bats/deploy/fixtures/config/default"
   export CONFIG_DEV_DIR="tests/bats/deploy/fixtures/config/dev"
 
@@ -134,9 +137,9 @@ load ../_helpers_govcms
   mock_set_output "${mock_drush}" "Successful" 1
 
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
+  export LAGOON_ENVIRONMENT_TYPE="development"
   export CONFIG_DEFAULT_DIR="tests/bats/deploy/fixtures/config/default"
   export CONFIG_DEV_DIR="tests/bats/deploy/fixtures/config/dev"
-  export LAGOON_ENVIRONMENT_TYPE="development"
 
   run scripts/deploy/govcms-config-import >&3
 
