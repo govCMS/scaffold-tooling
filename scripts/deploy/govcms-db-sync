@@ -14,6 +14,7 @@ GOVCMS_SITE_ALIAS=${GOVCMS_SITE_ALIAS:-govcms.prod}
 GOVCMS_SITE_ALIAS_PATH=${GOVCMS_SITE_ALIAS_PATH:-/app/drush/sites}
 MARIADB_READREPLICA_HOSTS=${MARIADB_READREPLICA_HOSTS:-}
 GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
+LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 
 echo "GovCMS Deploy :: Database synchronisation"
 
@@ -31,6 +32,8 @@ echo "[info]: Check that the site can be bootstrapped."
 
 if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
   echo "[info]: Canary site... syncing."
+elif [[ "$LAGOON_GIT_SAFE_BRANCH" = internal-govcms-update* ]]; then
+  echo "[info]: Upgrade branch... syncing."
 elif ! drush status --fields=bootstrap | grep -q "Successful"; then
   # This will ensure that the database is synchronised on the first deploy
   # of an environment in Lagoon.

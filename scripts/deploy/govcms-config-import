@@ -8,6 +8,9 @@ set -euo pipefail
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_WORKFLOW_CONFIG=${GOVCMS_DEPLOY_WORKFLOW_CONFIG:-import}
+CONFIG_DEFAULT_DIR=${CONFIG_DEFAULT_DIR:-/app/config/default}
+CONFIG_DEV_DIR=${CONFIG_DEV_DIR:-/app/config/dev}
+LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 
 echo "GovCMS Deploy :: Configuration import"
 
@@ -16,12 +19,17 @@ if [ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" != "import" ]; then
   exit 0
 fi
 
+if [[ "$LAGOON_GIT_SAFE_BRANCH" = internal-govcms-update* ]]; then
+  echo "[skip]: Configuration cannot be imported on update branches."
+  exit 0
+fi
+
 # Check that there are configuration files.
 set +e
 # shellcheck disable=SC2012
-config_count=$(ls -1 /app/config/default/*.yml 2>/dev/null | wc -l)
+config_count=$(ls -1 "$CONFIG_DEFAULT_DIR"/*.yml 2>/dev/null | wc -l)
 # shellcheck disable=SC2012
-dev_config_count=$(ls -1 /app/config/dev/*.yml 2>/dev/null | wc -l)
+dev_config_count=$(ls -1 "$CONFIG_DEV_DIR"/*.yml 2>/dev/null | wc -l)
 set -e
 
 if [ "$config_count" -eq 0 ] && [ "$dev_config_count" -eq 0 ]; then
