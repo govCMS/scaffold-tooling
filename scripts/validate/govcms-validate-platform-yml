@@ -19,7 +19,7 @@ function join_char { local IFS="$1" shift; echo "$*"; }
 echo "GovCMS Validate :: Yaml lint platform files"
 
 if [ -z "${GOVCMS_PLATFORM_FILES}" ]; then
-  GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' \))
+  GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' -o -name 'docker-compose.yml' \))
 fi
 
 if [ -z "${GOVCMS_YAML_LINT}" ]; then
