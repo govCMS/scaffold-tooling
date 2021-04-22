@@ -3,7 +3,7 @@
     "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
     "license": "GPL-2.0-or-later",
     "require": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
         "drupal/clamav": "2.0.0",
         "drupal/console": "^1.0.2",
         "drupal/fast_404": "^2.0@alpha",
@@ -15,7 +15,6 @@
         "phar-io/version": "1.0.1",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
-        "zaporylie/composer-drupal-optimizations": "^1.0",
         "php-parallel-lint/php-parallel-lint": "^1.2"
     },
     "bin": [
