@@ -9,11 +9,12 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_UPDB=${GOVCMS_DEPLOY_UPDB:-true}
 GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
+GOVCMS_CACHE_REBUILD_PRE_UPDB=${GOVCMS_CACHE_REBUILD_PRE_UPDB:-true}
 
 echo "GovCMS Deploy :: Update Database"
 
 if [ "$GOVCMS_DEPLOY_UPDB" != "true" ]; then
-  # Skip the databae updates for this deploy.
+  # Skip the database updates for this deploy.
   echo "[skip]: Environment variable is set to skip."
   exit 0
 fi
@@ -23,6 +24,17 @@ if [ "$GOVCMS_DEPLOY_PRE_UPDB" != "false" ]; then
   # then we don't need to re-run the databases updates.
   echo "[skip]: Pre-deploy updates were applied."
   exit 0
+fi
+
+if ! drush status --fields=bootstrap | grep -q "Successful"; then
+  echo '[skip]: Site is not available.'
+  exit 0
+fi
+
+drush eval "\Drupal::service('extension.list.theme')->reset()->getList();"
+if [ "$GOVCMS_CACHE_REBUILD_PRE_UPDB" != "false" ]; then
+  # Allow forced cache-rebuild prior to database updates.
+  drush cr
 fi
 
 echo "[info]: Preparing database update."

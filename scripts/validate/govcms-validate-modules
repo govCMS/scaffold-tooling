@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
+set -euo pipefail
+
+#
+# GovCMS disallowed modules check.
+#
+# This will check exported configuration files to identify
+# any disallowed module that has been enabled via config exports.
+#
+
+GOVCMS_CONFIG_FOLDER_PATH=${GOVCMS_CONFIG_FOLDER_PATH:-"config"}
+GOVCMS_CORE_EXTENTION_FILE_NAME=${GOVCMS_CORE_EXTENTION_FILE_NAME:-"core.extension.yml"}
+GOVCMS_DISALLOWED_MODULES=${GOVCMS_DISALLOWED_MODULES:-"update,dblog"}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-modules}
+
+config_file=$(find "$GOVCMS_CONFIG_FOLDER_PATH" -type f \( -name "$GOVCMS_CORE_EXTENTION_FILE_NAME" \))
+echo "GovCMS Validate :: Verify enabled modules"
+if [ -z "${config_file}" ]; then
+  echo "Coudn't find core.extension.yml file."
+  exit 0
+fi
+
+FAILURES=""
+
+IFS_BAK="$IFS"
+IFS=$','
+
+for file in $config_file; do
+  # Check if a disallowed module is listed in core.extension.yml file.
+  for module_name in $GOVCMS_DISALLOWED_MODULES; do
+    # yq returns NULL when a yaml key doesn't exist;
+    # if a value is returned, we assume the module is enabled.
+    if [[ $(yq r "$file" "module.$module_name") != 'null' ]]; then
+      FAILURES="$FAILURES, $module_name"
+    fi
+  done
+
+done
+
+IFS=$IFS_BAK
+
+if [ -x govcms-prepare-xml ]; then
+  govcms-prepare-xml --failures="${FAILURES}" --total="${GOVCMS_DISALLOWED_MODULES}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.DisallowedModules"
+fi
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: No disallowed module found in the exported config files."
+  exit 0
+fi
+
+echo "[fail]: Found disallowed modules in the exported config files: ${FAILURES:2}."
+exit 1

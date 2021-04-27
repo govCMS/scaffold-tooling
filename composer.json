@@ -4,14 +4,15 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-        "drupal/clamav": "1.1.0",
+        "drupal/clamav": "2.0.0",
         "drupal/console": "^1.0.2",
+        "drupal/core-composer-scaffold": "*",
         "drupal/fast_404": "^2.0@alpha",
         "drupal/lagoon_logs": "^1.0",
         "drupal/redis":"1.1.0",
         "drupal/stage_file_proxy":"1.0.0-alpha3",
         "drush/drush": "^9.0.0",
-        "drupal/core-composer-scaffold": "*"
+        "php-parallel-lint/php-parallel-lint": "^1.2"
     },
     "bin": [
         "scripts/govcms-audit",
@@ -19,8 +20,10 @@
         "scripts/govcms-lint",
         "scripts/govcms-lint-distro",
         "scripts/govcms-phpunit",
+        "scripts/govcms-prepare-xml",
         "scripts/govcms-vet",
         "scripts/govcms-deploy",
+        "scripts/govcms-drush",
         "scripts/deploy/govcms-backups-preserve",
         "scripts/deploy/govcms-cache-rebuild",
         "scripts/deploy/govcms-config-backup",
@@ -32,12 +35,14 @@
         "scripts/deploy/govcms-pre-deploy",
         "scripts/deploy/govcms-pre-deploy-db-update",
         "scripts/deploy/govcms-update_site_alias",
+        "scripts/validate/govcms-validate-modules",
         "scripts/validate/govcms-validate-permissions",
         "scripts/validate/govcms-validate-platform-yml",
         "scripts/validate/govcms-validate-theme-yml",
         "scripts/validate/govcms-prevent-theme-modules",
         "scripts/validate/govcms-yaml_lint",
-        "scripts/validate/govcms-module_verify"
+        "scripts/validate/govcms-module_verify",
+        "scripts/validate/govcms-validate-illegal-files"
     ],
     "extra": {
         "drupal-scaffold": {

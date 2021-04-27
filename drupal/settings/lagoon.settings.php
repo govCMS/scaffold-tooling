@@ -8,6 +8,8 @@
  * the platform.).
  */
 
+use Drupal\Core\Installer\InstallerKernel;
+
 $lagoon_environment_type = getenv('LAGOON_ENVIRONMENT_TYPE');
 putenv('GOVCMS_ENVIRONMENT_TYPE', $lagoon_environment_type);
 
@@ -45,18 +47,12 @@ if (getenv('MARIADB_READREPLICA_HOSTS')) {
     foreach ($replica_hosts as $replica_host) {
       // Add replica support to the default database connection. This allows
       // services to use the database.replica service for particular operations.
-      // @TODO: Lagoon should expose MARAIDB replica hosts as an array so we can
-      // scale the replicas horizontally.
       $databases['default']['replica'][] = array_merge($db_conf, [
         'host' => $replica_host,
       ]);
     }
   }
 }
-
-// Lagoon Solr connection.
-$config['search_api.server']['backend_config']['connector_config']['host'] = getenv('SOLR_HOST') ?: 'solr';
-$config['search_api.server']['backend_config']['connector_config']['path'] = '/solr/' . getenv('SOLR_CORE') ?: 'drupal';
 
 // Lagoon Varnish & reverse proxy settings.
 $varnish_hosts = explode(',', getenv('VARNISH_HOSTS') ?: 'varnish');
@@ -74,13 +70,13 @@ $settings['varnish_version'] = 4;
 if (getenv('ENABLE_REDIS')) {
   $redis = new \Redis();
   $redis_host = getenv('REDIS_HOST') ?: 'redis';
-  $redis_port = getenv('REDIS_PORT') ?: 6379;
+  $redis_port = getenv('REDIS_SERVICE_PORT') ?: 6379;
   // Redis should return in < 1s so this is a maximum time
   // to ensure we don't hold the proc forever.
   $redis_timeout = getenv('REDIS_CONNECT_TIMEOUT') ?: 2;
 
   try {
-    if (drupal_installation_attempted()) {
+    if (InstallerKernel::installationAttempted()) {
       // Do not set the cache during installations of Drupal.
       throw new \Exception('Drupal installation underway.');
     }
@@ -112,7 +108,6 @@ if (getenv('ENABLE_REDIS')) {
     // being enabled.
     // @see https://github.com/govCMS/scaffold-tooling/issues/30
     // phpcs:ignore Drupal.NamingConventions.ValidGlobal.GlobalUnderScore
-    global $class_loader;
     $class_loader->addPsr4('Drupal\\redis\\', 'modules/contrib/redis/src');
 
     // Use redis for container cache.

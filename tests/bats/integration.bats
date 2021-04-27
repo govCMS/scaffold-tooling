@@ -67,9 +67,16 @@ load _helpers_govcms
   assert_file_exists vendor/bin/govcms-prevent-theme-modules
   assert_file_exists vendor/bin/govcms-yaml_lint
   assert_file_exists vendor/bin/govcms-module_verify
+  assert_file_exists vendor/bin/govcms-validate-illegal-files
 
   # Assert that modified settings file was included after 'composer update'.
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
+
+  # Assert that the settings are correct.
+  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_maxlifetime")" -eq 14400 ];
+  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_divisor")" -eq 100 ];
+  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_probability")" -eq 1 ];
+  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].cookie_lifetime")" -eq 0 ];
 
   # Assert that bootstrapping Drupal includes settings file.
   run vendor/bin/drush -l default core:status

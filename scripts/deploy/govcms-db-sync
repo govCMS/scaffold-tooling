@@ -13,6 +13,8 @@ GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
 GOVCMS_SITE_ALIAS=${GOVCMS_SITE_ALIAS:-govcms.prod}
 GOVCMS_SITE_ALIAS_PATH=${GOVCMS_SITE_ALIAS_PATH:-/app/drush/sites}
 MARIADB_READREPLICA_HOSTS=${MARIADB_READREPLICA_HOSTS:-}
+GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
+LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 
 echo "GovCMS Deploy :: Database synchronisation"
 
@@ -28,7 +30,11 @@ echo "[info]: Alias path:       $GOVCMS_SITE_ALIAS_PATH"
 
 echo "[info]: Check that the site can be bootstrapped."
 
-if ! drush status --fields=bootstrap | grep -q "Successful"; then
+if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
+  echo "[info]: Canary site... syncing."
+elif [[ "$LAGOON_GIT_SAFE_BRANCH" = internal-govcms-update* ]]; then
+  echo "[info]: Upgrade branch... syncing."
+elif ! drush status --fields=bootstrap | grep -q "Successful"; then
   # This will ensure that the database is synchronised on the first deploy
   # of an environment in Lagoon.
   echo "[info]: Site could not be bootstrapped... syncing."
@@ -43,7 +49,10 @@ fi
 echo "[info]: Preparing database sync"
 
 # shellcheck disable=SC2086
-drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" sql:sync @"$GOVCMS_SITE_ALIAS" @self -y
+drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y
+drush rsync --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS":/tmp/sync.sql.gz /tmp/ -y
+gunzip < /tmp/sync.sql.gz | drush sqlc
+rm /tmp/sync.sql.gz
 # @todo: Add sanitisation?
 
 echo "[success]: Completed successfully."
