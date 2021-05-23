@@ -41,7 +41,7 @@ done
 
 IFS=$IFS_BAK
 
-if [ -x ${GOVCMS_PREPARE_XML_SCRIPT} ]; then
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
   ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${GOVCMS_DISALLOWED_MODULES}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.DisallowedModules"
 fi
 

@@ -43,7 +43,7 @@ done
 
 IFS=$IFS_BAK
 
-if [ -x ${GOVCMS_PREPARE_XML_SCRIPT} ]; then
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
   FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
   ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
 fi
