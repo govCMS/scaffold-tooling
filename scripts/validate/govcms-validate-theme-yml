@@ -12,6 +12,7 @@ GOVCMS_THEME_FILES=${GOVCMS_THEME_FILES:-}
 GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
 GOVCMS_THEME_DIR=${GOVCMS_THEME_DIR:-}
 GOVCMS_LINT_EXCLUDE_PATTERN=${GOVCMS_LINT_EXCLUDE_PATTERN:-}
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-theme-yml}
 
 FAILURES=""
@@ -58,9 +59,9 @@ done
 
 IFS=$IFS_BAK
 
-if [ -x govcms-prepare-xml ]; then
+if [ -x ${GOVCMS_PREPARE_XML_SCRIPT} ]; then
   FILE_LFS=$(join_char , "${GOVCMS_THEME_FILES}")
-  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.InvalidThemeYml"
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.InvalidThemeYml"
 fi
 
 if [ -z "${FAILURES}" ]; then

@@ -11,6 +11,7 @@ set -euo pipefail
 
 GOVCMS_ROLE_PATTERN=${GOVCMS_ROLE_PATTERN:-user.role.*.yml}
 GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-permissions}
 
 FAILURES=""
@@ -42,9 +43,9 @@ done
 
 IFS=$IFS_BAK
 
-if [ -x govcms-prepare-xml ]; then
+if [ -x ${GOVCMS_PREPARE_XML_SCRIPT} ]; then
   FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
-  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
 fi
 
 if [ -z "${FAILURES}" ]; then
