@@ -1,0 +1,9 @@
+{
+  "anonymous": {
+    "label": "Anonymous user",
+    "perms": [
+      "access content",
+      "use PHP for google analytics tracking visibility"
+    ]
+  }
+}
