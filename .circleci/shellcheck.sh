@@ -13,7 +13,11 @@ done < <(
     .circleci/phpcs.sh \
     .circleci/shellcheck.sh \
     -type f \
-    \( ! -name "README.*" -and ! -name "_bats-mock.bash" -and ! -name "govcms-yaml_lint" -and ! -name "govcms-module_verify" -and ! -name "govcms-prepare-xml" -and ! -name "*.yml" -and ! -name "*.php" \) \
+    \( ! -name "README.*" -and ! -name "_bats-mock.bash" -and \
+       ! -name "govcms-yaml_lint" -and ! -name "govcms-module_verify" -and \
+       ! -name "govcms-prepare-xml" -and ! -name "*.yml" -and \
+       ! -name "*.php" -and ! -name "*.json" -and ! -name "*.theme" -and \
+       ! -name "*.inc" \) \
     -print0
   )
 
