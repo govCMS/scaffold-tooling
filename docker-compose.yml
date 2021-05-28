@@ -8,5 +8,5 @@ volumes:
   app: {}
 services:
   test:
-    image: govcms/govcms-ci
+    image: govcms/govcms-ci:edge
     << : *default-volumes
