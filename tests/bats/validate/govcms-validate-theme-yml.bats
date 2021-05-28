@@ -46,7 +46,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Yaml lint theme files"
   assert_output_contains "[info]: Skip tests/bats/validate/fixtures/node_modules/test.yml"
-  assert_equal 25 "$(mock_get_call_num "${mock_yaml_lint}")"
+  assert_equal 30 "$(mock_get_call_num "${mock_yaml_lint}")"
 }
 
 @test "Validate theme yaml: Custom exclusion list" {
