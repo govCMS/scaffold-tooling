@@ -8,7 +8,7 @@ services:
 test:
   script:
     - composer validate --strict --no-check-all
-    - .circleci/shellcheck.sh
-    - .circleci/phpcs.sh
-    - .circleci/bats.sh
+    - .ci/shellcheck.sh
+    - .ci/phpcs.sh
+    - .ci/bats.sh
 
