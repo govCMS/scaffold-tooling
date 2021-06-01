@@ -52,7 +52,11 @@ foreach ($success as $success) {
   $xml->writeAttribute('name', $success);
   $xml->startElement('success');
   $xml->writeAttribute('type', 'success');
-  $xml->writeAttribute('message', "{$options['fail-message']} at $failure");
+  // $failure is not provided for a success.
+  // Leaving it in case other scripts have used it before.
+  if (!empty($failure)) {
+    $xml->writeAttribute('message', "{$options['fail-message']} at $failure");
+  }
   $xml->endElement();
   $xml->endElement();
 }
