@@ -83,19 +83,6 @@ prepare_fixture_dir(){
   assert_dir_exists "${dir}"
 }
 
-download_code_from_github(){
-  local release_url
-  local user="${1?Required value}"
-  local repo="${2?Required value}"
-
-  release_url=$(curl -sL -H "Authorization: token $GOVCMS_GITHUB_TOKEN" "https://api.github.com/repos/$user/$repo/releases/latest" | jq -r '.tarball_url')
-
-  debug "$release_url"
-
-  curl -o release.tar.gz -sL "$release_url"
-  tar xzv release.tar.gz -C "$(pwd)" --strip 1
-}
-
 # Copy source code at the latest commit to the destination directory.
 copy_code(){
   local dst="${1:-${BUILD_DIR}}"
