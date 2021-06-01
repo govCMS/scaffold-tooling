@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+APP_DIR="${APP_DIR:-/app}"
+
+SCRIPT_DIR=${APP_DIR}/vendor/bin
+GOVCMS_VALIDATE_SCRIPTS=$(find "$SCRIPT_DIR" -type l -name "govcms-validate-*")
+
+# Move tests temporarily out of the way.
+if [ -d "${APP_DIR}"/vendor/govcms/scaffold-tooling/tests ]; then
+  mv "${APP_DIR}"/vendor/govcms/scaffold-tooling/tests /tmp/scaffold-tooling-tests
+fi
+
+XML_SCRIPT=$SCRIPT_DIR/govcms-prepare-xml
+SCRIPT_WAS_EXEC=1
+if [ ! -x "${XML_SCRIPT}" ]; then
+  SCRIPT_WAS_EXEC=0
+  chmod +x "${XML_SCRIPT}"
+fi
+
+IFS_BAK="$IFS"
+IFS=$'\n'
+
+for file in $GOVCMS_VALIDATE_SCRIPTS; do
+  echo "Executing ${file}..."
+  GOVCMS_PREPARE_XML_SCRIPT=${XML_SCRIPT} $file || true
+done
+GOVCMS_PREPARE_XML_SCRIPT=${XML_SCRIPT} "$SCRIPT_DIR"/govcms-prevent-theme-modules || true
+
+IFS=$IFS_BAK
+
+if [ ${SCRIPT_WAS_EXEC} -eq 0 ]; then
+  chmod -x "${XML_SCRIPT}"
+fi
+
+# Move tests back.
+if [ -d /tmp/scaffold-tooling-tests ]; then
+  mv /tmp/scaffold-tooling-tests "${APP_DIR}"/vendor/govcms/scaffold-tooling/tests
+fi
+
+# Move reports into specific directory.
+mkdir -p "${APP_DIR}"/.ship-shape
+mv "${APP_DIR}"/govcms-*.xml "${APP_DIR}"/.ship-shape/
