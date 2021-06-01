@@ -30,8 +30,6 @@ load _helpers_govcms
   pushd "${SCAFFOLD_DIR}" || exit 1
 
   # Download PaaS scaffold to be able to bootstrap the site.
-  # If the artifact can't be download we skip this test.
-  # download_code_from_github "govcms" "scaffold"
   git clone --depth 1 https://github.com/govCMS/scaffold "$(pwd)"
   rm -rf .git
 
@@ -40,6 +38,7 @@ load _helpers_govcms
 
   # Prepare composer to install requirements.
   composer config -g github-oauth.github.com "$GOVCMS_GITHUB_TOKEN"
+  # Change the distribution to HTTPS to prevent key issues.
   cat composer.json | jq 'del(.repositories[-1:]) | .repositories += [{"type": "vcs", "url": "https://github.com/govcms/govcms"}]' > composer.https.json
   mv composer.json composer.json.bkup
   mv composer.https.json composer.json
