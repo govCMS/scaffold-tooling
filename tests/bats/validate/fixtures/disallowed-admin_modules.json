@@ -1,0 +1,6 @@
+{
+  "anonymous": {
+    "label": "Anonymous user",
+    "perms": ["access content", "administer modules"]
+  }
+}
