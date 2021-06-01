@@ -11,7 +11,7 @@ setup() {
     rm -Rf "$WORKSPACE"
     # Lagoon image forces ssh for HTTPS connections via gitconfig.
     git config --global --unset url.ssh://git@github.com.insteadof || true
-    git clone https://github.com/govCMS/govcms8-scaffold-paas "$WORKSPACE"
+    git clone https://github.com/govCMS/scaffold "$WORKSPACE"
     cd "$WORKSPACE" || exit
     git tag -f rollback
     git config user.email "noone@example.gov.au"
@@ -22,7 +22,7 @@ setup() {
   git --version
   git reset --hard --quiet rollback
   git clean -fd --quiet
-  rm composer.lock
+  ahoy init test paas 9
 }
 
 vet() {
@@ -88,6 +88,7 @@ vet() {
 }
 
 @test "The user adds custom modules to the repo [vet-007]" {
+  mkdir -p "$WORKSPACE"/web/custom-modules-anywhere
   cp -Rf "$CUR_DIR"/drupal/modules "$WORKSPACE"/web/custom-modules-anywhere
   git add . && git commit -m"$(basename "$0")" --quiet
 

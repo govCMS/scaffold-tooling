@@ -30,7 +30,18 @@ load _helpers_govcms
   pushd "${SCAFFOLD_DIR}" || exit 1
 
   # Download PaaS scaffold to be able to bootstrap the site.
-  download_code_from_github "govCMS" "govCMS8-scaffold-paas"
+  git clone --depth 1 https://github.com/govCMS/scaffold "$(pwd)"
+  rm -rf .git
+
+  # Init the scaffold for Drupal 9 PaaS.
+  ahoy init test paas 9
+
+  # Prepare composer to install requirements.
+  composer config -g github-oauth.github.com "$GOVCMS_GITHUB_TOKEN"
+  # Change the distribution to HTTPS to prevent key issues.
+  cat composer.json | jq 'del(.repositories[-1:]) | .repositories += [{"type": "vcs", "url": "https://github.com/govcms/govcms"}]' > composer.https.json
+  mv composer.json composer.json.bkup
+  mv composer.https.json composer.json
 
   # Override scaffold repo path with a path to our version.
   composer config repositories.test path "${REPO_DIR}"
@@ -40,6 +51,7 @@ load _helpers_govcms
   composer install --ignore-platform-reqs
 
   # Add the repo at the checked out version.
+  composer config --global discard-changes true
   composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs --update-with-dependencies
 
   # Ensure the binaries are available.
