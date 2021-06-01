@@ -25,13 +25,16 @@ fi
 # Determine paths based on where it's running.
 # `/govcms/vendor` is only present in govcms/govcms-ci image.
 if [ -d /govcms/vendor ]; then
+  # The first case if for running in the CI image.
   if [ -f /app/phpstan-ci.neon ]; then
     PHPSTAN_CONFIG=/app/phpstan-ci.neon
   else
+    # Path for CircleCI specifically.
     PHPSTAN_CONFIG=/home/project/phpstan-ci.neon
   fi
   PHPSTAN_PATH=/govcms/vendor/bin/phpstan
 else
+  # Second is for running locally against a project.
   PHPSTAN_CONFIG=/app/vendor/govcms/scaffold-tooling/phpstan.neon
   PHPSTAN_PATH=/app/vendor/bin/phpstan
 fi
