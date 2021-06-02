@@ -8,7 +8,8 @@
         "drupal/stage_file_proxy":"1.x-dev",
         "drush/drush": "~9 || ~10",
         "drupal/clamav": "^2.0",
-        "drupal/config_ignore": "^2.3"
+        "drupal/config_ignore": "^2.3",
+        "ekino/phpstan-banned-code": "^0.4.0"
     },
     "require-dev": {
         "phar-io/manifest": "~1",
@@ -17,8 +18,7 @@
         "webmozart/path-util": "^2.3",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.6",
         "zaporylie/composer-drupal-optimizations": "^1.0",
-        "php-parallel-lint/php-parallel-lint": "^1.2",
-        "ekino/phpstan-banned-code": "^0.4.0"
+        "php-parallel-lint/php-parallel-lint": "^1.2"
     },
     "bin": [
         "scripts/govcms-audit",
