@@ -8,6 +8,7 @@ set -euo pipefail
 
 GOVCMS_ILLEGAL_FILE_PATTERN=${GOVCMS_ILLEGAL_FILE_PATTERN:-"(adminer|phpmyadmin|bigdump)"}
 GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-illegal-files}
 
 FAILURES=""
@@ -47,9 +48,9 @@ while read -rd $'\0' file; do
   fi
 done < <(find . -name "*.php" -print0)
 
-if [ -x govcms-prepare-xml ]; then
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
   FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
-  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalFiles"
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalFiles"
 fi
 
 if [ -z "${FAILURES}" ]; then
