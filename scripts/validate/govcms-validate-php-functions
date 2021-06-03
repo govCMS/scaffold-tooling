@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#
+# GovCMS banned PHP function list check.
+#
+# Ensures that theme code does not contain specified banned PHP functions.
+#
+
+GOVCMS_THEME_DIR=${GOVCMS_THEME_DIR:-}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-php-functions}
+GOVCMS_RESULTS_STDOUT=${GOVCMS_RESULTS_STDOUT:-}
+
+FAILURES=""
+
+echo "GovCMS Validate :: Banned PHP function list"
+
+if [ -z "${GOVCMS_THEME_DIR}" ]; then
+  GOVCMS_THEME_DIR=./web/themes/custom
+  if [ ! -d ./web ]; then
+    GOVCMS_THEME_DIR=./themes/custom
+  fi
+fi
+
+# Determine paths based on where it's running.
+# `/govcms/vendor` is only present in govcms/govcms-ci image.
+if [ -d /govcms/vendor ]; then
+  # The first case if for running in the CI image.
+  if [ -f /app/phpstan-ci.neon ]; then
+    PHPSTAN_CONFIG=/app/phpstan-ci.neon
+  else
+    # Path for GitlabCI specifically.
+    PHPSTAN_CONFIG=${CI_PROJECT_DIR}/phpstan-ci.neon
+  fi
+  PHPSTAN_PATH=/govcms/vendor/bin/phpstan
+else
+  # Second is for running locally against a project.
+  PHPSTAN_CONFIG=/app/vendor/govcms/scaffold-tooling/phpstan.neon
+  PHPSTAN_PATH=/app/vendor/bin/phpstan
+fi
+
+if [ -n "${GOVCMS_RESULTS_STDOUT}" ]; then
+  ERROR_FORMAT=raw
+else
+  ERROR_FORMAT=junit
+fi
+
+set +e
+FAILURES=$(${PHPSTAN_PATH} analyse -c ${PHPSTAN_CONFIG} ${GOVCMS_THEME_DIR} --error-format=${ERROR_FORMAT})
+RESULT=$?
+set -e
+
+if [ -z "${GOVCMS_RESULTS_STDOUT}" ]; then
+  echo  "${FAILURES}" > "${GOVCMS_OUTFILE}".xml
+  echo "Successfully generated ${GOVCMS_OUTFILE}.xml"
+else
+  echo "${FAILURES}"
+fi
+
+if [ ${RESULT} -eq 0 ]; then
+  echo "[success]: No banned function detected in code."
+  exit 0
+fi
+echo "[fail]: Banned functions detected"
+exit 1

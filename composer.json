@@ -16,7 +16,8 @@
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3",
         "zaporylie/composer-drupal-optimizations": "^1.0",
-        "php-parallel-lint/php-parallel-lint": "^1.2"
+        "php-parallel-lint/php-parallel-lint": "^1.2",
+        "ekino/phpstan-banned-code": "^0.4.0"
     },
     "bin": [
         "scripts/govcms-audit",
@@ -43,6 +44,7 @@
         "scripts/validate/govcms-validate-active-permissions",
         "scripts/validate/govcms-validate-modules",
         "scripts/validate/govcms-validate-permissions",
+        "scripts/validate/govcms-validate-php-functions",
         "scripts/validate/govcms-validate-platform-yml",
         "scripts/validate/govcms-validate-theme-yml",
         "scripts/validate/govcms-prevent-theme-modules",
