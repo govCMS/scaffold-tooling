@@ -8,7 +8,8 @@
         "drupal/stage_file_proxy":"1.x-dev",
         "drush/drush": "~9 || ~10",
         "drupal/clamav": "^2.0",
-        "drupal/config_ignore": "^2.3"
+        "drupal/config_ignore": "^2.3",
+        "ekino/phpstan-banned-code": "^0.4.0"
     },
     "require-dev": {
         "phar-io/manifest": "~1",
@@ -44,6 +45,7 @@
         "scripts/validate/govcms-validate-modules",
         "scripts/validate/govcms-validate-permissions",
         "scripts/validate/govcms-validate-active-permissions",
+        "scripts/validate/govcms-validate-php-functions",
         "scripts/validate/govcms-validate-platform-yml",
         "scripts/validate/govcms-validate-theme-yml",
         "scripts/validate/govcms-prevent-theme-modules",

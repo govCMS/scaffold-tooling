@@ -52,7 +52,7 @@ load _helpers_govcms
 
   # Add the repo at the checked out version.
   composer config --global discard-changes true
-  composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --ignore-platform-reqs --update-with-dependencies
+  composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --no-interaction --ignore-platform-reqs --update-with-dependencies
 
   # Ensure the binaries are available.
   assert_file_exists vendor/bin/govcms-audit

@@ -1,0 +1,7 @@
+<?php
+
+function banned_functions_preprocess_page(&$vars) {
+  shell_exec('ls -l');
+
+  print_r('hello');
+}

@@ -1,0 +1,4 @@
+includes:
+	- /app/vendor/ekino/phpstan-banned-code/extension.neon
+	- banned-code.neon
+
