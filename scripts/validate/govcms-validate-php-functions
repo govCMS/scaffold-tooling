@@ -25,12 +25,12 @@ fi
 # Determine paths based on where it's running.
 # `/govcms/vendor` is only present in govcms/govcms-ci image.
 if [ -d /govcms/vendor ]; then
-  # The first case is for running in the CI image.
+  # The first case is for running locally in the CI image.
   if [ -f /app/phpstan-ci.neon ]; then
     PHPSTAN_CONFIG=/app/phpstan-ci.neon
   else
     # Path for GitlabCI specifically.
-    PHPSTAN_CONFIG=${CI_PROJECT_DIR}/vendor/govcms/scaffold-tooling/phpstan-ci.neon
+    PHPSTAN_CONFIG=$(find ${CI_PROJECT_DIR} -type f -path "*/scaffold-tooling/phpstan-ci.neon")
   fi
   PHPSTAN_PATH=/govcms/vendor/bin/phpstan
 else
