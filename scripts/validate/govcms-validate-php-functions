@@ -30,7 +30,7 @@ if [ -d /govcms/vendor ]; then
     PHPSTAN_CONFIG=/app/phpstan-ci.neon
   else
     # Path for GitlabCI specifically.
-    PHPSTAN_CONFIG=$(find ${CI_PROJECT_DIR} -type f -path "*/scaffold-tooling/phpstan-ci.neon")
+    PHPSTAN_CONFIG=$(find "${CI_PROJECT_DIR}" -type f -path "*/scaffold-tooling/phpstan-ci.neon")
   fi
   PHPSTAN_PATH=/govcms/vendor/bin/phpstan
 else
