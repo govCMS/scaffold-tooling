@@ -51,7 +51,7 @@ variables:
   artifacts:
     expire_in: "7 days"
     paths:
-      - tests/behat/features/screenshots
+      - tests/behat/screenshots
   stage: integration
   before_script:
     - |
