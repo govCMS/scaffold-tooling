@@ -6,7 +6,7 @@ set -euo pipefail
 # with GovCMS conditions.
 
 # @todo switch this to use govCMS/govcms-scaffold when the scaffold is retired.
-SCAFFOLD_REPO="https://github.com/govCMS/govcms8-scaffold-paas.git"
+SCAFFOLD_REPO="https://github.com/govCMS/scaffold.git"
 
 WORKSPACE="/tmp/govcms-vet"
 SCAFFOLD="${WORKSPACE}/scaffold"
@@ -18,6 +18,9 @@ FLAVOUR=$(yq read .version.yml type)
 FLAVOUR=${1:-"$FLAVOUR"}
 VERSION=$(yq read .version.yml scaffold)
 VERSION=${2:-"$VERSION"}
+DRUPAL_VERSION=$(yq read .version.yml version)
+DRUPAL_VERSION=${3:-"$DRUPAL_VERSION"}
+
 
 if [[ "$FLAVOUR" = "paas" ]] ; then
     # By default PaaS users will see green in their CI, but can inspect the job to see all warnings.
@@ -36,6 +39,9 @@ rm -Rf "$WORKSPACE"
 mkdir -p "$CLIENTCODE"
 git clone --depth=1 --quiet --branch="$VERSION" "$SCAFFOLD_REPO" "$SCAFFOLD"
 git --work-tree="$CLIENTCODE" checkout HEAD -- .
+
+# Init the scaffold.
+cd $SCAFFOLD && ahoy init project "$FLAVOUR" "$DRUPAL_VERSION"
 
 exit_code=0
 echo -e "\033[0;32mGovCMS Platform vetting script\033[0m"
