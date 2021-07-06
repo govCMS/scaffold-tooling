@@ -8,8 +8,8 @@ set -euo pipefail
 #
 
 GOVCMS_THEME_DIR=${GOVCMS_THEME_DIR:-}
+GOVCMS_SCAFFOLD_TOOLING_DIR=${GOVCMS_SCAFFOLD_TOOLING_DIR:-}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-php-functions}
-GOVCMS_RESULTS_STDOUT=${GOVCMS_RESULTS_STDOUT:-}
 
 FAILURES=""
 
@@ -18,44 +18,34 @@ echo "GovCMS Validate :: Banned PHP function list"
 if [ -z "${GOVCMS_THEME_DIR}" ]; then
   GOVCMS_THEME_DIR=./web/themes/custom
   if [ ! -d ./web ]; then
-    GOVCMS_THEME_DIR=./themes/custom
+    GOVCMS_THEME_DIR=./themes
   fi
 fi
 
-# Determine paths based on where it's running.
-# `/govcms/vendor` is only present in govcms/govcms-ci image.
-if [ -d /govcms/vendor ]; then
-  # The first case if for running in the CI image.
-  if [ -f /app/phpstan-ci.neon ]; then
-    PHPSTAN_CONFIG=/app/phpstan-ci.neon
-  else
-    # Path for GitlabCI specifically.
-    PHPSTAN_CONFIG=${CI_PROJECT_DIR}/phpstan-ci.neon
-  fi
-  PHPSTAN_PATH=/govcms/vendor/bin/phpstan
-else
-  # Second is for running locally against a project.
-  PHPSTAN_CONFIG=/app/vendor/govcms/scaffold-tooling/phpstan.neon
-  PHPSTAN_PATH=/app/vendor/bin/phpstan
+# Determine phpstan path & config based on this script's path.
+if [ -z "${GOVCMS_SCAFFOLD_TOOLING_DIR}" ]; then
+  SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+  GOVCMS_SCAFFOLD_TOOLING_DIR=$(cd "$SCRIPT_DIR"/../../ && pwd)
 fi
 
-if [ -n "${GOVCMS_RESULTS_STDOUT}" ]; then
-  ERROR_FORMAT=raw
+if [[ "${GOVCMS_SCAFFOLD_TOOLING_DIR}" =~ "vendor/govcms/scaffold-tooling" ]]; then
+  # Installed as a composer package.
+  VENDOR_DIR=$(cd "$GOVCMS_SCAFFOLD_TOOLING_DIR"/../../ && pwd)
 else
-  ERROR_FORMAT=junit
+  # Running from the project root.
+  VENDOR_DIR=/govcms/vendor
 fi
+PHPSTAN_PATH=${VENDOR_DIR}/bin/phpstan
+PHPSTAN_CONFIG=${GOVCMS_SCAFFOLD_TOOLING_DIR}/phpstan.neon
 
 set +e
-FAILURES=$(${PHPSTAN_PATH} analyse -c ${PHPSTAN_CONFIG} ${GOVCMS_THEME_DIR} --error-format=${ERROR_FORMAT})
+${PHPSTAN_PATH} analyse -c "${PHPSTAN_CONFIG}" ${GOVCMS_THEME_DIR} --error-format=junit --no-progress > "${GOVCMS_OUTFILE}".xml
+FAILURES=$(${PHPSTAN_PATH} analyse -c "${PHPSTAN_CONFIG}" ${GOVCMS_THEME_DIR} --no-progress)
 RESULT=$?
 set -e
 
-if [ -z "${GOVCMS_RESULTS_STDOUT}" ]; then
-  echo  "${FAILURES}" > "${GOVCMS_OUTFILE}".xml
-  echo "Successfully generated ${GOVCMS_OUTFILE}.xml"
-else
-  echo "${FAILURES}"
-fi
+echo -e "\n${FAILURES}\n"
+echo "Successfully generated ${GOVCMS_OUTFILE}.xml"
 
 if [ ${RESULT} -eq 0 ]; then
   echo "[success]: No banned function detected in code."

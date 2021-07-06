@@ -9,9 +9,9 @@ done < <(
   find \
     scripts \
     tests/bats \
-    .circleci/bats.sh \
-    .circleci/phpcs.sh \
-    .circleci/shellcheck.sh \
+    .ci/bats.sh \
+    .ci/phpcs.sh \
+    .ci/shellcheck.sh \
     -type f \
     \( ! -name "README.*" -and ! -name "_bats-mock.bash" -and \
        ! -name "govcms-yaml_lint" -and ! -name "govcms-module_verify" -and \
