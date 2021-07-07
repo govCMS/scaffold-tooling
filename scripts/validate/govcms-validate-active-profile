@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#
+# GovCMS validate profile.
+# Verify the profile of a site that is running on the platform.
+#
+
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-profile}
+
+FAILURES=""
+
+echo "GovCMS Validate :: Validate profile on active site"
+
+PROFILE=$(drush config:get core.extension --format=json | jq -r '.profile')
+
+if [[ "$PROFILE" != 'govcms' ]]; then
+  echo "[fail]: Detected invalid profile [$PROFILE]"
+  FAILURES=$PROFILE
+  if [ -x vendor/govcms/scaffold-tooling/scripts/govcms-prepare-xml ]; then
+    vendor/govcms/scaffold-tooling/scripts/govcms-prepare-xml --failures="${FAILURES}" --total="1" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.ValidateProfile"
+  fi
+  exit 1
+fi
+
+echo "[success]: 'govcms' profile is in use"
+exit 0
