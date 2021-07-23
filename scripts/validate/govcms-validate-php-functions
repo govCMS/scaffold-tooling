@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#
+# GovCMS banned PHP function list check.
+#
+# Ensures that theme code does not contain specified banned PHP functions.
+#
+
+GOVCMS_THEME_DIR=${GOVCMS_THEME_DIR:-}
+GOVCMS_SCAFFOLD_TOOLING_DIR=${GOVCMS_SCAFFOLD_TOOLING_DIR:-}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-php-functions}
+
+FAILURES=""
+
+echo "GovCMS Validate :: Banned PHP function list"
+
+if [ -z "${GOVCMS_THEME_DIR}" ]; then
+  GOVCMS_THEME_DIR=./web/themes/custom
+  if [ ! -d ./web ]; then
+    GOVCMS_THEME_DIR=./themes
+  fi
+fi
+
+# Determine phpstan path & config based on this script's path.
+if [ -z "${GOVCMS_SCAFFOLD_TOOLING_DIR}" ]; then
+  SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+  GOVCMS_SCAFFOLD_TOOLING_DIR=$(cd "$SCRIPT_DIR"/../../ && pwd)
+fi
+
+if [[ "${GOVCMS_SCAFFOLD_TOOLING_DIR}" =~ "vendor/govcms/scaffold-tooling" ]]; then
+  # Installed as a composer package.
+  VENDOR_DIR=$(cd "$GOVCMS_SCAFFOLD_TOOLING_DIR"/../../ && pwd)
+else
+  # Running from the project root.
+  VENDOR_DIR=/govcms/vendor
+fi
+PHPSTAN_PATH=${VENDOR_DIR}/bin/phpstan
+PHPSTAN_CONFIG=${GOVCMS_SCAFFOLD_TOOLING_DIR}/phpstan.neon
+
+set +e
+${PHPSTAN_PATH} analyse -c "${PHPSTAN_CONFIG}" ${GOVCMS_THEME_DIR} --error-format=junit --no-progress > "${GOVCMS_OUTFILE}".xml
+FAILURES=$(${PHPSTAN_PATH} analyse -c "${PHPSTAN_CONFIG}" ${GOVCMS_THEME_DIR} --no-progress)
+RESULT=$?
+set -e
+
+echo -e "\n${FAILURES}\n"
+echo "Successfully generated ${GOVCMS_OUTFILE}.xml"
+
+if [ ${RESULT} -eq 0 ]; then
+  echo "[success]: No banned function detected in code."
+  exit 0
+fi
+echo "[fail]: Banned functions detected"
+exit 1
