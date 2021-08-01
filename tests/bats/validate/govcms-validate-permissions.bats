@@ -71,6 +71,24 @@ load ../_helpers_govcms
   assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
 }
 
+@test "Check disallowed permissions: export configuration" {
+  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.admin_export_config.yml" \) -print0)
+
+  run scripts/validate/govcms-validate-permissions >&3
+
+  assert_output_contains "GovCMS Validate :: Disallowed permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+}
+
+@test "Check disallowed permissions: synchronize configuration" {
+  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.admin_sync_config.yml" \) -print0)
+
+  run scripts/validate/govcms-validate-permissions >&3
+
+  assert_output_contains "GovCMS Validate :: Disallowed permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+}
+
 @test "Check disallowed permissions: is_admin" {
   export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.is_admin.yml" \) -print0)
 

@@ -22,6 +22,8 @@ RESTRICTED_ROLES_LIST=$(
   | if (.[$k].perms |
       index("administer modules") or
       index("import configuration") or
+      index("export configuration") or
+      index("synchronize configuration") or
       index("use PHP for google analytics tracking visibility") or
       index("administer permissions") or
       index("administer site configuration") or
