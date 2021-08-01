@@ -1,6 +1,9 @@
 {
   "anonymous": {
     "label": "Anonymous user",
-    "perms": ["access content", "administer site configuration"]
+    "perms": [
+      "access content",
+      "administer site configuration"
+    ]
   }
 }

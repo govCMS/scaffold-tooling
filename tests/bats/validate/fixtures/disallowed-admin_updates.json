@@ -1,6 +1,9 @@
 {
   "anonymous": {
     "label": "Anonymous user",
-    "perms": ["access content", "administer software updates"]
+    "perms": [
+      "access content",
+      "administer software updates"
+    ]
   }
 }

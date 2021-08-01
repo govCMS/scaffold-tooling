@@ -59,6 +59,7 @@ foreach ($success as $success) {
   }
   $xml->endElement();
   $xml->endElement();
+  $xml->endElement();
 }
 
 foreach ($failures as $failure) {
