@@ -5,7 +5,7 @@ load ../_helpers_govcms
 
 @test "Check profile: defaults" {
   run scripts/validate/govcms-validate-profile >&3
-  echo "GovCMS Validate :: Validate install profile"
+  assert_output_contains "GovCMS Validate :: Validate install profile"
   assert_failure
 }
 
