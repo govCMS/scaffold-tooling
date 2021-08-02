@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
+set -euo pipefail
+
+#
+# GovCMS validate profile.
+# Ensure that the site has been installed with the govcms profile.
+#
+
+GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-profile}
+
+FAILURES=""
+function join_char { local IFS="$1" shift; echo "$*"; }
+
+echo "GovCMS Validate :: Validate install profile"
+
+# We will need to export this during automated testing.
+if [ -z "${GOVCMS_FILE_LIST}" ]; then
+  GOVCMS_FILE_LIST=$(find config/default -type f -name "core.extension.yml")
+fi
+
+IFS_BAK="$IFS"
+IFS=$'\n'
+
+for file in $GOVCMS_FILE_LIST; do
+  if [[ $(yq r "$file" 'profile') != 'govcms' ]]; then
+    echo "[fail]: Invalid profile detected $(yq r "$file" 'profile')"
+    FAILURES=$(yq r "$file" 'profile')
+  else
+    echo "[info]: $file is using the 'govcms' profile"
+  fi
+done
+
+IFS=$IFS_BAK
+
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
+  FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.ValidateProfile"
+fi
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: 'govcms' profile is in use"
+  exit 0
+fi
+
+echo "[fail]: Invalid profile detected"
+exit 1
