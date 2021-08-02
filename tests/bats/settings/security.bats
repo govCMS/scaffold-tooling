@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+# shellcheck disable=SC2086,SC2046
+
 load ../_helpers_govcms
 
 setup() {
@@ -21,6 +23,11 @@ settings() {
 
 lagoon_settings() {
   JSON=$(./tests/drupal-settings-to-json.php /tmp/bats/lagoon.settings.php)
+  echo "$JSON"
+}
+
+security_settings() {
+  JSON=$(./tests/drupal-settings-to-json.php $PWD/drupal/settings/security.settings.php)
   echo "$JSON"
 }
 
@@ -59,4 +66,12 @@ lagoon_settings() {
   )
   [ "$(echo "$SOLR" | jq -rc .scan_mode)" == 1 ]
   [ "$(echo "$SOLR" | jq -rc .mode_executable.executable_path)" == "/usr/bin/clamscan" ]
+}
+
+@test "Module permission settings" {
+  [ $(security_settings | jq -rc '.config."module_permissions.settings".managed_modules | index( "bigmenu" )') != 'null' ]
+  [ $(security_settings | jq -rc '.config."module_permissions.settings".protected_modules | index( "module_permissions" )') != 'null' ]
+  [ $(security_settings | jq -rc '.config."module_permissions.settings".protected_modules | index( "module_permissions_ui" )') != 'null' ]
+  [ $(security_settings | jq -rc '.config."module_permissions.settings".permission_blacklist | index( "administer modules" )') != 'null' ]
+  [ $(security_settings | jq -rc '.config."module_permissions.settings".permission_blacklist | index( "administer permissions" )') != 'null' ]
 }

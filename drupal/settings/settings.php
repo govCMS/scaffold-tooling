@@ -57,6 +57,7 @@
 $govcms_includes = $app_root . '/../vendor/govcms/scaffold-tooling/drupal/settings';
 
 include $govcms_includes . '/all.settings.php';
+include $govcms_includes . '/security.settings.php';
 
 // Every Lagoon, local or remote.
 if (getenv('LAGOON')) {
