@@ -3,5 +3,5 @@ parameters:
   session.storage.options:
     gc_probability: 1
     gc_divisor: 100
-    gc_maxlifetime: 14400
+    gc_maxlifetime: 1440
     cookie_lifetime: 0

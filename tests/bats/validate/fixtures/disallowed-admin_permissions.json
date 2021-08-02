@@ -1,10 +1,16 @@
 {
   "anonymous": {
     "label": "Anonymous user",
-    "perms": ["access content", "administer permissions"]
+    "perms": [
+      "access content",
+      "administer permissions"
+    ]
   },
   "authenticated": {
     "label": "Authenticated user",
-    "perms": ["access content", "administer permissions"]
+    "perms": [
+      "access content",
+      "administer permissions"
+    ]
   }
 }

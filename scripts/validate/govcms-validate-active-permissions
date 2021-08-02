@@ -8,6 +8,7 @@ set -euo pipefail
 # to identify if restricted permissions have been given to users.
 #
 
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-permissions}
 
 FAILURES=""
@@ -32,8 +33,8 @@ for role in ${RESTRICTED_ROLES_LIST}; do
   FAILURES="$FAILURES,$role"
 done
 
-if [ -x vendor/govcms/scaffold-tooling/scripts/govcms-prepare-xml ]; then
-  vendor/govcms/scaffold-tooling/scripts/govcms-prepare-xml --failures="${FAILURES}" --total="${ROLES}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalActivePermissions"
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${ROLES}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalActivePermissions"
 fi
 
 if [ -z "${FAILURES}" ]; then
