@@ -15,7 +15,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
   assert_output_contains "[success]: No elevated permissions detected in configuration."
-  assert_failure
+  assert_success
 }
 
 @test "Check disallowed permissions: administer permissions" {
