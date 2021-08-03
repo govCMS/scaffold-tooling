@@ -61,6 +61,8 @@ load _helpers_govcms
   assert_file_exists vendor/bin/govcms-pre-deploy
   assert_file_exists vendor/bin/govcms-pre-deploy-db-update
   assert_file_exists vendor/bin/govcms-update_site_alias
+  assert_file_exists vendor/bin/govcms-validate-active-modules
+  assert_file_exists vendor/bin/govcms-validate-modules
   assert_file_exists vendor/bin/govcms-validate-permissions
   assert_file_exists vendor/bin/govcms-validate-platform-yml
   assert_file_exists vendor/bin/govcms-validate-theme-yml

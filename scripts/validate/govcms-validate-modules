@@ -11,9 +11,18 @@ set -euo pipefail
 
 GOVCMS_CONFIG_FOLDER_PATH=${GOVCMS_CONFIG_FOLDER_PATH:-"config"}
 GOVCMS_CORE_EXTENTION_FILE_NAME=${GOVCMS_CORE_EXTENTION_FILE_NAME:-"core.extension.yml"}
-GOVCMS_DISALLOWED_MODULES=${GOVCMS_DISALLOWED_MODULES:-"update,dblog"}
 GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-modules}
+
+GOVCMS_REQUIRED_MODULES=(
+  tfa
+  govcms_security
+)
+
+GOVCMS_DISALLOWED_MODULES=(
+  update
+  dblog
+)
 
 config_file=$(find "$GOVCMS_CONFIG_FOLDER_PATH" -type f \( -name "$GOVCMS_CORE_EXTENTION_FILE_NAME" \))
 echo "GovCMS Validate :: Verify enabled modules"
@@ -26,14 +35,26 @@ FAILURES=""
 
 IFS_BAK="$IFS"
 IFS=$','
+TOTAL=0
 
 for file in $config_file; do
+  # Check if required modules are missing from core.extension.yml.
+  for module_name in "${GOVCMS_REQUIRED_MODULES[@]}"; do
+    (( TOTAL=TOTAL+1 ))
+    if [[ $(yq r "$file" "module.$module_name") == 'null' ]]; then
+      echo "[fail]: '$module_name' is required"
+      FAILURES="$FAILURES,disabled:$module_name"
+    fi
+  done
+
   # Check if a disallowed module is listed in core.extension.yml file.
-  for module_name in $GOVCMS_DISALLOWED_MODULES; do
+  for module_name in "${GOVCMS_DISALLOWED_MODULES[@]}"; do
+    (( TOTAL=TOTAL+1 ))
     # yq returns NULL when a yaml key doesn't exist;
     # if a value is returned, we assume the module is enabled.
     if [[ $(yq r "$file" "module.$module_name") != 'null' ]]; then
-      FAILURES="$FAILURES, $module_name"
+      echo "[fail]: '$module_name' cannot be enabled"
+      FAILURES="$FAILURES,enabled:$module_name"
     fi
   done
 
@@ -42,13 +63,13 @@ done
 IFS=$IFS_BAK
 
 if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
-  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${GOVCMS_DISALLOWED_MODULES}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.DisallowedModules"
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${TOTAL}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.ModuleValidation"
 fi
 
 if [ -z "${FAILURES}" ]; then
-  echo "[success]: No disallowed module found in the exported config files."
+  echo "[success]: All modules are in expected states"
   exit 0
 fi
 
-echo "[fail]: Found disallowed modules in the exported config files: ${FAILURES:2}."
+echo "[fail]: Modules are in invalid states"
 exit 1
