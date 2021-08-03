@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2162,SC2046,SC2002,SC2034
+set -euo pipefail
+
+#
+# GovCMS validate TFA config.
+# Ensure that TFA has been enabled on the site.
+#
+
+GOVCMS_FILE_LIST=${GOVCMS_FILE_LIST:-}
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-tfa}
+
+FAILURES=""
+function join_char { local IFS="$1" shift; echo "$*"; }
+
+echo "GovCMS Validate :: Validate TFA config"
+
+# We will need to export this during automated testing.
+if [ -z "${GOVCMS_FILE_LIST}" ]; then
+  GOVCMS_FILE_LIST=$(find config/default -type f -name "tfa.settings.yml")
+fi
+
+IFS_BAK="$IFS"
+IFS=$'\n'
+
+for file in $GOVCMS_FILE_LIST; do
+  TFA_ENABLED=$(yq r "$file" 'enabled')
+  if [[ "${TFA_ENABLED}" != 1 ]]; then
+    echo "[fail]: TFA not enabled"
+    FAILURES="${FAILURES},${TFA_ENABLED}"
+  else
+    echo "[info]: TFA is enabled"
+  fi
+  TFA_REQUIRED=$(yq r "$file" 'required_roles.authenticated')
+  if [[ "${TFA_REQUIRED}" != "authenticated" ]]; then
+    echo "[fail]: TFA is not required for authenticated users"
+    FAILURES="${FAILURES},${TFA_REQUIRED}"
+  else
+    echo "[info]: TFA is required for authenticated users"
+  fi
+done
+
+IFS=$IFS_BAK
+
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
+  FILE_LFS=$(join_char , "${GOVCMS_FILE_LIST}")
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.ValidateTfa"
+fi
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: TFA is enabled and properly configured"
+  exit 0
+fi
+
+echo "[fail]: TFA is not enabled or not properly configured"
+exit 1
