@@ -30,7 +30,7 @@ MODULE_LIST=$(drush pm:info --status=enabled --format=json)
 
 # Check if required modules are enabled
 for module in "${GOVCMS_REQUIRED_MODULES[@]}"; do
-  (( TOTAL++ ))
+  (( TOTAL=TOTAL+1 ))
   if [[ 'null' == $(jq -r ".$module" <<< "${MODULE_LIST}") ]]; then
     if [ -n "${GOVCMS_REMEDIATE}" ]; then
       drush pm:enable "$module" -y
@@ -43,7 +43,7 @@ done
 
 # Check if disallowed modules are disabled
 for module in "${GOVCMS_DISALLOWED_MODULES[@]}"; do
-  (( TOTAL++ ))
+  (( TOTAL=TOTAL+1 ))
   if [[ 'null' != $(jq -r ".$module" <<< "${MODULE_LIST}") ]]; then
     if [ -n "${GOVCMS_REMEDIATE}" ]; then
       drush pm:disable "$module" -y
