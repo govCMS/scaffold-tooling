@@ -19,6 +19,7 @@ GOVCMS_REQUIRED_MODULES=(
 GOVCMS_DISALLOWED_MODULES=(
   update
   dblog
+  module_permissions_ui
 )
 
 FAILURES=""

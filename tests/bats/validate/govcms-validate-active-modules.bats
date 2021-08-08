@@ -86,6 +86,20 @@ load ../_helpers_govcms
   unset GOVCMS_REMEDIATE
 }
 
+@test "Active modules: module_permissions_ui" {
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" '{ "tfa": { "status": "enabled"}, "module_permissions_ui": {"status": "enabled"} }' 1
+
+  run scripts/validate/govcms-validate-active-modules >&3
+
+  assert_output_contains "GovCMS Validate :: Active modules validation"
+
+  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_output_contains "[fail]: 'module_permissions_ui' is enabled"
+
+  assert_failure
+}
+
 @test "Active modules: okay" {
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" '{ "tfa": { "status": "enabled"}, "govcms_security": {"status": "enabled"} }' 1
