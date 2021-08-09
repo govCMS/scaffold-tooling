@@ -83,16 +83,6 @@ prepare_fixture_dir(){
   assert_dir_exists "${dir}"
 }
 
-download_code_from_github(){
-  local user="${1?Required value}"
-  local repo="${2?Required value}"
-  curl --silent "https://api.github.com/repos/$user/$repo/releases/latest" |
-    grep '"tag_name":' |
-    sed -E 's/.*"([^"]+)".*/\1/' |
-    xargs -I {} curl -sL "https://github.com/$user/$repo/archive/"{}'.tar.gz' |
-    tar xvz -C "$(pwd)" --strip 1
-}
-
 # Copy source code at the latest commit to the destination directory.
 copy_code(){
   local dst="${1:-${BUILD_DIR}}"
