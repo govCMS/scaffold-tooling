@@ -28,17 +28,42 @@ IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_FILE_LIST; do
-    if [ $(cat "$file" | grep -c -e "administer permissions" -e "administer modules" -e "administer software updates" -e "administer site configuration" -e "use PHP for google analytics tracking visibility" -e "import configuration" -e "Administer the list of modules that can be managed by others") -ne 0 ]; then
-      echo "[fail]: $file has restricted permissions";
-      FAILURES="$FAILURES,$file"
-      continue
-    fi
-    if [[ $(yq r "$file" 'is_admin') == 'true' ]]; then
-      echo "[fail]: $file is listed as an admin role";
-      FAILURES="$FAILURES,$file"
-      continue
-    fi
-    echo "[info]: $file is valid"
+  FILE_JSON=$(yq read "$file" --tojson)
+  RESTRICTED_PERMS_JSON=$(
+    jq -r 'if (.permissions |
+        index("administer modules") or
+        index("administer permissions") or
+        index("administer site configuration") or
+        index("administer software updates") or
+        index("Administer the list of modules that can be managed by others") or
+        index("import configuration") or
+        index("use PHP for google analytics tracking visibility")
+      )
+      then {
+        role: .id,
+        perms: (.permissions | map(select(. == (
+          "administer modules",
+          "administer permissions",
+          "administer site configuration",
+          "administer software updates",
+          "Administer the list of modules that can be managed by others",
+          "import configuration",
+          "use PHP for google analytics tracking visibility"
+        ))))
+      }
+      else empty end' <<< "${FILE_JSON}")
+  RESTRICTED_PERMS=$(jq '.perms | join(",")' <<< "${RESTRICTED_PERMS_JSON}")
+  if [ -n "${RESTRICTED_PERMS}" ]; then
+    echo "[fail]: $file has restricted permissions: $RESTRICTED_PERMS";
+    FAILURES="$FAILURES,$file"
+    continue
+  fi
+  if [[ $(yq r "$file" 'is_admin') == 'true' ]]; then
+    echo "[fail]: $file is listed as an admin role";
+    FAILURES="$FAILURES,$file"
+    continue
+  fi
+  echo "[info]: $file is valid"
 done
 
 IFS=$IFS_BAK
