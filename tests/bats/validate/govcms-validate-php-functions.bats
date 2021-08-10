@@ -9,6 +9,7 @@ load ../_helpers_govcms
 }
 
 @test "Check banned PHP functions: theme file" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
   export GOVCMS_RESULTS_STDOUT=1
   export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/banned_functions.theme
 
@@ -20,6 +21,7 @@ load ../_helpers_govcms
 }
 
 @test "Check banned PHP functions: inc file" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
   export GOVCMS_RESULTS_STDOUT=1
   export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/banned_functions.inc
 
@@ -31,6 +33,7 @@ load ../_helpers_govcms
 }
 
 @test "Check banned PHP functions: system functions" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
   export GOVCMS_RESULTS_STDOUT=1
   export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/system_functions.php
 
@@ -54,6 +57,7 @@ load ../_helpers_govcms
 }
 
 @test "Check banned PHP functions: net functions" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
   export GOVCMS_RESULTS_STDOUT=1
   export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/net_functions.php
 
@@ -74,6 +78,7 @@ load ../_helpers_govcms
 }
 
 @test "Check banned PHP functions: posix functions" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
   export GOVCMS_RESULTS_STDOUT=1
   export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/posix_functions.php
 

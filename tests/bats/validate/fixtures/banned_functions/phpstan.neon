@@ -1,6 +1,4 @@
 parameters:
-  scanDirectories:
-    - /app/web
   level: 0
   fileExtensions:
     - php
