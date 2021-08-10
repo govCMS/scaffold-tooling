@@ -1,0 +1,46 @@
+includes:
+  - /govcms/vendor/ekino/phpstan-banned-code/extension.neon
+parameters:
+  level: 0
+  fileExtensions:
+    - php
+    - theme
+    - inc
+  banned_code:
+    nodes:
+      - type: Expr_FuncCall
+        functions:
+          - curl_exec
+          - curl_multi_exec
+          - dd
+          - debug_backtrace
+          - dump
+          - escapeshellcmd
+          - exec
+          - ftp_connect
+          - ftp_exec
+          - ftp_get
+          - ftp_login
+          - ftp_nb_fput
+          - ftp_put
+          - ftp_raw
+          - ftp_rawlist
+          - passthru
+          - phpinfo
+          - popen
+          - posix_getpwuid
+          - posix_kill
+          - posix_mkfifo
+          - posix_setpgid
+          - posix_setsid
+          - posix_setuid
+          - posix_uname
+          - print_r
+          - proc_open
+          - proc_get_status
+          - proc_terminate
+          - proc_close
+          - proc_nice
+          - shell_exec
+          - system
+          - var_dump
