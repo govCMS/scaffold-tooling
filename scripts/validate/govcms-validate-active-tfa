@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#
+# GovCMS validate TFA config.
+# Ensure that TFA is properly configured on a running site.
+#
+
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-tfa}
+
+FAILURES=""
+
+echo "GovCMS Validate :: Validate TFA config on active site"
+
+TFA_CONFIG=$(drush config:get tfa.settings --format=json)
+
+TFA_ENABLED=$(jq -r '.enabled' <<< "${TFA_CONFIG}")
+if [[ "${TFA_ENABLED}" != 1 ]]; then
+  echo "[fail]: TFA not enabled"
+  FAILURES="${FAILURES},${TFA_ENABLED}"
+else
+  echo "[info]: TFA is enabled"
+fi
+
+TFA_REQUIRED=$(jq -r '.required_roles.authenticated' <<< "${TFA_CONFIG}")
+if [[ "${TFA_REQUIRED}" != "authenticated" ]]; then
+  echo "[fail]: TFA is not required for authenticated users"
+  FAILURES="${FAILURES},${TFA_REQUIRED}"
+else
+  echo "[info]: TFA is required for authenticated users"
+fi
+
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="tfa_enabled,tfa_authenticated_enabled" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.ValidateActiveTfa"
+fi
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: TFA is actively enabled and properly configured"
+  exit 0
+fi
+
+echo "[fail]: TFA is not actively enabled or enabled but not properly configured"
+exit 1
