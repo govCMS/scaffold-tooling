@@ -1,11 +1,7 @@
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
-      - image: quay.io/govcms/govcms-ci
+      - image: cimg/php:7.4
     steps:
-      - checkout
-      - run: composer validate --strict --no-check-all
-      - run: .circleci/shellcheck.sh
-      - run: .circleci/phpcs.sh
-      - run: .circleci/bats.sh
+      - run: echo "Actual build is in gitlab; this is just kept here so builds don't fail until CircleCI is removed for the project."

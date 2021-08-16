@@ -11,6 +11,7 @@ set -euo pipefail
 
 GOVCMS_PLATFORM_FILES=${GOVCMS_PLATFORM_FILES:-}
 GOVCMS_YAML_LINT=${GOVCMS_YAML_LINT:-}
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-platform}
 
 FAILURES=""
@@ -19,7 +20,7 @@ function join_char { local IFS="$1" shift; echo "$*"; }
 echo "GovCMS Validate :: Yaml lint platform files"
 
 if [ -z "${GOVCMS_PLATFORM_FILES}" ]; then
-  GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' \))
+  GOVCMS_PLATFORM_FILES=$(find . -type f \( -name '.lagoon.yml' -o -name 'docker-compose.yml' \))
 fi
 
 if [ -z "${GOVCMS_YAML_LINT}" ]; then
@@ -41,9 +42,9 @@ done
 
 IFS=$IFS_BAK
 
-if [ -x govcms-prepare-xml ]; then
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
   FILE_LFS=$(join_char , "${GOVCMS_PLATFORM_FILES}")
-  govcms-prepare-xml --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${FILE_LFS}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.IllegalPermissions"
 fi
 
 if [ -z "${FAILURES}" ]; then

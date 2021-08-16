@@ -8,5 +8,5 @@ volumes:
   app: {}
 services:
   test:
-    image: govcms/govcms-ci
+    image: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci${GOVCMS_CI_IMAGE_VERSION:-}
     << : *default-volumes
