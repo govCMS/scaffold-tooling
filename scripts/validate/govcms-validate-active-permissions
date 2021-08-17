@@ -25,7 +25,8 @@ RESTRICTED_ROLES_LIST=$(
       index("use PHP for google analytics tracking visibility") or
       index("administer permissions") or
       index("administer site configuration") or
-      index("administer software updates")
+      index("administer software updates") or
+      index("Administer the list of modules that can be managed by others")
     )
     then $k else empty end' <<< "${GOVCMS_PERMISSIONS_LIST}")
 for role in ${RESTRICTED_ROLES_LIST}; do

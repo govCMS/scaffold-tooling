@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#
+# GovCMS mandatory module validation.
+#
+# Ensure requirde platform modules are enabled.
+#
+
+GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
+GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-permissions}
+GOVCMS_REMEDIATE=${GOVCMS_REMEDIATE:-""}
+
+GOVCMS_REQUIRED_MODULES=(
+  tfa
+  govcms_security
+)
+
+GOVCMS_DISALLOWED_MODULES=(
+  update
+  dblog
+  module_permissions_ui
+)
+
+FAILURES=""
+TOTAL=0
+
+echo "GovCMS Validate :: Active modules validation"
+
+MODULE_LIST=$(drush pm:info --status=enabled --format=json)
+
+# Check if required modules are enabled
+for module in "${GOVCMS_REQUIRED_MODULES[@]}"; do
+  (( TOTAL=TOTAL+1 ))
+  if [[ 'null' == $(jq -r ".$module" <<< "${MODULE_LIST}") ]]; then
+    if [ -n "${GOVCMS_REMEDIATE}" ]; then
+      drush pm:enable "$module" -y
+    else
+      echo "[fail]: '$module' is not enabled";
+      FAILURES="$FAILURES,disabled:$module"
+    fi
+  fi
+done
+
+# Check if disallowed modules are disabled
+for module in "${GOVCMS_DISALLOWED_MODULES[@]}"; do
+  (( TOTAL=TOTAL+1 ))
+  if [[ 'null' != $(jq -r ".$module" <<< "${MODULE_LIST}") ]]; then
+    if [ -n "${GOVCMS_REMEDIATE}" ]; then
+      drush pm:disable "$module" -y
+    else
+      echo "[fail]: '$module' is enabled";
+      FAILURES="$FAILURES,enabled:$module"
+    fi
+  fi
+done
+
+if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
+  ${GOVCMS_PREPARE_XML_SCRIPT} --failures="${FAILURES}" --total="${TOTAL}" --name="${GOVCMS_OUTFILE}" --fail-message="GovCMS.QA.ModuleValidation"
+fi
+
+if [ -z "${FAILURES}" ]; then
+  echo "[success]: All modules are in expected states"
+  exit 0
+fi
+
+echo "[fail]: Modules are in invalid states"
+exit 1
