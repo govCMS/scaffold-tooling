@@ -1,0 +1,10 @@
+{
+  "anonymous": {
+    "label": "Anonymous user",
+    "perms": [
+      "access content",
+      "administer site configuration",
+      "administer software updates"
+    ]
+  }
+}
