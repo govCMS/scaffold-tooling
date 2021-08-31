@@ -16,7 +16,7 @@ while getopts ":naf:" opt; do
     a ) DISABLE_ACTIVE=1;;
     \? )
       echo "GovCMS Ship Shape usage:"
-      echo "  -f            CSV of scripts to allow failures in"
+      echo "  -f            List of scripts to allow failures in"
       echo "  -a            Disable 'active' validations"
       echo "  -n            No-interaction, skip output files and fail on error"
       exit 1
