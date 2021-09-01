@@ -87,7 +87,7 @@ load _helpers_govcms
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
 
   # Assert that the settings are correct.
-  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_maxlifetime")" -eq 1440 ];
+  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_maxlifetime")" -eq 3600 ];
   [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_divisor")" -eq 100 ];
   [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_probability")" -eq 1 ];
   [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].cookie_lifetime")" -eq 0 ];
