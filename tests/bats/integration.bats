@@ -66,7 +66,7 @@ load _helpers_govcms
   assert_file_exists vendor/bin/govcms-validate-permissions
   assert_file_exists vendor/bin/govcms-validate-platform-yml
   assert_file_exists vendor/bin/govcms-validate-theme-yml
-  assert_file_exists vendor/bin/govcms-prevent-theme-modules
+  assert_file_exists vendor/bin/govcms-validate-theme-modules
   assert_file_exists vendor/bin/govcms-yaml_lint
   assert_file_exists vendor/bin/govcms-module_verify
   assert_file_exists vendor/bin/govcms-validate-illegal-files

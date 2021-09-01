@@ -19,6 +19,11 @@
     "webflo/drupal-finder": "^1.0.0",
     "webmozart/path-util": "^2.3"
   },
+  "scripts": {
+    "post-install-cmd": [
+      "rm -rf ./tests"
+    ]
+  },
   "bin": [
     "scripts/govcms-audit",
     "scripts/govcms-behat",
@@ -51,8 +56,8 @@
     "scripts/validate/govcms-validate-profile",
     "scripts/validate/govcms-validate-platform-yml",
     "scripts/validate/govcms-validate-tfa ",
+    "scripts/validate/govcms-validate-theme-modules",
     "scripts/validate/govcms-validate-theme-yml",
-    "scripts/validate/govcms-prevent-theme-modules",
     "scripts/validate/govcms-yaml_lint",
     "scripts/validate/govcms-module_verify",
     "scripts/validate/govcms-validate-illegal-files"
