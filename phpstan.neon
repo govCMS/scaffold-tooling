@@ -1,6 +1,8 @@
 parameters:
+  excludePaths:
+    - /app/vendor/*
   scanDirectories:
-    - /app/web
+    - /app
   level: 0
   fileExtensions:
     - php
