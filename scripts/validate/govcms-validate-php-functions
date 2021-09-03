@@ -35,6 +35,7 @@ else
   # Running from the project root.
   VENDOR_DIR=/govcms/vendor
 fi
+
 PHPSTAN_PATH=${VENDOR_DIR}/bin/phpstan
 PHPSTAN_CONFIG=${GOVCMS_SCAFFOLD_TOOLING_DIR}/phpstan.neon
 

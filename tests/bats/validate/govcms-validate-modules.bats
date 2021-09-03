@@ -3,10 +3,9 @@
 
 load ../_helpers_govcms
 
-@test "No exported config files." {
+@test "Validate modules: no config" {
   export GOVCMS_CONFIG_FOLDER_PATH="tests/bats/validate/fixtures/config"
   export GOVCMS_CORE_EXTENTION_FILE_NAME=""
-  export GOVCMS_DISALLOWED_MODULES="update,dblog"
 
   run scripts/validate/govcms-validate-modules >&3
 
@@ -14,24 +13,33 @@ load ../_helpers_govcms
   assert_success
 }
 
-@test "Config has a disallowed module." {
+@test "Validate modules: missing required" {
   export GOVCMS_CONFIG_FOLDER_PATH="tests/bats/validate/fixtures/config"
-  export GOVCMS_CORE_EXTENTION_FILE_NAME="core.extension-with-disallowed-modules.yml"
-  export GOVCMS_DISALLOWED_MODULES="update,dblog"
+  export GOVCMS_CORE_EXTENTION_FILE_NAME="core.extension-missing-required.yml"
 
   run scripts/validate/govcms-validate-modules >&3
 
-  assert_output_contains "[fail]: Found disallowed modules in the exported config files: update, dblog."
+  assert_output_contains "[fail]: Modules are in invalid states"
   assert_failure
 }
 
-@test "Config doesn't have a disallowed module." {
+
+@test "Validate modules: disallowed" {
   export GOVCMS_CONFIG_FOLDER_PATH="tests/bats/validate/fixtures/config"
-  export GOVCMS_CORE_EXTENTION_FILE_NAME="core.extension-no-disallowed-modules.yml"
-  export GOVCMS_DISALLOWED_MODULES="update,dblog"
+  export GOVCMS_CORE_EXTENTION_FILE_NAME="core.extension-with-disallowed-modules.yml"
 
   run scripts/validate/govcms-validate-modules >&3
 
-  assert_output_contains "[success]: No disallowed module found in the exported config files."
+  assert_output_contains "[fail]: Modules are in invalid states"
+  assert_failure
+}
+
+@test "Validate modules: okay!" {
+  export GOVCMS_CONFIG_FOLDER_PATH="tests/bats/validate/fixtures/config"
+  export GOVCMS_CORE_EXTENTION_FILE_NAME="core.extension-no-disallowed-modules.yml"
+
+  run scripts/validate/govcms-validate-modules >&3
+
+  assert_output_contains "[success]: All modules are in expected states"
   assert_success
 }

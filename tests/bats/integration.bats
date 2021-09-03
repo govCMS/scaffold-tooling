@@ -73,10 +73,12 @@ load _helpers_govcms
   assert_file_exists vendor/bin/govcms-pre-deploy
   assert_file_exists vendor/bin/govcms-pre-deploy-db-update
   assert_file_exists vendor/bin/govcms-update_site_alias
+  assert_file_exists vendor/bin/govcms-validate-active-modules
+  assert_file_exists vendor/bin/govcms-validate-modules
   assert_file_exists vendor/bin/govcms-validate-permissions
   assert_file_exists vendor/bin/govcms-validate-platform-yml
   assert_file_exists vendor/bin/govcms-validate-theme-yml
-  assert_file_exists vendor/bin/govcms-prevent-theme-modules
+  assert_file_exists vendor/bin/govcms-validate-theme-modules
   assert_file_exists vendor/bin/govcms-yaml_lint
   assert_file_exists vendor/bin/govcms-module_verify
   assert_file_exists vendor/bin/govcms-validate-illegal-files
@@ -85,7 +87,7 @@ load _helpers_govcms
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
 
   # Assert that the settings are correct.
-  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_maxlifetime")" -eq 1440 ];
+  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_maxlifetime")" -eq 3600 ];
   [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_divisor")" -eq 100 ];
   [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_probability")" -eq 1 ];
   [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].cookie_lifetime")" -eq 0 ];

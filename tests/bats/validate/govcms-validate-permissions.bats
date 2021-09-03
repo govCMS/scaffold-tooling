@@ -6,6 +6,8 @@ load ../_helpers_govcms
 @test "Check disallowed permissions: defaults" {
   run scripts/validate/govcms-validate-permissions >&3
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: pass" {
@@ -15,6 +17,8 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
   assert_output_contains "[success]: No elevated permissions detected in configuration."
+
+  assert_success
 }
 
 @test "Check disallowed permissions: administer permissions" {
@@ -23,7 +27,9 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"administer permissions\""
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: administer modules" {
@@ -32,7 +38,9 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"administer modules\""
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: administer software updates" {
@@ -41,7 +49,9 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"administer software updates\""
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: administer site configuration" {
@@ -50,7 +60,9 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"administer site configuration\""
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: use PHP for google analytics tracking visibility" {
@@ -59,7 +71,9 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"use PHP for google analytics tracking visibility\""
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: import configuration" {
@@ -68,7 +82,9 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"import configuration\""
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: is_admin" {
@@ -78,6 +94,19 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
   assert_output_contains "[fail]: $GOVCMS_FILE_LIST is listed as an admin role"
+
+  assert_failure
+}
+
+@test "Check disallowed permissions: module_permissions_ui" {
+  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.module_permissions_ui.yml" \) -print0)
+
+  run scripts/validate/govcms-validate-permissions >&3
+
+  assert_output_contains "GovCMS Validate :: Disallowed permissions"
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"Administer the list of modules that can be managed by others\""
+
+  assert_failure
 }
 
 @test "Check disallowed permissions: multiple files" {
@@ -87,4 +116,17 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
   assert_output_contains "[fail]: tests/bats/validate/fixtures/user.role.is_admin.yml is listed as an admin role"
+
+  assert_failure
+}
+
+@test "Check disallowed permissions: multiple permissions" {
+  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.multiple_perms.yml" \))
+
+  run scripts/validate/govcms-validate-permissions >&3
+
+  assert_output_contains "GovCMS Validate :: Disallowed permissions"
+  assert_output_contains "[fail]: tests/bats/validate/fixtures/user.role.multiple_perms.yml has restricted permissions: \"administer site configuration,administer software updates\""
+
+  assert_failure
 }

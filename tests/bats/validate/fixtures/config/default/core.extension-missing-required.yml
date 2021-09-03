@@ -3,14 +3,12 @@ module:
   ctools_block: 0
   datetime: 0
   datetime_range: 0
-  dblog: 0
   ga_login: 0
   views_ui: 0
   webform: 0
   webform_ui: 0
   workflows: 0
   govcms_security: 0
-  tfa: 0
   ds: 1
   menu_link_content: 1
   pathauto: 1
@@ -18,7 +16,6 @@ module:
   views: 10
   paragraphs: 11
   linked_field: 100
-  update: 0
   govcms: 1000
 theme:
   stable: 0
