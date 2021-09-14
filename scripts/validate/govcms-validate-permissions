@@ -24,6 +24,12 @@ if [ -z "${GOVCMS_FILE_LIST}" ]; then
   GOVCMS_FILE_LIST=$(find config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.site_administrator.yml' \))
 fi
 
+# No configuration files.
+if [ -z "${GOVCMS_FILE_LIST}" ]; then
+  echo "[info]: Configuration files not present."
+  exit 0
+fi
+
 IFS_BAK="$IFS"
 IFS=$'\n'
 
