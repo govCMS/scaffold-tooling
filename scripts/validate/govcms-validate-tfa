@@ -21,6 +21,12 @@ if [ -z "${GOVCMS_FILE_LIST}" ]; then
   GOVCMS_FILE_LIST=$(find config/default -type f -name "tfa.settings.yml")
 fi
 
+# No configuration files.
+if [ -z "${GOVCMS_FILE_LIST}" ]; then
+  echo "[info]: Configuration files not present."
+  exit 0
+fi
+
 IFS_BAK="$IFS"
 IFS=$'\n'
 
