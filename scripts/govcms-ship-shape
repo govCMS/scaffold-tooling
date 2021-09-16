@@ -3,7 +3,6 @@ IFS=$'\n\t'
 set -euo pipefail
 
 APP_DIR="${APP_DIR:-/app}"
-GOVCMS_VALIDATE_ALLOW_FAILURES="${GOVCMS_VALIDATE_ALLOW_FAILURES:-}"
 ALLOW_FAILURES=''
 NO_INTERACTION=0
 DISABLE_ACTIVE=0
@@ -23,12 +22,6 @@ while getopts ":naf:" opt; do
       ;;
   esac
 done
-
-if [[ -n $GOVCMS_VALIDATE_ALLOW_FAILURES ]]; then
-  # This will allow projects to set a deployment variable to control
-  # which scripts can be skipped during the deployment process.
-  ALLOW_FAILURES="$GOVCMS_VALIDATE_ALLOW_FAILURES"
-fi
 
 SCRIPT_DIR=${APP_DIR}/vendor/bin
 
