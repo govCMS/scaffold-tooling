@@ -9,7 +9,7 @@ load ../_helpers_govcms
 
   run scripts/validate/govcms-validate-modules >&3
 
-  assert_output_contains "Coudn't find core.extension.yml file."
+  assert_output_contains "Couldn't find core.extension.yml file."
   assert_success
 }
 
