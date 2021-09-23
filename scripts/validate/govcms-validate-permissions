@@ -43,7 +43,8 @@ for file in $GOVCMS_FILE_LIST; do
         index("administer software updates") or
         index("Administer the list of modules that can be managed by others") or
         index("import configuration") or
-        index("use PHP for google analytics tracking visibility")
+        index("use PHP for google analytics tracking visibility") or
+        index("administer search_api_attachments")
       )
       then {
         role: .id,
@@ -54,7 +55,8 @@ for file in $GOVCMS_FILE_LIST; do
           "administer software updates",
           "Administer the list of modules that can be managed by others",
           "import configuration",
-          "use PHP for google analytics tracking visibility"
+          "use PHP for google analytics tracking visibility",
+          "administer search_api_attachments"
         ))))
       }
       else empty end' <<< "${FILE_JSON}")
