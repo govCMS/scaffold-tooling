@@ -91,4 +91,5 @@ $config['module_permissions.settings']['protected_modules'] = [
 $config['module_permissions.settings']['permission_blacklist'] = [
   'administer modules',
   'administer permissions',
+  'administer search_api_attachments',
 ];
