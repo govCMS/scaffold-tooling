@@ -3,7 +3,7 @@
     "label": "Anonymous user",
     "perms": [
       "access content",
-      "administer search_api_attachments"
+      "administer search_api"
     ]
   }
 }

@@ -8,4 +8,4 @@ weight: -6
 is_admin: false
 permissions:
   - 'access content'
-  - 'administer search_api_attachments'
+  - 'administer search_api'
