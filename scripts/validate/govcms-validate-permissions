@@ -19,6 +19,11 @@ function join_char { local IFS="$1" shift; echo "$*"; }
 
 echo "GovCMS Validate :: Disallowed permissions"
 
+if [ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" != "import" ]; then
+  echo "[skip]: Workflow is not set to import."
+  exit 0
+fi
+
 # We will need to export this during automated testing.
 if [ -z "${GOVCMS_FILE_LIST}" ]; then
   GOVCMS_FILE_LIST=$(find config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.site_administrator.yml' \))
