@@ -21,7 +21,7 @@ echo "GovCMS Validate :: Disallowed permissions"
 
 # We will need to export this during automated testing.
 if [ -z "${GOVCMS_FILE_LIST}" ]; then
-  GOVCMS_FILE_LIST=$(find config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.site_administrator.yml' \))
+  GOVCMS_FILE_LIST=$(find config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.govcms_site_administrator.yml' \))
 fi
 
 # No configuration files.
