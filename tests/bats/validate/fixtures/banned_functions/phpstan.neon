@@ -1,9 +1,15 @@
 parameters:
+  excludePaths:
+    - /app/vendor/*
+  scanDirectories:
+    - /app
   level: 0
   fileExtensions:
     - php
     - theme
     - inc
+  ignoreErrors:
+    - "#Function (.*) not found#"
   banned_code:
     nodes:
       - type: Expr_FuncCall
