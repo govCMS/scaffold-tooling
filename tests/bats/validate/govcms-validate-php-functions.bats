@@ -104,4 +104,6 @@ load ../_helpers_govcms
 
   assert_output_not_contains "Function filter_formats not found"
   assert_output_not_contains "Function system_region_list not found"
+
+  assert_success
 }
