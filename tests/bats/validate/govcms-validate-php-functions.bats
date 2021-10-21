@@ -94,3 +94,14 @@ load ../_helpers_govcms
   assert_output_contains "14     Should not use function \"posix_setuid\", please change the code."
   assert_output_contains "16     Should not use function \"posix_uname\", please change the code."
 }
+
+@test "Check function not found" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
+  export GOVCMS_RESULTS_STDOUT=1
+  export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/func_not_found.inc
+
+  run scripts/validate/govcms-validate-php-functions >&3
+
+  assert_output_not_contains "Function filter_formats not found"
+  assert_output_not_contains "Function system_region_list not found"
+}
