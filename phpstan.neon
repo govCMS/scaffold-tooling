@@ -8,6 +8,7 @@ parameters:
     - php
     - theme
     - inc
+  reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     - "#Function (.*) not found#"
   banned_code:
