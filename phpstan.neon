@@ -8,6 +8,8 @@ parameters:
     - php
     - theme
     - inc
+  ignore_errors:
+    - "function not found"
   banned_code:
     nodes:
       - type: Expr_FuncCall
