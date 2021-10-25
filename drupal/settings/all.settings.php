@@ -153,3 +153,9 @@ else {
   $config['seckit.settings']['seckit_ssl']['hsts_max_age'] = 0;
   $config['seckit.settings']['seckit_ssl']['hsts_subdomains'] = FALSE;
 }
+
+// Trusted host patterns are not necessary on lagoon as traffic will only
+// be routed to your site via the routes (hosts) defined in .lagoon.yml.
+if (getenv('LAGOON')) {
+  $settings['trusted_host_patterns'][] = '.*';
+}
