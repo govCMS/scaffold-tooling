@@ -11,6 +11,18 @@ parameters:
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     - "#Function (.*) not found#"
+    - "#^Call to static method (.*) on an unknown class (.*)$#"
+    - "#^Static call to instance method (.*)$#"
+    - "#^Unsafe usage of new static\\(\\)\\.$#"
+    - "#^Method (.*) should return bool but return statement is missing\\.$#"
+    - message: "#^Should not use function \"debug_backtrace\", please change the code\\.$#"
+      count: 1
+      path: themes/bootstrap/src/Bootstrap.php
+    - message: "#^Should not use function \"print_r\", please change the code\\.$#"
+      count: 1
+      path: themes/bootstrap/src/Bootstrap.php
+  bootstrapFiles:
+    - classPHPStanAliases.php
   banned_code:
     nodes:
       - type: Expr_FuncCall
