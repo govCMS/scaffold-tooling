@@ -15,6 +15,7 @@ parameters:
     - "#^Static call to instance method (.*)$#"
     - "#^Unsafe usage of new static\\(\\)\\.$#"
     - "#^Method (.*) should return bool but return statement is missing\\.$#"
+    - "#Should not use node with type "Expr_Exit", please change the code.#"
     - message: "#^Should not use function \"debug_backtrace\", please change the code\\.$#"
       count: 1
       path: themes/bootstrap/src/Bootstrap.php
