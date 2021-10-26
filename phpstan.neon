@@ -18,10 +18,10 @@ parameters:
     - "#Should not use node with type \"Expr_Exit\", please change the code.#"
     - message: "#^Should not use function \"debug_backtrace\", please change the code\\.$#"
       count: 1
-      path: themes/bootstrap/src/Bootstrap.php
+      path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
     - message: "#^Should not use function \"print_r\", please change the code\\.$#"
       count: 1
-      path: themes/bootstrap/src/Bootstrap.php
+      path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
   bootstrapFiles:
     - classPHPStanAliases.php
   banned_code:
