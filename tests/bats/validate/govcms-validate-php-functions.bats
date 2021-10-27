@@ -107,3 +107,13 @@ load ../_helpers_govcms
 
   assert_success
 }
+
+@test "Assert valid function file" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
+  export GOVCMS_RESULTS_STDOUT=1
+  export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/valid_file.inc
+
+  run scripts/validate/govcms-validate-php-functions >&3
+
+  assert_success
+}
