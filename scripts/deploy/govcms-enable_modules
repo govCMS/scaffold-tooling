@@ -33,6 +33,7 @@ PLATFORM_MODULES=(
   "robotstxt"
   "lagoon_logs"
   "environment_indicator"
+  "govcms_security"
 )
 
 MODULE_LIST=""
