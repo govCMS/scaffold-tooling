@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Drupal 8 all environment configuration file.
+ * Drupal 9 all environment configuration file.
  *
  * This file should contain all settings.php configurations that are needed by
  * all environments.
@@ -21,11 +21,7 @@ $govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $settings['container_yamls'][] = $govcms_includes . '/all.services.yml';
 
-// Drupal 8 config.
-$config_directories[CONFIG_SYNC_DIRECTORY] = '../config/default';
-// Drupal 8 (only) partial overrides.
-$config_directories['dev'] = '../config/dev';
-// Drupal 9 ready.
+// Configuration sync directory.
 $settings['config_sync_directory'] = '../config/default';
 
 // @see https://govdex.gov.au/jira/browse/GOVCMS-993
