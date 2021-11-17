@@ -1,9 +1,0 @@
-{
-  "anonymous": {
-    "label": "Anonymous user",
-    "perms": [
-      "access content",
-      "administer search_api"
-    ]
-  }
-}
