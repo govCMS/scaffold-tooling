@@ -15,7 +15,7 @@ FAILURES=""
 
 echo "GovCMS Validate :: Disallowed permissions on active site"
 
-GOVCMS_PERMISSIONS_LIST=$(drush role:list --format=json | jq -r 'if .govcms_site_administrator then del(.govcms_site_administrator.perms[] | select(. == "administer search_api")) else . end')
+GOVCMS_PERMISSIONS_LIST=$(drush role:list --format=json | jq -r 'del( .["govcms_site_administrator", "site_administrator"] .perms[]? | select(. == "administer search_api") )')
 ROLES=$(jq -r '.|[keys[]] | join(",")' <<< "${GOVCMS_PERMISSIONS_LIST}")
 RESTRICTED_PERMS_FOUND=$(
   jq -r '[(.|keys[]) as $k
