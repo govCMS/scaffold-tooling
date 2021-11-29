@@ -26,7 +26,9 @@ RESTRICTED_PERMS_FOUND=$(
       index("administer software updates") or
       index("Administer the list of modules that can be managed by others") or
       index("import configuration") or
-      index("use PHP for google analytics tracking visibility")
+      index("use PHP for google analytics tracking visibility") or
+      index("synchronize configuration") or
+      index("administer config permissions")
     )
     then {
       role: ($k),
@@ -37,7 +39,9 @@ RESTRICTED_PERMS_FOUND=$(
         "administer software updates",
         "Administer the list of modules that can be managed by others",
         "import configuration",
-        "use PHP for google analytics tracking visibility"
+        "use PHP for google analytics tracking visibility",
+        "synchronize configuration",
+        "administer config permissions"
       ))))
     }
     else empty end]' <<< "${GOVCMS_PERMISSIONS_LIST}")
