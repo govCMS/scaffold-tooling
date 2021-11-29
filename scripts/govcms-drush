@@ -28,6 +28,10 @@ send_errors() {
 
   echo "[fail]: Command failed sending notifications."
 
+  if [[ $GOVCMS_DRUSH_RECIPIENTS != "" ]]; then
+    TO="$TO,$GOVCMS_DRUSH_RECIPIENTS"
+  fi
+
   sendmail $TO <<EOF
 Subject: $SUBJECT
 From: $FROM
