@@ -37,7 +37,7 @@ load _helpers_govcms
   mock_set_status "$mock_sendmail" 0
 
   export GOVCMS_DRUSH_NOTIFICATION_ENABLE=true
-  export LAGOON_SAFE_PROJECT=test
+  export LAGOON_PROJECT=test
   export LAGOON_GIT_BRANCH=test
 
   run scripts/govcms-drush cron

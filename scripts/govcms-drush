@@ -15,6 +15,7 @@ FROM="drush-notifications@govcms.gov.au"
 # Comma separated list of emails.
 GOVCMS_DRUSH_RECIPIENTS=${GOVCMS_DRUSH_RECIPIENTS:-}
 GOVCMS_DRUSH_NOTIFICATION_ENABLE=${GOVCMS_DRUSH_NOTIFICATION_ENABLE:-false}
+LAGOON_PROJECT=${LAGOON_PROJECT:-'base project'}
 
 TMP=$(mktemp)
 COMMAND="drush $*"
@@ -23,7 +24,7 @@ echo "GovCMS Drush"
 
 send_errors() {
   ERROR=$(<$TMP)
-  SUBJECT="GovCMS Drush failure for $LAGOON_SAFE_PROJECT $LAGOON_GIT_BRANCH"
+  SUBJECT="GovCMS Drush failure for $LAGOON_PROJECT $LAGOON_GIT_BRANCH"
 
   echo "[fail]: Command failed sending notifications."
 
