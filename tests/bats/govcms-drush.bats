@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# shellcheck disable=SC2002
+# shellcheck disable=SC2002,SC2031,SC2030,SC2034,SC2155
 
 load _helpers_govcms
 
