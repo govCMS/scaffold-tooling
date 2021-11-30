@@ -26,7 +26,7 @@ fi
 TFA_REQUIRED_ROLES=$(jq -r '.required_roles' <<< "${TFA_CONFIG}")
 if [[ "${TFA_REQUIRED_ROLES}" == "[]" ]]; then
   echo "[fail]: TFA is not required for any role"
-    FAILURES="${FAILURES},no_role_required}"
+  FAILURES="${FAILURES},no_role_required}"
 else
   TFA_AUTHENTICATED_REQUIRED=$(jq -r '.authenticated' <<< "${TFA_REQUIRED_ROLES}")
   if [[ "${TFA_AUTHENTICATED_REQUIRED}" != "authenticated" ]]; then
