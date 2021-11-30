@@ -66,5 +66,5 @@ load _helpers_govcms
   assert_output_contains "GovCMS Drush"
   assert_equal "cron" "$(mock_get_call_args "${mock_drush}" 1)"
   assert_output_contains "[fail]: Command failed sending notifications."
-  assert_equal "govcms.devops@salsadigital.com.au,test@testm.com,test2@test.com" "$(mock_get_call_args "${mock_sendmail}" 1)"
+  assert_equal "govcms.devops@salsadigital.com.au,test@test.com,test2@test.com" "$(mock_get_call_args "${mock_sendmail}" 1)"
 }
