@@ -65,7 +65,7 @@ array_walk($varnish_hosts, function (&$value, $key) {
 
 $settings['reverse_proxy'] = TRUE;
 $settings['reverse_proxy_addresses'] = array_merge(explode(',', getenv('VARNISH_HOSTS')), ['varnish']);
-$settings['varnish_control_terminal'] = implode($varnish_hosts, " ");
+$settings['varnish_control_terminal'] = implode(" ", $varnish_hosts);
 $settings['varnish_control_key'] = getenv('VARNISH_SECRET') ?: 'lagoon_default_secret';
 $settings['varnish_version'] = 4;
 
