@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Lagoon Drupal 8 configuration file.
+ * Lagoon Drupal configuration file.
  *
  * This file will only run if a lagoon environment is detected (local or on
  * the platform.).
@@ -169,3 +169,6 @@ else {
 
 // Non-deterministic hash salt.
 $settings['hash_salt'] = hash('sha256', getenv('MARIADB_HOST'));
+
+// Enforce lagoon_logs as enabled.
+$config['lagoon_logs.settings']['enable'] = 1;
