@@ -6,7 +6,6 @@
  * Modules allow list for GovCMS module_permissions.
  */
 $config['module_permissions.settings']['managed_modules'] = [
-  'anchor_link',
   'bigmenu',
   'block_content',
   'captcha',
@@ -39,7 +38,6 @@ $config['module_permissions.settings']['managed_modules'] = [
   'environment_indicator_ui',
   'facets',
   'facets_range_widget',
-  'fakeobjects',
   'field_group',
   'field_ui',
   'file',
