@@ -7,7 +7,6 @@
  */
 $config['module_permissions.settings']['managed_modules'] = [
   'bigmenu',
-  'block_content',
   'captcha',
   'ctools_block',
   'ctools_views',
