@@ -8,7 +8,6 @@
 $config['module_permissions.settings']['managed_modules'] = [
   'anchor_link',
   'bigmenu',
-  'block_content',
   'captcha',
   'ctools_block',
   'ctools_views',
