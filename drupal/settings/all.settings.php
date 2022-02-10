@@ -13,7 +13,7 @@
 // This variable may be set from settings.php. Fallback to current directory.
 // @see https://github.com/govCMS/govcms8-scaffold-paas/blob/57cddd8/web/sites/default/settings.php#L48
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
+$govcms_includes = $govcms_includes ?? __DIR__;
 
 /**
  * Include the corresponding *.services.yml.
