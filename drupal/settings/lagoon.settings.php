@@ -14,7 +14,7 @@ use Drupal\Core\Installer\InstallerKernel;
 
 // See comment in all.settings.php.
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
-$govcms_includes = isset($govcms_includes) ? $govcms_includes : __DIR__;
+$govcms_includes = $govcms_includes ?? __DIR__;
 
 /**
  * Include the corresponding *.services.yml.
