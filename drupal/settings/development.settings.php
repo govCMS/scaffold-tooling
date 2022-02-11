@@ -12,10 +12,11 @@ $config['google_analytics.settings']['account'] = 'UA-XXXXXXXX-YY';
 
 // Determine which cluster should be the production cluster for the
 // stage_file_proxy url.
-switch(getenv('GOVCMS_PROJECT_TYPE')) {
+switch (getenv('GOVCMS_PROJECT_TYPE')) {
   case 'paas':
     $cluster = 'govcms6';
     break;
+
   default:
     $cluster = 'govcms5';
     break;
