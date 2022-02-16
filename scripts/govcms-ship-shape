@@ -33,9 +33,9 @@ fi
 SCRIPT_DIR=${APP_DIR}/vendor/bin
 
 if [[ $DISABLE_ACTIVE -eq 0 ]]; then
-  GOVCMS_VALIDATE_SCRIPTS=$(find "$SCRIPT_DIR" -type l -name "govcms-validate-*")
+  GOVCMS_VALIDATE_SCRIPTS=$(find "$SCRIPT_DIR" -name "govcms-validate-*")
 else
-  GOVCMS_VALIDATE_SCRIPTS=$(find "$SCRIPT_DIR" -type l \( -name "govcms-validate-*" ! -name "*active*" \))
+  GOVCMS_VALIDATE_SCRIPTS=$(find "$SCRIPT_DIR" \( -name "govcms-validate-*" ! -name "*active*" \))
 fi
 
 XML_SCRIPT=$SCRIPT_DIR/govcms-prepare-xml
