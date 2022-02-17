@@ -6,7 +6,7 @@
     "drupal/lagoon_logs": "^1.0",
     "drupal/redis": "^1.4",
     "drupal/stage_file_proxy": "^1.1",
-    "drush/drush": "~9 || ~10 || ~11",
+    "drush/drush": "~9 || ~10",
     "drupal/clamav": "^2.0",
     "drupal/config_ignore": "^2.3",
     "drupal/fast_404": "^2.0-alpha6",
