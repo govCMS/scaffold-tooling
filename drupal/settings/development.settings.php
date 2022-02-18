@@ -29,7 +29,7 @@ if (getenv('STAGE_FILE_PROXY_URL')) {
   $config['stage_file_proxy.settings']['origin'] = getenv('STAGE_FILE_PROXY_URL');
 }
 elseif (getenv('LAGOON_PROJECT')) {
-  $config['stage_file_proxy.settings']['origin'] = 'https://nginx-' . getenv('LAGOON_PROJECT') . "-master.{$cluster}.amazee.io";
+  $config['stage_file_proxy.settings']['origin'] = 'https://nginx-master-' . getenv('LAGOON_PROJECT') . ".{$cluster}.amazee.io";
 }
 
 /**
