@@ -38,6 +38,7 @@ $config['module_permissions.settings']['managed_modules'] = [
   'facets',
   'facets_range_widget',
   'field_group',
+  'field_ui',
   'file',
   'focal_point',
   'govcms_dlm',
@@ -64,6 +65,7 @@ $config['module_permissions.settings']['managed_modules'] = [
   'redirect_404',
   'redirect_domain',
   'robotstxt',
+  'role_delegation',
   'scheduled_transitions',
   'search_api',
   'search_api_attachments',
@@ -92,4 +94,5 @@ $config['module_permissions.settings']['permission_blacklist'] = [
   'administer modules',
   'administer permissions',
   'administer search_api',
+  'assign all roles',
 ];
