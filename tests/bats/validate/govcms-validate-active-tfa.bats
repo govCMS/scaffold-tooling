@@ -9,6 +9,21 @@ load ../_helpers_govcms
   assert_failure
 }
 
+@test "Check active TFA: invalid - no roles" {
+  DRUSH_OUTPUT=$(cat tests/bats/validate/fixtures/tfa-invalid-no-roles.json)
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "${DRUSH_OUTPUT}" 1
+
+  run scripts/validate/govcms-validate-active-tfa >&3
+
+  assert_output_contains "GovCMS Validate :: Validate TFA config on active site"
+  assert_output_contains "[fail]: TFA not enabled"
+  assert_output_contains "[fail]: TFA is not required for any role"
+  assert_output_contains "[fail]: TFA is not actively enabled or enabled but not properly configured"
+
+  assert_failure
+}
+
 @test "Check active TFA: invalid" {
   DRUSH_OUTPUT=$(cat tests/bats/validate/fixtures/tfa-invalid.json)
   mock_drush=$(mock_command "drush")

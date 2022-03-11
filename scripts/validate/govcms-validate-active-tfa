@@ -23,12 +23,18 @@ else
   echo "[info]: TFA is enabled"
 fi
 
-TFA_REQUIRED=$(jq -r '.required_roles.authenticated' <<< "${TFA_CONFIG}")
-if [[ "${TFA_REQUIRED}" != "authenticated" ]]; then
-  echo "[fail]: TFA is not required for authenticated users"
-  FAILURES="${FAILURES},${TFA_REQUIRED}"
+TFA_REQUIRED_ROLES=$(jq -r '.required_roles' <<< "${TFA_CONFIG}")
+if [[ "${TFA_REQUIRED_ROLES}" == "[]" ]]; then
+  echo "[fail]: TFA is not required for any role"
+  FAILURES="${FAILURES},no_role_required}"
 else
-  echo "[info]: TFA is required for authenticated users"
+  TFA_AUTHENTICATED_REQUIRED=$(jq -r '.authenticated' <<< "${TFA_REQUIRED_ROLES}")
+  if [[ "${TFA_AUTHENTICATED_REQUIRED}" != "authenticated" ]]; then
+    echo "[fail]: TFA is not required for authenticated users"
+    FAILURES="${FAILURES},${TFA_AUTHENTICATED_REQUIRED}"
+  else
+    echo "[info]: TFA is required for authenticated users"
+  fi
 fi
 
 if [ -x "${GOVCMS_PREPARE_XML_SCRIPT}" ]; then
