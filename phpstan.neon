@@ -1,6 +1,9 @@
 parameters:
   excludePaths:
     - /app/vendor/*
+    - */assets/src/lib/campaignmonitor/samples/*
+    - */tests/*
+    - */bootstrap/scripts/*
   scanDirectories:
     - /app
   level: 0
