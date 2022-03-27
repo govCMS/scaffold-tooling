@@ -1,4 +1,15 @@
+parametersSchema:
+  # Copied from https://github.com/ekino/phpstan-banned-code/blob/v0.4.0/extension.neon.
+  banned_code: structure([
+    nodes: listOf(structure([
+      type: string()
+      functions: schema(listOf(string()), nullable())
+    ]))
+  ])
+
 parameters:
+  # Disable all phpstan rules.
+  customRulesetUsed: true
   excludePaths:
     - /app/vendor/*
     - */assets/src/lib/campaignmonitor/samples/*
@@ -6,33 +17,33 @@ parameters:
     - */bootstrap/scripts/*
   scanDirectories:
     - /app
-  level: 0
   fileExtensions:
     - php
     - theme
     - inc
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
-    - "#Function (.*) not found#"
-    - "#^Call to static method (.*) on an unknown class (.*)$#"
-    - "#^Static call to instance method (.*)$#"
-    - "#^Unsafe usage of new static\\(\\)\\.$#"
-    - "#^Method (.*) should return bool but return statement is missing\\.$#"
-    - "#Should not use node with type \"Expr_Exit\", please change the code.#"
     - message: "#^Should not use function \"debug_backtrace\", please change the code\\.$#"
       count: 1
       path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
     - message: "#^Should not use function \"print_r\", please change the code\\.$#"
       count: 1
       path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
-  bootstrapFiles:
-    - classPHPStanAliases.php
   banned_code:
     nodes:
       - type: Expr_FuncCall
         functions:
           - curl_exec
+          - curl_init
           - curl_multi_exec
+          - db_query
+          - db_merge
+          - db_update
+          - db_write_record
+          - db_result
+          - db_set_active
+          - db_insert
+          - db_delete
           - dd
           - debug_backtrace
           - dump
@@ -46,7 +57,79 @@ parameters:
           - ftp_put
           - ftp_raw
           - ftp_rawlist
+          - mysql_affected_rows
+          - mysql_client_encoding
+          - mysql_close
+          - mysql_connect
+          - mysql_create_db
+          - mysql_data_seek
+          - mysql_db_name
+          - mysql_db_query
+          - mysql_drop_db
+          - mysql_errno
+          - mysql_error
+          - mysql_escape_string
+          - mysql_fetch_array
+          - mysql_fetch_assoc
+          - mysql_fetch_field
+          - mysql_fetch_lengths
+          - mysql_fetch_object
+          - mysql_fetch_row
+          - mysql_field_flags
+          - mysql_field_len
+          - mysql_field_name
+          - mysql_field_seek
+          - mysql_field_table
+          - mysql_field_type
+          - mysql_free_result
+          - mysql_get_client_info
+          - mysql_get_host_info
+          - mysql_get_proto_info
+          - mysql_get_server_info
+          - mysql_info
+          - mysql_insert_id
+          - mysql_list_dbs
+          - mysql_list_fields
+          - mysql_list_processes
+          - mysql_list_tables
+          - mysql_num_fields
+          - mysql_num_rows
+          - mysql_pconnect
+          - mysql_ping
+          - mysql_query
+          - mysql_real_escape_string
+          - mysql_result
+          - mysql_select_db
+          - mysql_set_charset
+          - mysql_stat
+          - mysql_tablename
+          - mysql_thread_id
+          - mysql_unbuffered_query
           - passthru
+          - pcntl_alarm
+          - pcntl_async_signals
+          - pcntl_errno
+          - pcntl_exec
+          - pcntl_fork
+          - pcntl_get_last_error
+          - pcntl_getpriority
+          - pcntl_setpriority
+          - pcntl_signal_dispatch
+          - pcntl_signal_get_handler
+          - pcntl_signal
+          - pcntl_sigprocmask
+          - pcntl_sigtimedwait
+          - pcntl_sigwaitinfo
+          - pcntl_strerror
+          - pcntl_unshare
+          - pcntl_wait
+          - pcntl_waitpid
+          - pcntl_wexitstatus
+          - pcntl_wifexited
+          - pcntl_wifsignaled
+          - pcntl_wifstopped
+          - pcntl_wstopsig
+          - pcntl_wtermsig
           - phpinfo
           - popen
           - posix_getpwuid
@@ -63,5 +146,13 @@ parameters:
           - proc_close
           - proc_nice
           - shell_exec
+          - sleep
           - system
           - var_dump
+
+services:
+  - class: Ekino\PHPStanBannedCode\Rules\BannedNodesRule
+    tags:
+      - phpstan.rules.rule
+    arguments:
+      - '%banned_code.nodes%'
