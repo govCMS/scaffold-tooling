@@ -1,12 +1,3 @@
-parametersSchema:
-  # Copied from https://github.com/ekino/phpstan-banned-code/blob/v0.4.0/extension.neon.
-  banned_code: structure([
-    nodes: listOf(structure([
-      type: string()
-      functions: schema(listOf(string()), nullable())
-    ]))
-  ])
-
 parameters:
   # Disable all phpstan rules.
   customRulesetUsed: true
@@ -23,136 +14,87 @@ parameters:
     - inc
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
-    - message: "#^Should not use function \"debug_backtrace\", please change the code\\.$#"
+    - message: '#^Calling debug_backtrace\(\) is forbidden, please change the code$#'
       count: 1
       path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
-    - message: "#^Should not use function \"print_r\", please change the code\\.$#"
+    - message: '#^Calling print_r\(\) is forbidden, please change the code$#'
       count: 1
       path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
-  banned_code:
-    nodes:
-      - type: Expr_FuncCall
-        functions:
-          - curl_exec
-          - curl_init
-          - curl_multi_exec
-          - db_query
-          - db_merge
-          - db_update
-          - db_write_record
-          - db_result
-          - db_set_active
-          - db_insert
-          - db_delete
-          - dd
-          - debug_backtrace
-          - dump
-          - escapeshellcmd
-          - exec
-          - ftp_connect
-          - ftp_exec
-          - ftp_get
-          - ftp_login
-          - ftp_nb_fput
-          - ftp_put
-          - ftp_raw
-          - ftp_rawlist
-          - mysql_affected_rows
-          - mysql_client_encoding
-          - mysql_close
-          - mysql_connect
-          - mysql_create_db
-          - mysql_data_seek
-          - mysql_db_name
-          - mysql_db_query
-          - mysql_drop_db
-          - mysql_errno
-          - mysql_error
-          - mysql_escape_string
-          - mysql_fetch_array
-          - mysql_fetch_assoc
-          - mysql_fetch_field
-          - mysql_fetch_lengths
-          - mysql_fetch_object
-          - mysql_fetch_row
-          - mysql_field_flags
-          - mysql_field_len
-          - mysql_field_name
-          - mysql_field_seek
-          - mysql_field_table
-          - mysql_field_type
-          - mysql_free_result
-          - mysql_get_client_info
-          - mysql_get_host_info
-          - mysql_get_proto_info
-          - mysql_get_server_info
-          - mysql_info
-          - mysql_insert_id
-          - mysql_list_dbs
-          - mysql_list_fields
-          - mysql_list_processes
-          - mysql_list_tables
-          - mysql_num_fields
-          - mysql_num_rows
-          - mysql_pconnect
-          - mysql_ping
-          - mysql_query
-          - mysql_real_escape_string
-          - mysql_result
-          - mysql_select_db
-          - mysql_set_charset
-          - mysql_stat
-          - mysql_tablename
-          - mysql_thread_id
-          - mysql_unbuffered_query
-          - passthru
-          - pcntl_alarm
-          - pcntl_async_signals
-          - pcntl_errno
-          - pcntl_exec
-          - pcntl_fork
-          - pcntl_get_last_error
-          - pcntl_getpriority
-          - pcntl_setpriority
-          - pcntl_signal_dispatch
-          - pcntl_signal_get_handler
-          - pcntl_signal
-          - pcntl_sigprocmask
-          - pcntl_sigtimedwait
-          - pcntl_sigwaitinfo
-          - pcntl_strerror
-          - pcntl_unshare
-          - pcntl_wait
-          - pcntl_waitpid
-          - pcntl_wexitstatus
-          - pcntl_wifexited
-          - pcntl_wifsignaled
-          - pcntl_wifstopped
-          - pcntl_wstopsig
-          - pcntl_wtermsig
-          - phpinfo
-          - popen
-          - posix_getpwuid
-          - posix_kill
-          - posix_mkfifo
-          - posix_setpgid
-          - posix_setsid
-          - posix_setuid
-          - posix_uname
-          - print_r
-          - proc_open
-          - proc_get_status
-          - proc_terminate
-          - proc_close
-          - proc_nice
-          - shell_exec
-          - sleep
-          - system
-          - var_dump
-
-services:
-  - class: Ekino\PHPStanBannedCode\Rules\BannedNodesRule
-    tags:
-      - phpstan.rules.rule
-    arguments:
-      - '%banned_code.nodes%'
+  disallowedFunctionCalls:
+    - function: 'curl_exec()'
+      message: 'please change the code'
+    - function: 'curl_init()'
+      message: 'please change the code'
+    - function: 'curl_multi_exec()'
+      message: 'please change the code'
+    - function: 'db_*()'
+      message: 'please change the code'
+    - function: 'dd()'
+      message: 'please change the code'
+    - function: 'debug_backtrace()'
+      message: 'please change the code'
+    - function: 'dump()'
+      message: 'please change the code'
+    - function: 'escapeshellcmd()'
+      message: 'please change the code'
+    - function: 'eval()'
+      message: 'please change the code'
+    - function: 'exec()'
+      message: 'please change the code'
+    - function: 'ftp_*()'
+      message: 'please change the code'
+    - function: 'mysql_*()'
+      message: 'please change the code'
+    - function: 'mysqli_*()'
+      message: 'please change the code'
+    - function: 'passthru()'
+      message: 'please change the code'
+    - function: 'pcntl_*()'
+      message: 'please change the code'
+    - function: 'phpinfo()'
+      message: 'please change the code'
+    - function: 'popen()'
+      message: 'please change the code'
+    - function: 'posix_getpwuid()'
+      message: 'please change the code'
+    - function: 'posix_kill()'
+      message: 'please change the code'
+    - function: 'posix_mkfifo()'
+      message: 'please change the code'
+    - function: 'posix_setpgid()'
+      message: 'please change the code'
+    - function: 'posix_setsid()'
+      message: 'please change the code'
+    - function: 'posix_setuid()'
+      message: 'please change the code'
+    - function: 'posix_uname()'
+      message: 'please change the code'
+    - function: 'print_r()'
+      message: 'please change the code'
+    - function: 'proc_open()'
+      message: 'please change the code'
+    - function: 'proc_get_status()'
+      message: 'please change the code'
+    - function: 'proc_terminate()'
+      message: 'please change the code'
+    - function: 'proc_close()'
+      message: 'please change the code'
+    - function: 'proc_nice()'
+      message: 'please change the code'
+    - function: 'shell_exec()'
+      message: 'please change the code'
+    - function: 'sleep()'
+      message: 'please change the code'
+    - function: 'system()'
+      message: 'please change the code'
+    - function: 'var_dump()'
+      message: 'please change the code'
+  disallowedMethodCalls:
+    - function: 'mysqli::*()'
+      message: 'please change the code'
+    - function: 'SQLite3::*()'
+      message: 'please change the code'
+    - function: 'SQLite3Stmt::*()'
+      message: 'please change the code'
+    - function: 'SQLite3Result::*()'
+      message: 'please change the code'
