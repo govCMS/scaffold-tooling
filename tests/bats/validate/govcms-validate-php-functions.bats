@@ -16,8 +16,10 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-php-functions >&3
 
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
-  assert_output_contains "4      Should not use function \"shell_exec\", please change the code."
-  assert_output_contains "6      Should not use function \"print_r\", please change the code."
+  assert_output_contains "4      Calling shell_exec() is forbidden, please change the code"
+  assert_output_contains "6      Calling print_r() is forbidden, please change the code"
+
+  assert_output_contains "[ERROR] Found 2 errors"
 }
 
 @test "Check banned PHP functions: inc file" {
@@ -28,8 +30,10 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-php-functions >&3
 
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
-  assert_output_contains "4      Should not use function \"dd\", please change the code."
-  assert_output_contains "6      Should not use function \"debug_backtrace\", please change the code."
+  assert_output_contains "4      Calling dd() is forbidden, please change the code"
+  assert_output_contains "6      Calling debug_backtrace() is forbidden, please change the code"
+
+  assert_output_contains "[ERROR] Found 2 errors"
 }
 
 @test "Check banned PHP functions: system functions" {
@@ -40,20 +44,22 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-php-functions >&3
 
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
-  assert_output_contains "4      Should not use function \"exec\", please change the code."
-  assert_output_contains "6      Should not use function \"system\", please change the code."
-  assert_output_contains "8      Should not use function \"shell_exec\", please change the code."
-  assert_output_contains "10     Should not use function \"popen\", please change the code."
+  assert_output_contains "4      Calling exec() is forbidden, please change the code"
+  assert_output_contains "6      Calling system() is forbidden, please change the code"
+  assert_output_contains "8      Calling shell_exec() is forbidden, please change the code"
+  assert_output_contains "10     Calling popen() is forbidden, please change the code"
 
-  assert_output_contains "12     Should not use function \"proc_open\", please change the code."
-  assert_output_contains "14     Should not use function \"proc_get_status\", please change the code."
-  assert_output_contains "16     Should not use function \"proc_terminate\", please change the code."
-  assert_output_contains "18     Should not use function \"proc_close\", please change the code."
-  assert_output_contains "20     Should not use function \"proc_nice\", please change the code."
+  assert_output_contains "12     Calling proc_open() is forbidden, please change the code"
+  assert_output_contains "14     Calling proc_get_status() is forbidden, please change the code"
+  assert_output_contains "16     Calling proc_terminate() is forbidden, please change the code"
+  assert_output_contains "18     Calling proc_close() is forbidden, please change the code"
+  assert_output_contains "20     Calling proc_nice() is forbidden, please change the code"
 
-  assert_output_contains "22     Should not use function \"passthru\", please change the code."
-  assert_output_contains "24     Should not use function \"escapeshellcmd\", please change the code."
-  assert_output_contains "27     Should not use node with type \"Expr_Eval\", please change the code."
+  assert_output_contains "22     Calling passthru() is forbidden, please change the code"
+  assert_output_contains "24     Calling escapeshellcmd() is forbidden, please change the code"
+  assert_output_contains "27     Calling eval() is forbidden, please change the code"
+
+  assert_output_contains "[ERROR] Found 12 errors"
 }
 
 @test "Check banned PHP functions: net functions" {
@@ -64,17 +70,20 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-php-functions >&3
 
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
-  assert_output_contains "5      Should not use function \"curl_exec\", please change the code."
-  assert_output_contains "8      Should not use function \"curl_multi_exec\", please change the code."
+  assert_output_contains "4      Calling curl_init() is forbidden, please change the code"
+  assert_output_contains "5      Calling curl_exec() is forbidden, please change the code"
+  assert_output_contains "8      Calling curl_multi_exec() is forbidden, please change the code"
 
-  assert_output_contains "12     Should not use function \"ftp_connect\", please change the code."
-  assert_output_contains "14     Should not use function \"ftp_exec\", please change the code."
-  assert_output_contains "16     Should not use function \"ftp_get\", please change the code."
-  assert_output_contains "18     Should not use function \"ftp_login\", please change the code."
-  assert_output_contains "20     Should not use function \"ftp_nb_fput\", please change the code."
-  assert_output_contains "22     Should not use function \"ftp_put\", please change the code."
-  assert_output_contains "24     Should not use function \"ftp_raw\", please change the code."
-  assert_output_contains "26     Should not use function \"ftp_rawlist\", please change the code."
+  assert_output_contains "12     Calling ftp_connect() is forbidden, please change the code"
+  assert_output_contains "14     Calling ftp_exec() is forbidden, please change the code"
+  assert_output_contains "16     Calling ftp_get() is forbidden, please change the code"
+  assert_output_contains "18     Calling ftp_login() is forbidden, please change the code"
+  assert_output_contains "20     Calling ftp_nb_fput() is forbidden, please change the code"
+  assert_output_contains "22     Calling ftp_put() is forbidden, please change the code"
+  assert_output_contains "24     Calling ftp_raw() is forbidden, please change the code"
+  assert_output_contains "26     Calling ftp_rawlist() is forbidden, please change the code"
+
+  assert_output_contains "[ERROR] Found 11 errors"
 }
 
 @test "Check banned PHP functions: posix functions" {
@@ -86,13 +95,15 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
 
-  assert_output_contains "4      Should not use function \"posix_getpwuid\", please change the code."
-  assert_output_contains "6      Should not use function \"posix_kill\", please change the code."
-  assert_output_contains "8      Should not use function \"posix_mkfifo\", please change the code."
-  assert_output_contains "10     Should not use function \"posix_setpgid\", please change the code."
-  assert_output_contains "12     Should not use function \"posix_setsid\", please change the code."
-  assert_output_contains "14     Should not use function \"posix_setuid\", please change the code."
-  assert_output_contains "16     Should not use function \"posix_uname\", please change the code."
+  assert_output_contains "4      Calling posix_getpwuid() is forbidden, please change the code"
+  assert_output_contains "6      Calling posix_kill() is forbidden, please change the code"
+  assert_output_contains "8      Calling posix_mkfifo() is forbidden, please change the code"
+  assert_output_contains "10     Calling posix_setpgid() is forbidden, please change the code"
+  assert_output_contains "12     Calling posix_setsid() is forbidden, please change the code"
+  assert_output_contains "14     Calling posix_setuid() is forbidden, please change the code"
+  assert_output_contains "16     Calling posix_uname() is forbidden, please change the code"
+
+  assert_output_contains "[ERROR] Found 7 errors"
 }
 
 @test "Check function not found" {
