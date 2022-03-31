@@ -7,6 +7,7 @@ services:
 
 test:
   script:
+    - composer self-update --1
     - composer validate --strict --no-check-all
     - .ci/shellcheck.sh
     - .ci/phpcs.sh
