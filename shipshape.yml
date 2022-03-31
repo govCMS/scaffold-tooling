@@ -1,0 +1,108 @@
+checks:
+  file:
+    - name: Illegal files
+      path: web
+      disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
+  yaml:
+    - name: Validate install profile
+      file: core.extension.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: profile
+          value: govcms
+    - name: Disallowed permissions
+      pattern: user.role.*.yml
+      exclude-pattern: user.role.govcms_site_administrator
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: is_admin
+          value: false
+        - key: permissions
+          is-list: true
+          disallowed:
+            - administer modules
+            - administer permissions
+            - administer site configuration
+            - administer software updates
+            - Administer the list of modules that can be managed by others
+            - import configuration
+            - use PHP for google analytics tracking visibility
+    - name: Validate TFA config
+      file: tfa.settings.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: enabled
+          value: 1
+        - key: required_roles.authenticated
+          value: authenticated
+  drush-yaml:
+    - name: Validate active install profile
+      command: 'config:get core.extension'
+      config-name: core.extension
+      values:
+        - key: profile
+          value: govcms
+    - name: Validate active TFA
+      command: 'config:get tfa.settings'
+      config-name: tfa.settings
+      values:
+        - key: enabled
+          value: 1
+        - key: required_roles.authenticated
+          value: authenticated
+  drupal-file-module:
+    - name: Verify enabled modules
+      path: config/default
+      required:
+        - govcms_security
+        - tfa
+      disallowed:
+        - dblog
+        - module_permissions_ui
+        - update
+  drupal-db-module:
+    - name: Active modules audit
+      required:
+        - govcms_security
+        - tfa
+      disallowed:
+        - dblog
+        - module_permissions_ui
+        - update
+  drupal-db-permissions:
+    - name: Disallowed permissions on active site
+      disallowed:
+        - administer modules
+        - administer permissions
+        - administer site configuration
+        - administer software updates
+        - Administer the list of modules that can be managed by others
+        - import configuration
+        - use PHP for google analytics tracking visibility
+      exclude-roles:
+        - govcms_site_administrator
+  yamllint:
+    - name: Yaml lint platform files
+      files:
+        - .lagoon.yml
+        - docker-compose.yml
+      ignore-missing: true
+    - name: Yaml lint theme files
+      path: web/themes
+      pattern: ".*.yml"
+      exclude-pattern: node_modules
+      ignore-missing: true
+    - name: Yaml lint theme files (no web prefix)
+      path: themes
+      pattern: ".*.yml"
+      exclude-pattern: node_modules
+      ignore-missing: true
+  phpstan:
+    - name: Banned PHP function list
+      configuration: vendor/govcms/scaffold-tooling/phpstan.neon
+      paths:
+        - web/themes/custom
+        - themes
