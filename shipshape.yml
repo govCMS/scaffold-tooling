@@ -1,17 +1,17 @@
 checks:
   file:
-    - name: Illegal files
+    - name: '[FILE] Illegal files'
       path: web
       disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
   yaml:
-    - name: Validate install profile
+    - name: '[FILE] Validate install profile'
       file: core.extension.yml
       ignore-missing: true
       path: config/default
       values:
         - key: profile
           value: govcms
-    - name: Disallowed permissions
+    - name: '[FILE] Disallowed permissions'
       pattern: user.role.*.yml
       exclude-pattern: user.role.govcms_site_administrator
       ignore-missing: true
@@ -29,7 +29,7 @@ checks:
             - Administer the list of modules that can be managed by others
             - import configuration
             - use PHP for google analytics tracking visibility
-    - name: Validate TFA config
+    - name: '[FILE] Validate TFA config'
       file: tfa.settings.yml
       ignore-missing: true
       path: config/default
@@ -39,13 +39,13 @@ checks:
         - key: required_roles.authenticated
           value: authenticated
   drush-yaml:
-    - name: Validate active install profile
+    - name: '[DATABASE] Validate active install profile'
       command: 'config:get core.extension'
       config-name: core.extension
       values:
         - key: profile
           value: govcms
-    - name: Validate active TFA
+    - name: '[DATABASE] Validate active TFA'
       command: 'config:get tfa.settings'
       config-name: tfa.settings
       values:
@@ -54,7 +54,7 @@ checks:
         - key: required_roles.authenticated
           value: authenticated
   drupal-file-module:
-    - name: Verify enabled modules
+    - name: '[FILE] Verify enabled modules'
       path: config/default
       required:
         - govcms_security
@@ -64,7 +64,7 @@ checks:
         - module_permissions_ui
         - update
   drupal-db-module:
-    - name: Active modules audit
+    - name: '[DATABASE] Active modules audit'
       required:
         - govcms_security
         - tfa
@@ -73,7 +73,7 @@ checks:
         - module_permissions_ui
         - update
   drupal-db-permissions:
-    - name: Disallowed permissions on active site
+    - name: '[DATABASE] Disallowed permissions on active site'
       disallowed:
         - administer modules
         - administer permissions
@@ -85,23 +85,23 @@ checks:
       exclude-roles:
         - govcms_site_administrator
   yamllint:
-    - name: Yaml lint platform files
+    - name: '[FILE] Yaml lint platform files'
       files:
         - .lagoon.yml
         - docker-compose.yml
       ignore-missing: true
-    - name: Yaml lint theme files
+    - name: '[FILE] Yaml lint theme files'
       path: web/themes
       pattern: ".*.yml"
       exclude-pattern: node_modules
       ignore-missing: true
-    - name: Yaml lint theme files (no web prefix)
+    - name: '[FILE] Yaml lint theme files (no web prefix)'
       path: themes
       pattern: ".*.yml"
       exclude-pattern: node_modules
       ignore-missing: true
   phpstan:
-    - name: Banned PHP function list
+    - name: '[FILE] Banned PHP function list'
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
       paths:
         - web/themes/custom
