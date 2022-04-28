@@ -55,7 +55,6 @@ load _helpers_govcms
   composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --no-interaction --ignore-platform-reqs --update-with-dependencies
 
   # Ensure the binaries are available.
-  assert_file_exists vendor/bin/govcms-audit
   assert_file_exists vendor/bin/govcms-behat
   assert_file_exists vendor/bin/govcms-lint
   assert_file_exists vendor/bin/govcms-lint-distro
