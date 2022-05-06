@@ -1,64 +1,100 @@
 parameters:
+  # Disable all phpstan rules.
+  customRulesetUsed: true
   excludePaths:
     - /app/vendor/*
+    - */assets/src/lib/campaignmonitor/samples/*
+    - */tests/*
+    - */bootstrap/scripts/*
   scanDirectories:
     - /app
-  level: 0
   fileExtensions:
     - php
     - theme
     - inc
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
-    - "#Function (.*) not found#"
-    - "#^Call to static method (.*) on an unknown class (.*)$#"
-    - "#^Static call to instance method (.*)$#"
-    - "#^Unsafe usage of new static\\(\\)\\.$#"
-    - "#^Method (.*) should return bool but return statement is missing\\.$#"
-    - "#Should not use node with type \"Expr_Exit\", please change the code.#"
-    - message: "#^Should not use function \"debug_backtrace\", please change the code\\.$#"
+    - message: '#^Calling debug_backtrace\(\) is forbidden, please change the code$#'
       count: 1
       path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
-    - message: "#^Should not use function \"print_r\", please change the code\\.$#"
+    - message: '#^Calling print_r\(\) is forbidden, please change the code$#'
       count: 1
       path: /app/web/themes/custom/bootstrap/src/Bootstrap.php
-  bootstrapFiles:
-    - classPHPStanAliases.php
-  banned_code:
-    nodes:
-      - type: Expr_FuncCall
-        functions:
-          - curl_exec
-          - curl_multi_exec
-          - dd
-          - debug_backtrace
-          - dump
-          - escapeshellcmd
-          - exec
-          - ftp_connect
-          - ftp_exec
-          - ftp_get
-          - ftp_login
-          - ftp_nb_fput
-          - ftp_put
-          - ftp_raw
-          - ftp_rawlist
-          - passthru
-          - phpinfo
-          - popen
-          - posix_getpwuid
-          - posix_kill
-          - posix_mkfifo
-          - posix_setpgid
-          - posix_setsid
-          - posix_setuid
-          - posix_uname
-          - print_r
-          - proc_open
-          - proc_get_status
-          - proc_terminate
-          - proc_close
-          - proc_nice
-          - shell_exec
-          - system
-          - var_dump
+  disallowedFunctionCalls:
+    - function: 'curl_exec()'
+      message: 'please change the code'
+    - function: 'curl_init()'
+      message: 'please change the code'
+    - function: 'curl_multi_exec()'
+      message: 'please change the code'
+    - function: 'db_*()'
+      message: 'please change the code'
+    - function: 'dd()'
+      message: 'please change the code'
+    - function: 'debug_backtrace()'
+      message: 'please change the code'
+    - function: 'dump()'
+      message: 'please change the code'
+    - function: 'escapeshellcmd()'
+      message: 'please change the code'
+    - function: 'eval()'
+      message: 'please change the code'
+    - function: 'exec()'
+      message: 'please change the code'
+    - function: 'ftp_*()'
+      message: 'please change the code'
+    - function: 'mysql_*()'
+      message: 'please change the code'
+    - function: 'mysqli_*()'
+      message: 'please change the code'
+    - function: 'passthru()'
+      message: 'please change the code'
+    - function: 'pcntl_*()'
+      message: 'please change the code'
+    - function: 'phpinfo()'
+      message: 'please change the code'
+    - function: 'popen()'
+      message: 'please change the code'
+    - function: 'posix_getpwuid()'
+      message: 'please change the code'
+    - function: 'posix_kill()'
+      message: 'please change the code'
+    - function: 'posix_mkfifo()'
+      message: 'please change the code'
+    - function: 'posix_setpgid()'
+      message: 'please change the code'
+    - function: 'posix_setsid()'
+      message: 'please change the code'
+    - function: 'posix_setuid()'
+      message: 'please change the code'
+    - function: 'posix_uname()'
+      message: 'please change the code'
+    - function: 'print_r()'
+      message: 'please change the code'
+    - function: 'proc_open()'
+      message: 'please change the code'
+    - function: 'proc_get_status()'
+      message: 'please change the code'
+    - function: 'proc_terminate()'
+      message: 'please change the code'
+    - function: 'proc_close()'
+      message: 'please change the code'
+    - function: 'proc_nice()'
+      message: 'please change the code'
+    - function: 'shell_exec()'
+      message: 'please change the code'
+    - function: 'sleep()'
+      message: 'please change the code'
+    - function: 'system()'
+      message: 'please change the code'
+    - function: 'var_dump()'
+      message: 'please change the code'
+  disallowedMethodCalls:
+    - function: 'mysqli::*()'
+      message: 'please change the code'
+    - function: 'SQLite3::*()'
+      message: 'please change the code'
+    - function: 'SQLite3Stmt::*()'
+      message: 'please change the code'
+    - function: 'SQLite3Result::*()'
+      message: 'please change the code'

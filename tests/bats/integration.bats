@@ -46,6 +46,10 @@ load _helpers_govcms
   # Override scaffold repo path with a path to our version.
   composer config repositories.test path "${REPO_DIR}"
 
+  # Add repository definitions for asset.packagist dependencies.
+  composer config repositories.dropzone '{"type":"package","package":{"name":"dropzone/dropzone","version":"v5.7.2","type":"drupal-library","dist":{"type":"zip","url":"https://github.com/dropzone/dropzone/archive/refs/tags/v5.7.2.zip"}}}'
+  composer config repositories.chosen '{"type":"package","package":{"name":"harvesthq/chosen","version":"v1.8.7","type":"drupal-library","dist":{"type":"zip","url":"https://github.com/harvesthq/chosen/releases/download/v1.8.7/chosen_v1.8.7.zip"}}}'
+
   # Generate composer.lock and validate fresh install with latest dependencies.
   export COMPOSER_MEMORY_LIMIT=-1
   composer install --ignore-platform-reqs
@@ -55,7 +59,6 @@ load _helpers_govcms
   composer require govcms/scaffold-tooling:dev-"${LATEST_DEV_VERSION}" --no-interaction --ignore-platform-reqs --update-with-dependencies
 
   # Ensure the binaries are available.
-  assert_file_exists vendor/bin/govcms-audit
   assert_file_exists vendor/bin/govcms-behat
   assert_file_exists vendor/bin/govcms-lint
   assert_file_exists vendor/bin/govcms-lint-distro
