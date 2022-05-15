@@ -85,7 +85,11 @@ if (getenv('ENABLE_REDIS')) {
     }
 
     $redis->connect($redis_host, $redis_port, $redis_timeout);
-    $redis->ping();
+    $response = $redis->ping();
+
+    if (!$response) {
+      throw new \Exception('Redis could be reached but is not responding correctly.');
+    }
 
     $settings['redis.connection']['interface'] = 'PhpRedis';
     $settings['redis.connection']['host'] = $redis_host;
