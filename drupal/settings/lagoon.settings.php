@@ -86,7 +86,8 @@ if (getenv('ENABLE_REDIS')) {
 
     $redis->connect($redis_host, $redis_port, $redis_timeout);
     $response = $redis->ping();
-    if (strpos($response, 'PONG') === FALSE) {
+
+    if (!$response) {
       throw new \Exception('Redis could be reached but is not responding correctly.');
     }
 
