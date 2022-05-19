@@ -1,8 +1,12 @@
 checks:
   file:
     - name: '[FILE] Illegal files'
+      severity: high
       path: web
       disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
+    - name: '[FILE] Sensitive public files'
+      path: web/sites/default/files
+      disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)?$'
   yaml:
     - name: '[FILE] Validate install profile'
       file: core.extension.yml
@@ -43,12 +47,14 @@ checks:
           value: authenticated
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
+      severity: high
       command: 'config:get core.extension'
       config-name: core.extension
       values:
         - key: profile
           value: govcms
     - name: '[DATABASE] Validate active TFA'
+      severity: high
       command: 'config:get tfa.settings'
       config-name: tfa.settings
       values:
@@ -69,6 +75,7 @@ checks:
         - update
   drupal-db-module:
     - name: '[DATABASE] Active modules audit'
+      severity: high
       required:
         - govcms_security
         - lagoon_logs
@@ -79,6 +86,7 @@ checks:
         - update
   drupal-db-permissions:
     - name: '[DATABASE] Disallowed permissions on active site'
+      severity: high
       disallowed:
         - administer config permissions
         - administer managed modules
