@@ -53,4 +53,4 @@ if (is_numeric($file_gc = getenv('GOVCMS_FILE_TEMP_MAX_AGE'))) {
 $config['lagoon_logs.settings']['host'] = 'application-logs.lagoon.svc';
 $config['lagoon_logs.settings']['port'] = 5140;
 $config['lagoon_logs.settings']['identifier'] = 'drupal';
-$config['lagoon_logs.settings']['enable'] = TRUE;
+$config['lagoon_logs.settings']['disable'] = 0;
