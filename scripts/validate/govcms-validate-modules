@@ -15,14 +15,15 @@ GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-modules}
 
 GOVCMS_REQUIRED_MODULES=(
-  tfa
   govcms_security
+  lagoon_logs
+  tfa
 )
 
 GOVCMS_DISALLOWED_MODULES=(
-  update
   dblog
   module_permissions_ui
+  update
 )
 
 config_file=$(find "$GOVCMS_CONFIG_FOLDER_PATH" -type f \( -name "$GOVCMS_CORE_EXTENTION_FILE_NAME" \))
