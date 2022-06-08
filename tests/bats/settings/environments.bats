@@ -3,35 +3,36 @@
 load ../_helpers_govcms
 
 setup() {
+  PROJECT_DIR=$(pwd)
   if [ ! -f "/tmp/bats/settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/settings.php)
+    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/settings.php .)
     sed -i.bak 's/govcms_includes =.*/govcms_includes = "\/tmp\/bats";/g' /tmp/bats/settings.php
   fi
 
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/all.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/development.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/development.settings.php)
+    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/development.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/production.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/production.settings.php)
+    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/production.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
+    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/lagoon.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/dev-mode.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/dev-mode.settings.php)
+    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/dev-mode.settings.php .)
   fi
 }
 
