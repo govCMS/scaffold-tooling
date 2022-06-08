@@ -4,6 +4,7 @@ module:
   datetime: 0
   datetime_range: 0
   ga_login: 0
+  lagoon_logs: 0
   views_ui: 0
   webform: 0
   webform_ui: 0

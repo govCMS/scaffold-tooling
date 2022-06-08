@@ -24,7 +24,7 @@ load ../_helpers_govcms
   assert_failure
 }
 
-@test "Acitve modules: missing required" {
+@test "Active modules: missing required" {
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" '{ "tfa": { "status": "enabled" }  }' 1
 
@@ -77,9 +77,10 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Active modules validation"
 
-  assert_equal 3 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
   assert_equal "pm:enable govcms_security -y" "$(mock_get_call_args "${mock_drush}" 2)"
-  assert_equal "pm:disable update -y" "$(mock_get_call_args "${mock_drush}" 3)"
+  assert_equal "pm:enable lagoon_logs -y" "$(mock_get_call_args "${mock_drush}" 3)"
+  assert_equal "pm:disable update -y" "$(mock_get_call_args "${mock_drush}" 4)"
 
   assert_success
 
@@ -102,7 +103,7 @@ load ../_helpers_govcms
 
 @test "Active modules: okay" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" '{ "tfa": { "status": "enabled"}, "govcms_security": {"status": "enabled"} }' 1
+  mock_set_output "${mock_drush}" '{ "tfa": { "status": "enabled"}, "govcms_security": {"status": "enabled"}, "lagoon_logs": {"status": "enabled"} }' 1
 
   run scripts/validate/govcms-validate-active-modules >&3
 
