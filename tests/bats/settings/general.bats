@@ -6,22 +6,22 @@ setup() {
   PROJECT_DIR=$(pwd)
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/all.settings.php .)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/all.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/development.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/development.settings.php .)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/development.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/production.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/production.settings.php .)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/production.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && cp ${PROJECT_DIR}/drupal/settings/lagoon.settings.php .)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/lagoon.settings.php .)
   fi
 }
 
