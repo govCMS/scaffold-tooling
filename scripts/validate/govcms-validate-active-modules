@@ -12,14 +12,15 @@ GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-permissions}
 GOVCMS_REMEDIATE=${GOVCMS_REMEDIATE:-""}
 
 GOVCMS_REQUIRED_MODULES=(
-  tfa
   govcms_security
+  lagoon_logs
+  tfa
 )
 
 GOVCMS_DISALLOWED_MODULES=(
-  update
   dblog
   module_permissions_ui
+  update
 )
 
 FAILURES=""

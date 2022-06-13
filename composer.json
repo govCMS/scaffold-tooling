@@ -67,5 +67,14 @@
     "scripts/validate/govcms-yaml_lint",
     "scripts/validate/govcms-module_verify",
     "scripts/validate/govcms-validate-illegal-files"
-  ]
+  ],
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "cweagans/composer-patches": true,
+      "drupal/core-composer-scaffold": true,
+      "oomphinc/composer-installers-extender": true,
+      "phpstan/extension-installer": true
+    }
+  }
 }

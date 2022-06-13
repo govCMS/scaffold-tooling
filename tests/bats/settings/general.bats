@@ -3,24 +3,25 @@
 load ../_helpers_govcms
 
 setup() {
+  PROJECT_DIR=$(pwd)
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/all.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/development.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/development.settings.php)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/development.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/production.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/production.settings.php)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/production.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/lagoon.settings.php .)
   fi
 }
 
@@ -111,7 +112,7 @@ lagoon_settings() {
     development_settings | jq -rc '.config | "\(.["stage_file_proxy.settings"])"'
   )
 
-  [ "$(echo "$SFP_DEFAULT" | jq -rc .origin)" == "https://nginx-govcmsd8-master.govcms.amazee.io" ]
+  [ "$(echo "$SFP_DEFAULT" | jq -rc .origin)" == "https://nginx-master-govcmsd8.govcms5.amazee.io" ]
   [ "$(echo "$SFP_OVERRIDE" | jq -rc .origin)" == "https://www.govcms.gov.au" ]
 }
 

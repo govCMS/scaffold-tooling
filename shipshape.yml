@@ -58,6 +58,7 @@ checks:
       path: config/default
       required:
         - govcms_security
+        - lagoon_logs
         - tfa
       disallowed:
         - dblog
@@ -67,6 +68,7 @@ checks:
     - name: '[DATABASE] Active modules audit'
       required:
         - govcms_security
+        - lagoon_logs
         - tfa
       disallowed:
         - dblog
