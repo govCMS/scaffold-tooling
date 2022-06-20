@@ -3,14 +3,15 @@
 load ../_helpers_govcms
 
 setup() {
+  PROJECT_DIR=$(pwd)
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/all.settings.php .)
   fi
 
   if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
+    (cd /tmp/bats && cp "${PROJECT_DIR}"/drupal/settings/lagoon.settings.php .)
   fi
 }
 

@@ -39,20 +39,23 @@ load _helpers_govcms
   # Prepare composer to install requirements.
   composer config -g github-oauth.github.com "$GOVCMS_GITHUB_TOKEN"
   # Change the distribution to HTTPS to prevent key issues.
-  cat composer.json | jq 'del(.repositories[-1:]) | .repositories += [{"type": "vcs", "url": "https://github.com/govcms/govcms"}]' > composer.https.json
+  cat composer.json | jq 'del(.repositories[3]) | .repositories += [{"type": "vcs", "url": "https://github.com/govcms/govcms"}]' > composer.https.json
   mv composer.json composer.json.bkup
   mv composer.https.json composer.json
 
-  # Override scaffold repo path with a path to our version.
-  composer config repositories.test path "${REPO_DIR}"
-
-  # Add repository definitions for asset.packagist dependencies.
-  composer config repositories.dropzone '{"type":"package","package":{"name":"dropzone/dropzone","version":"v5.7.2","type":"drupal-library","dist":{"type":"zip","url":"https://github.com/dropzone/dropzone/archive/refs/tags/v5.7.2.zip"}}}'
-  composer config repositories.chosen '{"type":"package","package":{"name":"harvesthq/chosen","version":"v1.8.7","type":"drupal-library","dist":{"type":"zip","url":"https://github.com/harvesthq/chosen/releases/download/v1.8.7/chosen_v1.8.7.zip"}}}'
-
   # Generate composer.lock and validate fresh install with latest dependencies.
   export COMPOSER_MEMORY_LIMIT=-1
-  composer install --ignore-platform-reqs
+  # TODO: Remove the config lines once the changes are merged to HEAD.
+  composer config allow-plugins.composer/installers true
+  composer config allow-plugins.cweagans/composer-patches true
+  composer config allow-plugins.drupal/core-composer-scaffold true
+  composer config allow-plugins.oomphinc/composer-installers-extender true
+  composer config allow-plugins.phpstan/extension-installer true
+
+  composer install --no-interaction --ignore-platform-reqs
+
+  # Override scaffold repo path with a path to our version.
+  composer config repositories.test path "${REPO_DIR}"
 
   # Add the repo at the checked out version.
   composer config --global discard-changes true
