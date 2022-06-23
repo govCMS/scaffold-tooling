@@ -76,5 +76,12 @@
       "oomphinc/composer-installers-extender": true,
       "phpstan/extension-installer": true
     }
+  },
+  "extra": {
+    "patches": {
+      "drupal/purge": {
+        "https://www.drupal.org/project/purge/issues/3259320": "https://www.drupal.org/files/issues/2022-02-24/3259320-10.patch"
+      }
+    }
   }
 }
