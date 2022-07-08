@@ -49,6 +49,9 @@ RESTRICTED_PERMS_FOUND=$(
     else empty end]' <<< "${GOVCMS_PERMISSIONS_LIST}")
 RESTRICTED_ROLES_FOUND=$(jq -r '.[]|.role' <<< "${RESTRICTED_PERMS_FOUND}")
 for role in ${RESTRICTED_ROLES_FOUND}; do
+  if [[ "${role}" == "govcms_site_administrator" ]]; then
+    continue
+  fi
   RESTRICTED_PERMS=$(jq '.[] | select(.role == "'"${role}"'") | .perms | join(",")' <<< "${RESTRICTED_PERMS_FOUND}")
   echo "[fail]: '$role' has restricted permissions: $RESTRICTED_PERMS";
   FAILURES="$FAILURES,$role"
