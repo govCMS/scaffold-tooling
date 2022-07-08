@@ -24,7 +24,8 @@ RESTRICTED_PERMS_FOUND=$(
       index("administer permissions") or
       index("administer site configuration") or
       index("administer software updates") or
-      index("administer module_permissions") or
+      index("administer managed modules") or
+      index("administer managed modules permissions") or
       index("import configuration") or
       index("use PHP for google analytics tracking visibility") or
       index("synchronize configuration") or
@@ -37,7 +38,8 @@ RESTRICTED_PERMS_FOUND=$(
         "administer permissions",
         "administer site configuration",
         "administer software updates",
-        "administer module_permissions",
+        "administer managed modules",
+        "administer managed modules permissions",
         "import configuration",
         "use PHP for google analytics tracking visibility",
         "synchronize configuration",

@@ -126,7 +126,7 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"administer module_permissions\""
+  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"administer managed modules,administer managed modules permissions\""
 
   assert_failure
 }

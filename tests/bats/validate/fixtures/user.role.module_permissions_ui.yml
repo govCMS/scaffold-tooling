@@ -8,4 +8,5 @@ weight: -6
 is_admin: false
 permissions:
   - 'access content'
-  - 'administer module_permissions'
+  - 'administer managed modules'
+  - 'administer managed modules permissions'
