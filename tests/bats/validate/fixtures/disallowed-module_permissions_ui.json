@@ -3,7 +3,8 @@
     "label": "Anonymous user",
     "perms": [
       "access content",
-      "Administer the list of modules that can be managed by others"
+      "administer managed modules",
+      "administer managed modules permissions"
     ]
   }
 }

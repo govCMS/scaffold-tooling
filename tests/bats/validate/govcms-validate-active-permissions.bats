@@ -136,7 +136,7 @@ load ../_helpers_govcms
   assert_failure
 }
 
-@test "Check disallowed permissions on active site: Administer the list of modules that can be managed by others" {
+@test "Check disallowed permissions on active site: module_permissions ui" {
   DRUSH_OUTPUT=$(cat tests/bats/validate/fixtures/disallowed-module_permissions_ui.json)
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "${DRUSH_OUTPUT}" 1
@@ -144,7 +144,7 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-active-permissions >&3
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
-  assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"Administer the list of modules that can be managed by others\""
+  assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer managed modules,administer managed modules permissions\""
   assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
