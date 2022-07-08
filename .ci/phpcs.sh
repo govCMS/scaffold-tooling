@@ -13,6 +13,7 @@ done < <(
   )
 
 composer global require drupal/coder
+composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
 composer global require dealerdirect/phpcodesniffer-composer-installer
 
 for file in "${targets[@]}"; do
