@@ -145,6 +145,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer managed modules,administer managed modules permissions\""
+  assert_output_not_contains "[fail]: 'govcms_site_administrator' has restricted permissions: \"administer managed modules,administer managed modules permissions\""
   assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
