@@ -45,6 +45,13 @@ checks:
           value: 1
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[FILE] Ensure only admins can register accounts'
+      file: user.settings.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: register
+          value: admin_only
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
       severity: high
@@ -62,6 +69,12 @@ checks:
           value: 1
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[DATABASE] Ensure only admins can register accounts'
+      command: 'config:get user.settings'
+      config-name: user.settings
+      values:
+        - key: register
+          value: admin_only
   drupal-file-module:
     - name: '[FILE] Verify enabled modules'
       path: config/default
