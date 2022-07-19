@@ -52,6 +52,15 @@ checks:
       values:
         - key: register
           value: admin_only
+    - name: '[FILE] Ensure CSS & JS aggregations are enabled'
+      file: system.performance.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: css.preprocess
+          value: true
+        - key: js.preprocess
+          value: true
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
       severity: high
@@ -75,6 +84,14 @@ checks:
       values:
         - key: register
           value: admin_only
+    - name: '[DATABASE] Ensure CSS & JS aggregations are enabled'
+      command: 'config:get system.performance'
+      config-name: system.performance
+      values:
+        - key: css.preprocess
+          value: true
+        - key: js.preprocess
+          value: true
   drupal-file-module:
     - name: '[FILE] Verify enabled modules'
       path: config/default
