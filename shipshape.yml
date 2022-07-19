@@ -61,6 +61,13 @@ checks:
           value: true
         - key: js.preprocess
           value: true
+    - name: '[FILE] Ensure no error log displayed'
+      file: system.logging.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: error_level
+          value: hide
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
       severity: high
@@ -92,6 +99,12 @@ checks:
           value: true
         - key: js.preprocess
           value: true
+    - name: '[DATABASE] Ensure no error log displayed'
+      command: 'config:get system.logging'
+      config-name: user.settings
+      values:
+        - key: error_level
+          value: hide
   drupal-file-module:
     - name: '[FILE] Verify enabled modules'
       path: config/default
