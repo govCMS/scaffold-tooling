@@ -16,6 +16,7 @@ checks:
         - key: profile
           value: govcms
     - name: '[FILE] Disallowed permissions'
+      severity: high
       pattern: user.role.*.yml
       exclude-pattern: user.role.govcms_site_administrator
       ignore-missing: true
@@ -37,6 +38,7 @@ checks:
             - synchronize configuration
             - use PHP for google analytics tracking visibility
     - name: '[FILE] Validate TFA config'
+      severity: high
       file: tfa.settings.yml
       ignore-missing: true
       path: config/default
@@ -70,7 +72,6 @@ checks:
           value: hide
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
-      severity: high
       command: 'config:get core.extension'
       config-name: core.extension
       values:
@@ -107,6 +108,7 @@ checks:
           value: hide
   drupal-file-module:
     - name: '[FILE] Verify enabled modules'
+      severity: high
       path: config/default
       required:
         - govcms_security
@@ -145,22 +147,26 @@ checks:
         - govcms_site_administrator
   yamllint:
     - name: '[FILE] Yaml lint platform files'
+      severity: high
       files:
         - .lagoon.yml
         - docker-compose.yml
       ignore-missing: true
     - name: '[FILE] Yaml lint theme files'
+      severity: high
       path: web/themes
       pattern: ".*.yml"
       exclude-pattern: node_modules
       ignore-missing: true
     - name: '[FILE] Yaml lint theme files (no web prefix)'
+      severity: high
       path: themes
       pattern: ".*.yml"
       exclude-pattern: node_modules
       ignore-missing: true
   phpstan:
     - name: '[FILE] Banned PHP function list'
+      severity: high
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
       paths:
         - web/themes/custom
