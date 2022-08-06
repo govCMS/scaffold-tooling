@@ -108,6 +108,13 @@ checks:
         - key: services.solr.labels['lagoon.type']
           value: solr
           optional: true
+    - name: '[FILE] Detect module files in theme folder'
+      pattern: '.*.info.yml'
+      ignore-missing: true
+      path: 'themes'
+      values:
+        - key: type
+          value: theme
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
       command: 'config:get core.extension'
