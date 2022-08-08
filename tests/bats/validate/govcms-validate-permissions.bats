@@ -120,17 +120,6 @@ load ../_helpers_govcms
   assert_failure
 }
 
-@test "Check disallowed permissions: module_permissions_ui" {
-  export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.module_permissions_ui.yml" \) -print0)
-
-  run scripts/validate/govcms-validate-permissions >&3
-
-  assert_output_contains "GovCMS Validate :: Disallowed permissions"
-  assert_output_contains "[fail]: $GOVCMS_FILE_LIST has restricted permissions: \"administer managed modules,administer managed modules permissions\""
-
-  assert_failure
-}
-
 @test "Check disallowed permissions: multiple files" {
   export GOVCMS_FILE_LIST=$(find tests/bats/validate/fixtures -type f \( -name "user.role.example.yml" -or -name "user.role.is_admin.yml" \))
 

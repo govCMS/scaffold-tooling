@@ -41,8 +41,6 @@ for file in $GOVCMS_FILE_LIST; do
         index("administer permissions") or
         index("administer site configuration") or
         index("administer software updates") or
-        index("administer managed modules") or
-        index("administer managed modules permissions") or
         index("import configuration") or
         index("use PHP for google analytics tracking visibility") or
         index("synchronize configuration") or
@@ -55,8 +53,6 @@ for file in $GOVCMS_FILE_LIST; do
           "administer permissions",
           "administer site configuration",
           "administer software updates",
-          "administer managed modules",
-          "administer managed modules permissions",
           "import configuration",
           "use PHP for google analytics tracking visibility",
           "synchronize configuration",
