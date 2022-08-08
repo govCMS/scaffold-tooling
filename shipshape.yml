@@ -28,8 +28,6 @@ checks:
           is-list: true
           disallowed:
             - administer config permissions
-            - administer managed modules
-            - administer managed modules permissions
             - administer modules
             - administer permissions
             - administer site configuration
@@ -172,8 +170,6 @@ checks:
       severity: high
       disallowed:
         - administer config permissions
-        - administer managed modules
-        - administer managed modules permissions
         - administer modules
         - administer permissions
         - administer site configuration
