@@ -24,7 +24,8 @@ RESTRICTED_PERMS_FOUND=$(
       index("administer permissions") or
       index("administer site configuration") or
       index("administer software updates") or
-      index("Administer the list of modules that can be managed by others") or
+      index("administer managed modules") or
+      index("administer managed modules permissions") or
       index("import configuration") or
       index("use PHP for google analytics tracking visibility") or
       index("synchronize configuration") or
@@ -37,7 +38,8 @@ RESTRICTED_PERMS_FOUND=$(
         "administer permissions",
         "administer site configuration",
         "administer software updates",
-        "Administer the list of modules that can be managed by others",
+        "administer managed modules",
+        "administer managed modules permissions",
         "import configuration",
         "use PHP for google analytics tracking visibility",
         "synchronize configuration",
@@ -47,6 +49,9 @@ RESTRICTED_PERMS_FOUND=$(
     else empty end]' <<< "${GOVCMS_PERMISSIONS_LIST}")
 RESTRICTED_ROLES_FOUND=$(jq -r '.[]|.role' <<< "${RESTRICTED_PERMS_FOUND}")
 for role in ${RESTRICTED_ROLES_FOUND}; do
+  if [[ "${role}" == "govcms_site_administrator" ]]; then
+    continue
+  fi
   RESTRICTED_PERMS=$(jq '.[] | select(.role == "'"${role}"'") | .perms | join(",")' <<< "${RESTRICTED_PERMS_FOUND}")
   echo "[fail]: '$role' has restricted permissions: $RESTRICTED_PERMS";
   FAILURES="$FAILURES,$role"
