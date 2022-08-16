@@ -183,6 +183,12 @@ checks:
         - use PHP for google analytics tracking visibility
       exclude-roles:
         - govcms_site_administrator
+  drupal-user-role:
+    - name: '[DATABASE] Users with disallowed roles'
+      roles:
+        - administrator
+        - site_administrator
+        - govcms_site_administrator
   yamllint:
     - name: '[FILE] Yaml lint platform files'
       severity: high
