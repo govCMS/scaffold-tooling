@@ -12,6 +12,7 @@ GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-permissions}
 GOVCMS_REMEDIATE=${GOVCMS_REMEDIATE:-""}
 
 GOVCMS_REQUIRED_MODULES=(
+  clamav
   govcms_security
   lagoon_logs
   tfa

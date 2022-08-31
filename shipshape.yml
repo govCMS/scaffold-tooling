@@ -147,6 +147,7 @@ checks:
       severity: high
       path: config/default
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
@@ -158,6 +159,7 @@ checks:
     - name: '[DATABASE] Active modules audit'
       severity: high
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
