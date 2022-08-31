@@ -39,6 +39,7 @@ for file in $GOVCMS_FILE_LIST; do
     jq -r 'if (.permissions |
         index("administer modules") or
         index("administer permissions") or
+        index("administer seckit") or
         index("administer site configuration") or
         index("administer software updates") or
         index("import configuration") or
@@ -51,6 +52,7 @@ for file in $GOVCMS_FILE_LIST; do
         perms: (.permissions | map(select(. == (
           "administer modules",
           "administer permissions",
+          "administer seckit",
           "administer site configuration",
           "administer software updates",
           "import configuration",

@@ -22,6 +22,7 @@ RESTRICTED_PERMS_FOUND=$(
   | if (.[$k].perms |
       index("administer modules") or
       index("administer permissions") or
+      index("administer seckit") or
       index("administer site configuration") or
       index("administer software updates") or
       index("import configuration") or
@@ -34,6 +35,7 @@ RESTRICTED_PERMS_FOUND=$(
       perms: (.[$k].perms | map(select(. == (
         "administer modules",
         "administer permissions",
+        "administer seckit",
         "administer site configuration",
         "administer software updates",
         "import configuration",
