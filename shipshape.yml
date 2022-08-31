@@ -30,6 +30,7 @@ checks:
             - administer config permissions
             - administer modules
             - administer permissions
+            - administer seckit
             - administer site configuration
             - administer software updates
             - import configuration
@@ -172,6 +173,7 @@ checks:
         - administer config permissions
         - administer modules
         - administer permissions
+        - administer seckit
         - administer site configuration
         - administer software updates
         - import configuration
