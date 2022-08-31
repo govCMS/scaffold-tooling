@@ -46,6 +46,13 @@ checks:
           value: 1
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[FILE] Ensure clamav is enabled'
+      file: clamav.settings.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: enabled
+          value: true
     - name: '[FILE] Ensure only admins can register accounts'
       file: user.settings.yml
       ignore-missing: true
@@ -130,6 +137,13 @@ checks:
           value: 1
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[DATABASE] Ensure clamav is enabled'
+      severity: high
+      command: 'config:get clamav.settings'
+      config-name: clamav.settings
+      values:
+        - key: enabled
+          value: true
     - name: '[DATABASE] Ensure only admins can register accounts'
       command: 'config:get user.settings'
       config-name: user.settings
@@ -155,6 +169,7 @@ checks:
       severity: high
       path: config/default
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
@@ -166,6 +181,7 @@ checks:
     - name: '[DATABASE] Active modules audit'
       severity: high
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
