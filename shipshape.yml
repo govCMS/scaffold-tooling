@@ -76,44 +76,6 @@ checks:
       values:
         - key: error_level
           value: hide
-    - name: '[FILE] Validate service names are all expected'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
-      values:
-        - key: services
-          is-list: true
-          allowed:
-            - cli
-            - test
-            - nginx
-            - php
-            - mariadb
-            - solr
-            - chrome
-    - name: '[FILE] Validate services have expected lagoon type'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
-      values:
-        - key: services.cli.labels['lagoon.type']
-          value: cli-persistent
-        - key: services.test.labels['lagoon.type']
-          value: none
-        - key: services.nginx.labels['lagoon.type']
-          value: nginx-php-persistent
-        - key: services.php.labels['lagoon.type']
-          value: nginx-php-persistent
-        - key: services.mariadb.labels['lagoon.type']
-          value: mariadb
-    - name: '[FILE] Validate optional services have expected lagoon type'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
-      values:
-        - key: services.solr.labels['lagoon.type']
-          value: solr
-          optional: true
     - name: '[FILE] Detect module files in theme folder'
       pattern: '.*.info.yml'
       ignore-missing: true
