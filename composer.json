@@ -84,7 +84,7 @@
       "drupal/purge": {
         "https://www.drupal.org/project/purge/issues/3259320": "https://www.drupal.org/files/issues/2022-02-24/3259320-10.patch"
       },
-      "stage_file_proxy": {
+      "drupal/stage_file_proxy": {
         "Missing Content-Length header": "https://www.drupal.org/files/issues/2020-05-03/stage_file_proxy-3075369-13-content-length.patch"
       }
     }
