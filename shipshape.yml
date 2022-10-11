@@ -30,6 +30,7 @@ checks:
             - administer config permissions
             - administer modules
             - administer permissions
+            - administer seckit
             - administer site configuration
             - administer software updates
             - import configuration
@@ -45,6 +46,13 @@ checks:
           value: 1
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[FILE] Ensure clamav is enabled'
+      file: clamav.settings.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: enabled
+          value: true
     - name: '[FILE] Ensure only admins can register accounts'
       file: user.settings.yml
       ignore-missing: true
@@ -68,44 +76,13 @@ checks:
       values:
         - key: error_level
           value: hide
-    - name: '[FILE] Validate service names are all expected'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
+    - name: '[FILE] Detect module files in theme folder'
+      pattern: '.*.info.yml'
+      ignore-missing: true
+      path: 'themes'
       values:
-        - key: services
-          is-list: true
-          allowed:
-            - cli
-            - test
-            - nginx
-            - php
-            - mariadb
-            - solr
-            - chrome
-    - name: '[FILE] Validate services have expected lagoon type'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
-      values:
-        - key: services.cli.labels['lagoon.type']
-          value: cli-persistent
-        - key: services.test.labels['lagoon.type']
-          value: none
-        - key: services.nginx.labels['lagoon.type']
-          value: nginx-php-persistent
-        - key: services.php.labels['lagoon.type']
-          value: nginx-php-persistent
-        - key: services.mariadb.labels['lagoon.type']
-          value: mariadb
-    - name: '[FILE] Validate optional services have expected lagoon type'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
-      values:
-        - key: services.solr.labels['lagoon.type']
-          value: solr
-          optional: true
+        - key: type
+          value: theme
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
       command: 'config:get core.extension'
@@ -122,6 +99,13 @@ checks:
           value: 1
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[DATABASE] Ensure clamav is enabled'
+      severity: high
+      command: 'config:get clamav.settings'
+      config-name: clamav.settings
+      values:
+        - key: enabled
+          value: true
     - name: '[DATABASE] Ensure only admins can register accounts'
       command: 'config:get user.settings'
       config-name: user.settings
@@ -147,6 +131,7 @@ checks:
       severity: high
       path: config/default
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
@@ -158,6 +143,7 @@ checks:
     - name: '[DATABASE] Active modules audit'
       severity: high
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
@@ -172,6 +158,7 @@ checks:
         - administer config permissions
         - administer modules
         - administer permissions
+        - administer seckit
         - administer site configuration
         - administer software updates
         - import configuration
