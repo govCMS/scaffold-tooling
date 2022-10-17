@@ -18,7 +18,6 @@ checks:
     - name: '[FILE] Disallowed permissions'
       severity: high
       pattern: user.role.*.yml
-      exclude-pattern: user.role.govcms_site_administrator
       ignore-missing: true
       path: config/default
       values:
