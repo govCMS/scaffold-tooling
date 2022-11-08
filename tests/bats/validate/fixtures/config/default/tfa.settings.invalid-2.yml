@@ -1,0 +1,3 @@
+enabled: false
+required_roles:
+  authenticated: '0'
