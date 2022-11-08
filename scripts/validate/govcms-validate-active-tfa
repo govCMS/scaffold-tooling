@@ -16,7 +16,7 @@ echo "GovCMS Validate :: Validate TFA config on active site"
 TFA_CONFIG=$(drush config:get tfa.settings --format=json)
 
 TFA_ENABLED=$(jq -r '.enabled' <<< "${TFA_CONFIG}")
-if [[ "${TFA_ENABLED}" != 1 ]]; then
+if [[ "${TFA_ENABLED}" != 1 && "${TFA_ENABLED}" != 'true' ]]; then
   echo "[fail]: TFA not enabled"
   FAILURES="${FAILURES},${TFA_ENABLED}"
 else

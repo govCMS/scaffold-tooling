@@ -39,8 +39,38 @@ load ../_helpers_govcms
   assert_failure
 }
 
+@test "Check active TFA: invalid 2" {
+  DRUSH_OUTPUT=$(cat tests/bats/validate/fixtures/tfa-invalid-2.json)
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "${DRUSH_OUTPUT}" 1
+
+  run scripts/validate/govcms-validate-active-tfa >&3
+
+  assert_output_contains "GovCMS Validate :: Validate TFA config on active site"
+  assert_output_contains "[fail]: TFA not enabled"
+  assert_output_contains "[fail]: TFA is not required for authenticated users"
+  assert_output_contains "[fail]: TFA is not actively enabled or enabled but not properly configured"
+
+  assert_failure
+}
+
 @test "Check active TFA: valid" {
   DRUSH_OUTPUT=$(cat tests/bats/validate/fixtures/tfa-valid.json)
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "${DRUSH_OUTPUT}" 1
+
+  run scripts/validate/govcms-validate-active-tfa >&3
+
+  assert_output_contains "GovCMS Validate :: Validate TFA config on active site"
+  assert_output_contains "[info]: TFA is enabled"
+  assert_output_contains "[info]: TFA is required for authenticated users"
+  assert_output_contains "[success]: TFA is actively enabled and properly configured"
+
+  assert_success
+}
+
+@test "Check active TFA: valid 2" {
+  DRUSH_OUTPUT=$(cat tests/bats/validate/fixtures/tfa-valid-2.json)
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" "${DRUSH_OUTPUT}" 1
 
