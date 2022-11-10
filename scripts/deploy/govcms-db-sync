@@ -22,7 +22,7 @@ function drush_can_bootstrap () {
   bs_out=$(drush status --fields=bootstrap 2>&1)
   if grep -q "Drush command terminated abnormally." <<< "$bs_out"; then
     echo "[error]: Encountered drush error; please see details below."
-    echo -e $bs_out
+    echo -e "$bs_out"
     exit 1
   fi
   if grep -q "Successful" <<< "$bs_out"; then
