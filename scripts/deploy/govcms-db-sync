@@ -35,11 +35,12 @@ echo "[info]: Content strategy: $GOVCMS_DEPLOY_WORKFLOW_CONTENT"
 echo "[info]: Site alias:       $GOVCMS_SITE_ALIAS"
 echo "[info]: Alias path:       $GOVCMS_SITE_ALIAS_PATH"
 
-echo "[info]: Check that the site can be bootstrapped."
-
 if [[ "$GOVCMS_CACHE_REBUILD_BEFORE_DB_SYNC" = TRUE ]]; then
+  echo "[info]: Clearing cache."
   drush cr
 fi
+
+echo "[info]: Check that the site can be bootstrapped."
 
 if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
   echo "[info]: Canary site... syncing."

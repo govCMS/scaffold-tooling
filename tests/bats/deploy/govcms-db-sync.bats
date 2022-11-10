@@ -286,12 +286,12 @@ setup() {
   assert_output_contains "[info]: Content strategy: import"
   assert_output_contains "[info]: Site alias:       govcms.prod"
   assert_output_contains "[info]: Alias path:       /app/drush/sites"
-
-  assert_output_contains "[info]: Check that the site can be bootstrapped."
+  assert_output_contains "[info]: Clearing cache."
 
   assert_equal "cr" "$(mock_get_call_args "${mock_drush}" 1)"
   assert_output_contains "Cache rebuild complete."
 
+  assert_output_contains "[info]: Check that the site can be bootstrapped."
   assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[info]: Preparing database sync"
