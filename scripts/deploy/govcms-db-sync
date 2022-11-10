@@ -9,6 +9,8 @@ set -euo pipefail
 #
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
+GOVCMS_SKIP_DB_SYNC=${GOVCMS_SKIP_DB_SYNC:-FALSE}
+GOVCMS_CACHE_REBUILD_BEFORE_DB_SYNC=${GOVCMS_CACHE_REBUILD_BEFORE_DB_SYNC:-FALSE}
 GOVCMS_DEPLOY_WORKFLOW_CONTENT=${GOVCMS_DEPLOY_WORKFLOW_CONTENT:-retain}
 GOVCMS_SITE_ALIAS=${GOVCMS_SITE_ALIAS:-govcms.prod}
 GOVCMS_SITE_ALIAS_PATH=${GOVCMS_SITE_ALIAS_PATH:-/app/drush/sites}
@@ -17,6 +19,11 @@ GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
 LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 
 echo "GovCMS Deploy :: Database synchronisation"
+
+if [[ "$GOVCMS_SKIP_DB_SYNC" != FALSE ]]; then
+  echo "[skip]: Workflow is not set to sync db."
+  exit 0
+fi
 
 if [ "$LAGOON_ENVIRONMENT_TYPE" = "production" ]; then
   echo "[skip]: Production environment can't be synced."
@@ -29,6 +36,10 @@ echo "[info]: Site alias:       $GOVCMS_SITE_ALIAS"
 echo "[info]: Alias path:       $GOVCMS_SITE_ALIAS_PATH"
 
 echo "[info]: Check that the site can be bootstrapped."
+
+if [[ "$GOVCMS_CACHE_REBUILD_BEFORE_DB_SYNC" = TRUE ]]; then
+  drush cr
+fi
 
 if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
   echo "[info]: Canary site... syncing."
