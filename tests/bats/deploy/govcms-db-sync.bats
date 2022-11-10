@@ -300,3 +300,32 @@ setup() {
   assert_output_contains "[success]: Completed successfully."
   assert_equal 5 "$(mock_get_call_num "${mock_drush}")"
 }
+
+@test "Database sync: drush error" {
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" "Drush command terminated abnormally. Error: Undefined constant" 1
+
+  export LAGOON_ENVIRONMENT_TYPE=development
+  export GOVCMS_SKIP_DB_SYNC=
+  export GOVCMS_CACHE_REBUILD_BEFORE_DB_SYNC=
+  export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
+  export GOVCMS_SITE_ALIAS=
+  export GOVCMS_SITE_ALIAS_PATH=
+  export MARIADB_READREPLICA_HOSTS=
+
+  run scripts/deploy/govcms-db-sync >&3
+
+  assert_output_contains "GovCMS Deploy :: Database synchronisation"
+
+  assert_output_contains "[info]: Environment type: development"
+  assert_output_contains "[info]: Content strategy: retain"
+  assert_output_contains "[info]: Site alias:       govcms.prod"
+  assert_output_contains "[info]: Alias path:       /app/drush/sites"
+
+  assert_output_contains "[info]: Check that the site can be bootstrapped."
+  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
+
+  assert_output_contains "[error]: Encountered drush error; please see details below."
+  assert_output_contains "Error: Undefined constant"
+  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+}

@@ -18,6 +18,19 @@ MARIADB_READREPLICA_HOSTS=${MARIADB_READREPLICA_HOSTS:-}
 GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
 LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 
+function drush_can_bootstrap () {
+  bs_out=$(drush status --fields=bootstrap 2>&1)
+  if grep -q "Drush command terminated abnormally." <<< "$bs_out"; then
+    echo "[error]: Encountered drush error; please see details below."
+    echo -e $bs_out
+    exit 1
+  fi
+  if grep -q "Successful" <<< "$bs_out"; then
+    return 0
+  fi
+  return 1
+}
+
 echo "GovCMS Deploy :: Database synchronisation"
 
 if [[ "$GOVCMS_SKIP_DB_SYNC" != FALSE ]]; then
@@ -46,7 +59,7 @@ if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
   echo "[info]: Canary site... syncing."
 elif [[ "$LAGOON_GIT_SAFE_BRANCH" = internal-govcms-update* ]]; then
   echo "[info]: Upgrade branch... syncing."
-elif ! drush status --fields=bootstrap | grep -q "Successful"; then
+elif ! drush_can_bootstrap ; then
   # This will ensure that the database is synchronised on the first deploy
   # of an environment in Lagoon.
   echo "[info]: Site could not be bootstrapped... syncing."
