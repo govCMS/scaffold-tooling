@@ -68,7 +68,7 @@ security_settings() {
   )
 
   # Settings are not enforced if CLAMAV_MODE is not set.
-  [ "$(echo "$CLAMAV")" == 'null' ]
+  [ "$CLAMAV" == 'null' ]
 }
 
 @test "Clam AV settings" {
