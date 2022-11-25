@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 IFS=$'\n\t'
-set -euo pipefail
+set -Eeuo pipefail
 
 #
 # GovCMS enable required modules.
@@ -19,7 +19,8 @@ if [ "$GOVCMS_DEPLOY_ENABLE_MODULES" != "true" ]; then
   exit 0
 fi
 
-if ! drush status --fields=bootstrap | grep -q "Successful"; then
+STATUS=$(drush status --fields=bootstrap --format=json)
+if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
   echo '[skip]: Site is not available.'
   exit 0
 fi
