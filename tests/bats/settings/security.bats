@@ -7,12 +7,12 @@ load ../_helpers_govcms
 setup() {
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+    cp ./drupal/settings/all.settings.php /tmp/bats/
   fi
 
   if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
+    cp ./drupal/settings/lagoon.settings.php /tmp/bats/
   fi
 }
 
@@ -60,6 +60,7 @@ security_settings() {
 }
 
 @test "Clam AV settings" {
+  echo lagoon_settings
   SOLR=$(
     LAGOON=true \
     lagoon_settings | jq -rc '.config | "\(.["clamav.settings"])"'

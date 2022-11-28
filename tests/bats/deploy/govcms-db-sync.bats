@@ -61,7 +61,7 @@ setup() {
 
 @test "Database sync: development" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
@@ -118,7 +118,7 @@ setup() {
 
 @test "Database sync: development, alias overrides" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
   mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
@@ -148,7 +148,7 @@ setup() {
 
 @test "Database sync: development, import content" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
   mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
@@ -178,7 +178,7 @@ setup() {
 
 @test  "Database sync: always sync upgrade environments" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
   mock_gunzip=$(mock_command "gunzip")
   mock_gunzip=$(mock_command "gunzip")
 
