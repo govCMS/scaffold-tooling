@@ -85,7 +85,7 @@ security_settings() {
   CLAMAV=$(
     LAGOON=true\
     CLAMAV_MODE=daemon\
-    CLAMAV_HOST=notredis\
+    CLAMAV_HOST=notclam\
     settings | jq -rc '.config | "\(.["clamav.settings"])"'
   )
 
