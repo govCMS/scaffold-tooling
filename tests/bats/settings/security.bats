@@ -60,7 +60,6 @@ security_settings() {
 }
 
 @test "Clam AV settings" {
-  echo lagoon_settings
   SOLR=$(
     LAGOON=true \
     lagoon_settings | jq -rc '.config | "\(.["clamav.settings"])"'
