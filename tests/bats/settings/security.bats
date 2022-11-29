@@ -8,13 +8,11 @@ setup() {
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
     cp ./drupal/settings/all.settings.php /tmp/bats/
-    # (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
   fi
 
   if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
     mkdir -p /tmp/bats
     cp ./drupal/settings/lagoon.settings.php /tmp/bats/
-    # (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
   fi
 }
 
@@ -79,7 +77,7 @@ security_settings() {
   )
 
   [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "redis" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "clamav" ]
   [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
 }
 
@@ -92,7 +90,7 @@ security_settings() {
   )
 
   [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "notredis" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "notclam" ]
   [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
 }
 
@@ -105,7 +103,7 @@ security_settings() {
   )
 
   [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "redis" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "clamav" ]
   [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3000" ]
 }
 
