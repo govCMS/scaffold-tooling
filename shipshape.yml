@@ -18,6 +18,7 @@ checks:
     - name: '[FILE] Disallowed permissions'
       severity: high
       pattern: user.role.*.yml
+      exclude-pattern: language
       ignore-missing: true
       path: config/default
       values:
