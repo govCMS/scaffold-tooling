@@ -52,7 +52,7 @@ load ../_helpers_govcms
 # dir: ./fixures/config/default
 @test "Config import: default config" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
   export CONFIG_DEFAULT_DIR="tests/bats/deploy/fixtures/config/default"
@@ -72,7 +72,7 @@ load ../_helpers_govcms
 # devdir: ./fixtures/config/dev
 @test "Config import: dev config (production)" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   export LAGOON_ENVIRONMENT_TYPE="production"
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
@@ -91,7 +91,7 @@ load ../_helpers_govcms
 # devdir: ./fixtures/config/dev
 @test "Config import: dev config (nonprod)" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
   export CONFIG_DEV_DIR="tests/bats/deploy/fixtures/config/dev"
@@ -112,7 +112,7 @@ load ../_helpers_govcms
 # devdir: ./fixtures/config/dev
 @test "Config import: both dirs available (production)" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
   export LAGOON_ENVIRONMENT_TYPE="production"
@@ -134,7 +134,7 @@ load ../_helpers_govcms
 # devdir: ./fixtures/config/dev
 @test "Config import: both dirs available (nonprod)" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   export GOVCMS_DEPLOY_WORKFLOW_CONFIG=import
   export LAGOON_ENVIRONMENT_TYPE="development"

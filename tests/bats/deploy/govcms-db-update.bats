@@ -5,7 +5,7 @@ load ../_helpers_govcms
 
 @test "Update database: defaults" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   run scripts/deploy/govcms-db-update >&3
 
