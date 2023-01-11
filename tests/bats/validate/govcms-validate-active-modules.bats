@@ -71,7 +71,7 @@ load ../_helpers_govcms
   export GOVCMS_REMEDIATE=1
 
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" '{ "tfa": { "status": "enabled"}, "update": {"status": "enabled"} }' 1
+  mock_set_output "${mock_drush}" '{ "clamav": { "status": "enabled"}, "tfa": { "status": "enabled"}, "update": {"status": "enabled"} }' 1
 
   run scripts/validate/govcms-validate-active-modules >&3
 
@@ -103,7 +103,7 @@ load ../_helpers_govcms
 
 @test "Active modules: okay" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" '{ "tfa": { "status": "enabled"}, "govcms_security": {"status": "enabled"}, "lagoon_logs": {"status": "enabled"} }' 1
+  mock_set_output "${mock_drush}" '{ "clamav": { "status": "enabled"}, "tfa": { "status": "enabled"}, "govcms_security": {"status": "enabled"}, "lagoon_logs": {"status": "enabled"} }' 1
 
   run scripts/validate/govcms-validate-active-modules >&3
 

@@ -15,6 +15,7 @@ GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-modules}
 
 GOVCMS_REQUIRED_MODULES=(
+  clamav
   govcms_security
   lagoon_logs
   tfa

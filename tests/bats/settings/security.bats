@@ -7,12 +7,12 @@ load ../_helpers_govcms
 setup() {
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/all.settings.php)
+    cp ./drupal/settings/all.settings.php /tmp/bats/
   fi
 
   if [ ! -f "/tmp/bats/lagoon.settings.php" ]; then
     mkdir -p /tmp/bats
-    (cd /tmp/bats && curl -O https://raw.githubusercontent.com/govcms/scaffold-tooling/develop/drupal/settings/lagoon.settings.php)
+    cp ./drupal/settings/lagoon.settings.php /tmp/bats/
   fi
 }
 
@@ -59,13 +59,52 @@ security_settings() {
   [ "$(echo "$SECKIT" | jq .hsts_max_age)" -eq 31536000 ]
 }
 
-@test "Clam AV settings" {
-  SOLR=$(
-    LAGOON=true \
-    lagoon_settings | jq -rc '.config | "\(.["clamav.settings"])"'
+@test "Clam AV env var not set" {
+  CLAMAV=$(
+    LAGOON=true\
+    settings | jq -rc '.config | "\(.["clamav.settings"])"'
   )
-  [ "$(echo "$SOLR" | jq -rc .scan_mode)" == 1 ]
-  [ "$(echo "$SOLR" | jq -rc .mode_executable.executable_path)" == "/usr/bin/clamscan" ]
+
+  # Settings are not enforced if CLAMAV_MODE is not set.
+  [ "$CLAMAV" == 'null' ]
+}
+
+@test "Clam AV settings" {
+  CLAMAV=$(
+    LAGOON=true\
+    CLAMAV_MODE=daemon\
+    settings | jq -rc '.config | "\(.["clamav.settings"])"'
+  )
+
+  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "clamav" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
+}
+
+@test "ClamAV host override" {
+  CLAMAV=$(
+    LAGOON=true\
+    CLAMAV_MODE=daemon\
+    CLAMAV_HOST=notclam\
+    settings | jq -rc '.config | "\(.["clamav.settings"])"'
+  )
+
+  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "notclam" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
+}
+
+@test "ClamAV port override" {
+  CLAMAV=$(
+    LAGOON=true\
+    CLAMAV_MODE=daemon\
+    CLAMAV_PORT=3000\
+    settings | jq -rc '.config | "\(.["clamav.settings"])"'
+  )
+
+  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "clamav" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3000" ]
 }
 
 @test "Module permission settings" {

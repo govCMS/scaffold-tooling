@@ -54,3 +54,9 @@ $config['lagoon_logs.settings']['host'] = getenv('LAGOON_LOGS_ENDPOINT') ?: 'app
 $config['lagoon_logs.settings']['port'] = 5140;
 $config['lagoon_logs.settings']['identifier'] = 'drupal';
 $config['lagoon_logs.settings']['disable'] = 0;
+
+/**
+ * Security.txt settings.
+ */
+// Security.txt must be enabled.
+$config['securitytxt.settings']['enabled'] = TRUE;

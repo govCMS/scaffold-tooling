@@ -32,7 +32,7 @@ IFS=$'\n'
 
 for file in $GOVCMS_FILE_LIST; do
   TFA_ENABLED=$(yq r "$file" 'enabled')
-  if [[ "${TFA_ENABLED}" != 1 ]]; then
+  if [[ "${TFA_ENABLED}" != 1 && "${TFA_ENABLED}" != 'true' ]]; then
     echo "[fail]: TFA not enabled"
     FAILURES="${FAILURES},${TFA_ENABLED}"
   else
