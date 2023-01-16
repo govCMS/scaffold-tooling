@@ -5,8 +5,8 @@
   "require": {
     "drupal/lagoon_logs": "^1.0",
     "drupal/redis": "^1.4",
-    "drupal/stage_file_proxy": "1.2.0",
-    "drush/drush": "~9 || ~10",
+    "drupal/stage_file_proxy": "2.0.2",
+    "drush/drush": "~9 || ~10 || ~11",
     "drupal/clamav": "^2.0",
     "drupal/config_ignore": "^2.3",
     "drupal/fast_404": "^2.0-alpha6",
@@ -23,7 +23,7 @@
     "phar-io/version": "~1",
     "webflo/drupal-finder": "^1.0.0",
     "webmozart/path-util": "^2.3",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.6",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
     "zaporylie/composer-drupal-optimizations": "^1.0",
     "php-parallel-lint/php-parallel-lint": "^1.2"
   },
@@ -83,9 +83,6 @@
     "patches": {
       "drupal/purge": {
         "https://www.drupal.org/project/purge/issues/3259320": "https://www.drupal.org/files/issues/2022-02-24/3259320-10.patch"
-      },
-      "drupal/stage_file_proxy": {
-        "Missing Content-Length header": "https://www.drupal.org/files/issues/2020-05-03/stage_file_proxy-3075369-13-content-length.patch"
       }
     }
   }
