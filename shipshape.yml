@@ -7,6 +7,9 @@ checks:
     - name: '[FILE] Sensitive public files'
       path: web/sites/default/files
       disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)?$'
+      exclude-pattern: '.*\.(css|js)\.gz?$'
+      skip-dir:
+        - private
   yaml:
     - name: '[FILE] Validate install profile'
       file: core.extension.yml
