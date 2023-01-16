@@ -6,9 +6,6 @@ parameters:
     - */assets/src/lib/campaignmonitor/samples/*
     - */tests/*
     - */bootstrap/scripts/*
-    - */adminimal_hga/*
-    - */adminimal_medela/*
-    - */adminimal_theme/*
   scanDirectories:
     - /app
   fileExtensions:
