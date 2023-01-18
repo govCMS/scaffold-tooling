@@ -164,8 +164,6 @@ checks:
         - import configuration
         - synchronize configuration
         - use PHP for google analytics tracking visibility
-      exclude-roles:
-        - govcms_site_administrator
   yamllint:
     - name: '[FILE] Yaml lint platform files'
       severity: high
