@@ -2,10 +2,10 @@ checks:
   file:
     - name: '[FILE] Illegal files'
       severity: high
-      path: web
+      path: .
       disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
     - name: '[FILE] Sensitive public files'
-      path: web/sites/default/files
+      path: sites/default/files
       disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)?$'
   yaml:
     - name: '[FILE] Validate install profile'
@@ -78,7 +78,7 @@ checks:
     - name: '[FILE] Detect module files in theme folder'
       pattern: '.*\.info\.yml$'
       ignore-missing: true
-      path: web/themes
+      path: themes
       values:
         - key: type
           value: theme
@@ -164,9 +164,15 @@ checks:
         - synchronize configuration
         - use PHP for google analytics tracking visibility
   yamllint:
+    - name: '[FILE] Yaml lint platform files'
+      severity: high
+      files:
+        - .lagoon.yml
+        - docker-compose.yml
+      ignore-missing: true
     - name: '[FILE] Yaml lint theme files'
       severity: high
-      path: web/themes
+      path: themes
       pattern: '.*\.yml$'
       exclude-pattern: node_modules
       ignore-missing: true
@@ -175,4 +181,4 @@ checks:
       severity: high
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
       paths:
-        - web/themes
+        - themes
