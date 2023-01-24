@@ -21,13 +21,6 @@ function illegal_file {
   return 1
 }
 
-function illegal_file {
-  if [[ "$1" =~ $GOVCMS_ILLEGAL_FILE_PATTERN(.+)?\.php ]]; then
-    return 0
-  fi
-  return 1
-}
-
 echo "GovCMS Validate :: Illegal files"
 
 if [ -n "${GOVCMS_FILE_LIST}" ]; then

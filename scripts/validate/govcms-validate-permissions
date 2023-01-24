@@ -68,7 +68,7 @@ for file in $GOVCMS_FILE_LIST; do
     FAILURES="$FAILURES,$file"
     continue
   fi
-  if [[ $(yq r "$file" 'is_admin') == 'true' ]]; then
+  if [[ $(yq r "$file" 'is_admin') != 'false' ]]; then
     echo "[fail]: $file is listed as an admin role";
     FAILURES="$FAILURES,$file"
     continue

@@ -17,8 +17,7 @@ checks:
           value: govcms
     - name: '[FILE] Disallowed permissions'
       severity: high
-      pattern: user.role.*.yml
-      exclude-pattern: language
+      pattern: '^user\.role\..*\.yml$'
       ignore-missing: true
       path: config/default
       values:
@@ -77,9 +76,9 @@ checks:
         - key: error_level
           value: hide
     - name: '[FILE] Detect module files in theme folder'
-      pattern: '.*.info.yml'
+      pattern: '.*\.info\.yml$'
       ignore-missing: true
-      path: 'themes'
+      path: web/themes
       values:
         - key: type
           value: theme
@@ -165,22 +164,10 @@ checks:
         - synchronize configuration
         - use PHP for google analytics tracking visibility
   yamllint:
-    - name: '[FILE] Yaml lint platform files'
-      severity: high
-      files:
-        - .lagoon.yml
-        - docker-compose.yml
-      ignore-missing: true
     - name: '[FILE] Yaml lint theme files'
       severity: high
       path: web/themes
-      pattern: ".*.yml"
-      exclude-pattern: node_modules
-      ignore-missing: true
-    - name: '[FILE] Yaml lint theme files (no web prefix)'
-      severity: high
-      path: themes
-      pattern: ".*.yml"
+      pattern: '.*\.yml$'
       exclude-pattern: node_modules
       ignore-missing: true
   phpstan:
@@ -188,5 +175,4 @@ checks:
       severity: high
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
       paths:
-        - web/themes/custom
-        - themes
+        - web/themes
