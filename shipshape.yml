@@ -5,7 +5,7 @@ checks:
       path: .
       disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
     - name: '[FILE] Sensitive public files'
-      path: sites/default/files
+      path: web/sites/default/files
       disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)?$'
   yaml:
     - name: '[FILE] Validate install profile'
@@ -78,7 +78,7 @@ checks:
     - name: '[FILE] Detect module files in theme folder'
       pattern: '.*\.info\.yml$'
       ignore-missing: true
-      path: themes
+      path: web/themes
       values:
         - key: type
           value: theme
@@ -172,7 +172,7 @@ checks:
       ignore-missing: true
     - name: '[FILE] Yaml lint theme files'
       severity: high
-      path: themes
+      path: web/themes
       pattern: '.*\.yml$'
       exclude-pattern: node_modules
       ignore-missing: true
@@ -181,4 +181,4 @@ checks:
       severity: high
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
       paths:
-        - themes
+        - web/themes
