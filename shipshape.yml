@@ -27,6 +27,7 @@ checks:
       values:
         - key: is_admin
           value: false
+          truthy: true
         - key: permissions
           is-list: true
           disallowed:
@@ -46,7 +47,8 @@ checks:
       path: config/default
       values:
         - key: enabled
-          value: 1
+          value: true
+          truthy: true
         - key: required_roles.authenticated
           value: authenticated
     - name: '[FILE] Ensure clamav is enabled'
@@ -56,6 +58,7 @@ checks:
       values:
         - key: enabled
           value: true
+          truthy: true
     - name: '[FILE] Ensure only admins can register accounts'
       file: user.settings.yml
       ignore-missing: true
@@ -70,8 +73,10 @@ checks:
       values:
         - key: css.preprocess
           value: true
+          truthy: true
         - key: js.preprocess
           value: true
+          truthy: true
     - name: '[FILE] Ensure no error log displayed'
       file: system.logging.yml
       ignore-missing: true
@@ -99,7 +104,8 @@ checks:
       config-name: tfa.settings
       values:
         - key: enabled
-          value: 1
+          value: true
+          truthy: true
         - key: required_roles.authenticated
           value: authenticated
     - name: '[DATABASE] Ensure clamav is enabled'
@@ -109,6 +115,7 @@ checks:
       values:
         - key: enabled
           value: true
+          truthy: true
     - name: '[DATABASE] Ensure only admins can register accounts'
       command: 'config:get user.settings'
       config-name: user.settings
@@ -121,8 +128,10 @@ checks:
       values:
         - key: css.preprocess
           value: true
+          truthy: true
         - key: js.preprocess
           value: true
+          truthy: true
     - name: '[DATABASE] Ensure no error log displayed'
       command: 'config:get system.logging'
       config-name: user.settings
