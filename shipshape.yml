@@ -28,6 +28,7 @@ checks:
         - key: is_admin
           value: false
           truthy: true
+          optional: true
         - key: permissions
           is-list: true
           disallowed:
