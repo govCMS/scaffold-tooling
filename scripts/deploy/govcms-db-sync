@@ -38,6 +38,7 @@ echo "[info]: Alias path:       $GOVCMS_SITE_ALIAS_PATH"
 echo "[info]: Check that the site can be bootstrapped."
 
 if [[ "$GOVCMS_CACHE_REBUILD_BEFORE_DB_SYNC" = TRUE ]]; then
+  echo "[info]: Rebuilding cache before database sync."
   drush cr
 fi
 STATUS=$(drush status --fields=bootstrap --format=json)
