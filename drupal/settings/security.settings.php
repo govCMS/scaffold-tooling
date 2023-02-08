@@ -97,3 +97,9 @@ $config['module_permissions.settings']['permission_blacklist'] = [
   'administer search_api',
   'assign all roles',
 ];
+
+/**
+* Event log track settings.
+*/
+// Disable Logging to DB
+$config['event_log_track.adminsettings']['disable_db_logs'] = 1;
