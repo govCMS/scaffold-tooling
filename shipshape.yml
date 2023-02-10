@@ -21,7 +21,6 @@ checks:
     - name: '[FILE] Disallowed permissions'
       severity: high
       pattern: user.role.*.yml
-      exclude-pattern: language
       ignore-missing: true
       path: config/default
       values:
@@ -31,6 +30,7 @@ checks:
           optional: true
         - key: permissions
           is-list: true
+          optiona: true
           disallowed:
             - administer config permissions
             - administer modules
