@@ -30,7 +30,7 @@ checks:
           optional: true
         - key: permissions
           is-list: true
-          optiona: true
+          optional: true
           disallowed:
             - administer config permissions
             - administer modules
