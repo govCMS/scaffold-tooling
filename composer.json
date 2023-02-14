@@ -4,6 +4,11 @@
   "license": "GPL-2.0-or-later",
   "require": {
     "drush/drush": "~9 || ~10 || ~11",
+    "drupal/lagoon_logs": "^2.0",
+    "drupal/redis": "^1.6",
+    "drupal/stage_file_proxy": "2.0.2",
+    "drupal/clamav": "^2.0",
+    "drupal/config_ignore": "^3.0",
     "phpstan/extension-installer": "^1.1.0",
     "spaze/phpstan-disallowed-calls": "^2.3.0",
     "cweagans/composer-patches": "^1.7"
