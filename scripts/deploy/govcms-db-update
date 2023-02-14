@@ -26,7 +26,8 @@ if [ "$GOVCMS_DEPLOY_PRE_UPDB" != "false" ]; then
   exit 0
 fi
 
-if ! drush status --fields=bootstrap | grep -q "Successful"; then
+STATUS=$(drush status --fields=bootstrap --format=json)
+if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
   echo '[skip]: Site is not available.'
   exit 0
 fi
@@ -34,6 +35,7 @@ fi
 drush eval "\Drupal::service('extension.list.theme')->reset()->getList();"
 if [ "$GOVCMS_CACHE_REBUILD_PRE_UPDB" != "false" ]; then
   # Allow forced cache-rebuild prior to database updates.
+  echo "[info]: Rebuilding cache before database updates."
   drush cr
 fi
 

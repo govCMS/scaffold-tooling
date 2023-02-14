@@ -61,7 +61,7 @@ setup() {
 
 @test "Database sync: development" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
 
   export LAGOON_ENVIRONMENT_TYPE=development
   export GOVCMS_DEPLOY_WORKFLOW_CONTENT=
@@ -79,7 +79,7 @@ setup() {
   assert_output_contains "[info]: Alias path:       /app/drush/sites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
-  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
+  assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[skip]: Site can be bootstrapped and the content workflow is not set to \"import\"."
   assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
@@ -106,7 +106,7 @@ setup() {
   assert_output_contains "[info]: Alias path:       /app/drush/sites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
-  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
+  assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
   assert_output_contains "[info]: Site could not be bootstrapped... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
@@ -118,7 +118,7 @@ setup() {
 
 @test "Database sync: development, alias overrides" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
   mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
@@ -137,7 +137,7 @@ setup() {
   assert_output_contains "[info]: Alias path:       /app/drush/othersites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
-  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
+  assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
   assert_equal "--alias-path=/app/drush/othersites @govcms.override sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
@@ -148,7 +148,7 @@ setup() {
 
 @test "Database sync: development, import content" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
   mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
@@ -167,7 +167,7 @@ setup() {
   assert_output_contains "[info]: Alias path:       /app/drush/sites"
 
   assert_output_contains "[info]: Check that the site can be bootstrapped."
-  assert_equal "status --fields=bootstrap" "$(mock_get_call_args "${mock_drush}" 1)"
+  assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
   assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
@@ -178,7 +178,7 @@ setup() {
 
 @test  "Database sync: always sync upgrade environments" {
   mock_drush=$(mock_command "drush")
-  mock_set_output "${mock_drush}" "Successful" 1
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
   mock_gunzip=$(mock_command "gunzip")
   mock_gunzip=$(mock_command "gunzip")
 
@@ -202,8 +202,8 @@ setup() {
   assert_output_contains "[info]: Upgrade branch... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 1)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
-  assert_equal 3 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }

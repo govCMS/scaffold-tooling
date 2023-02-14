@@ -41,6 +41,19 @@ $settings['file_public_path'] = 'sites/default/files';
 $settings['file_private_path'] = 'sites/default/files/private';
 $settings['file_temp_path'] = 'sites/default/files/private/tmp';
 
+// ClamAV settings.
+$clam_mode = getenv('CLAMAV_MODE') ?: 1;
+
+if ($clam_mode == 0 || strtolower($clam_mode) == 'daemon') {
+  $config['clamav.settings']['scan_mode'] = 0;
+  $config['clamav.settings']['mode_daemon_tcpip']['hostname'] = getenv('CLAMAV_HOST') ?: 'clamav';
+  $config['clamav.settings']['mode_daemon_tcpip']['port'] = getenv('CLAMAV_PORT') ?: 3310;
+}
+
+// Non-deterministic hash salt.
+$settings['hash_salt'] = hash('sha256', getenv('MARIADB_HOST'));
+
+
 // Allow custom themes to provide custom 404 pages.
 // By placing a file called 404.html in the root of their theme repository.
 // 404 pages must be less than 512KB to be used. This is a performance

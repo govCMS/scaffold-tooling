@@ -1,0 +1,9 @@
+{
+    "enabled": false,
+    "required_roles": {
+        "authenticated": "0",
+        "govcms_content_author": "0",
+        "govcms_content_approver": "0",
+        "govcms_site_administrator": "0"
+    }
+}

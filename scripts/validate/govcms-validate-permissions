@@ -21,7 +21,7 @@ echo "GovCMS Validate :: Disallowed permissions"
 
 # We will need to export this during automated testing.
 if [ -z "${GOVCMS_FILE_LIST}" ]; then
-  GOVCMS_FILE_LIST=$(find config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" -not -name 'user.role.govcms_site_administrator.yml' \))
+  GOVCMS_FILE_LIST=$(find config/default -type f \( -name "$GOVCMS_ROLE_PATTERN" \))
 fi
 
 # No configuration files.
@@ -39,10 +39,9 @@ for file in $GOVCMS_FILE_LIST; do
     jq -r 'if (.permissions |
         index("administer modules") or
         index("administer permissions") or
+        index("administer seckit") or
         index("administer site configuration") or
         index("administer software updates") or
-        index("administer managed modules") or
-        index("administer managed modules permissions") or
         index("import configuration") or
         index("use PHP for google analytics tracking visibility") or
         index("synchronize configuration") or
@@ -53,10 +52,9 @@ for file in $GOVCMS_FILE_LIST; do
         perms: (.permissions | map(select(. == (
           "administer modules",
           "administer permissions",
+          "administer seckit",
           "administer site configuration",
           "administer software updates",
-          "administer managed modules",
-          "administer managed modules permissions",
           "import configuration",
           "use PHP for google analytics tracking visibility",
           "synchronize configuration",

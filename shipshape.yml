@@ -7,6 +7,9 @@ checks:
     - name: '[FILE] Sensitive public files'
       path: web/sites/default/files
       disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)?$'
+      exclude-pattern: '.*\.(css|js)\.gz?$'
+      skip-dir:
+        - private
   yaml:
     - name: '[FILE] Validate install profile'
       file: core.extension.yml
@@ -18,20 +21,21 @@ checks:
     - name: '[FILE] Disallowed permissions'
       severity: high
       pattern: user.role.*.yml
-      exclude-pattern: user.role.govcms_site_administrator
       ignore-missing: true
       path: config/default
       values:
         - key: is_admin
           value: false
+          truthy: true
+          optional: true
         - key: permissions
           is-list: true
+          optional: true
           disallowed:
             - administer config permissions
-            - administer managed modules
-            - administer managed modules permissions
             - administer modules
             - administer permissions
+            - administer seckit
             - administer site configuration
             - administer software updates
             - import configuration
@@ -44,9 +48,18 @@ checks:
       path: config/default
       values:
         - key: enabled
-          value: 1
+          value: true
+          truthy: true
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[FILE] Ensure clamav is enabled'
+      file: clamav.settings.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: enabled
+          value: true
+          truthy: true
     - name: '[FILE] Ensure only admins can register accounts'
       file: user.settings.yml
       ignore-missing: true
@@ -61,8 +74,10 @@ checks:
       values:
         - key: css.preprocess
           value: true
+          truthy: true
         - key: js.preprocess
           value: true
+          truthy: true
     - name: '[FILE] Ensure no error log displayed'
       file: system.logging.yml
       ignore-missing: true
@@ -70,44 +85,13 @@ checks:
       values:
         - key: error_level
           value: hide
-    - name: '[FILE] Validate service names are all expected'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
+    - name: '[FILE] Detect module files in theme folder'
+      pattern: '.*.info.yml'
+      ignore-missing: true
+      path: 'themes'
       values:
-        - key: services
-          is-list: true
-          allowed:
-            - cli
-            - test
-            - nginx
-            - php
-            - mariadb
-            - solr
-            - chrome
-    - name: '[FILE] Validate services have expected lagoon type'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
-      values:
-        - key: services.cli.labels['lagoon.type']
-          value: cli-persistent
-        - key: services.test.labels['lagoon.type']
-          value: none
-        - key: services.nginx.labels['lagoon.type']
-          value: nginx-php-persistent
-        - key: services.php.labels['lagoon.type']
-          value: nginx-php-persistent
-        - key: services.mariadb.labels['lagoon.type']
-          value: mariadb
-    - name: '[FILE] Validate optional services have expected lagoon type'
-      file: docker-compose.yml
-      ignore-missing: false
-      path: .
-      values:
-        - key: services.solr.labels['lagoon.type']
-          value: solr
-          optional: true
+        - key: type
+          value: theme
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
       command: 'config:get core.extension'
@@ -121,9 +105,18 @@ checks:
       config-name: tfa.settings
       values:
         - key: enabled
-          value: 1
+          value: true
+          truthy: true
         - key: required_roles.authenticated
           value: authenticated
+    - name: '[DATABASE] Ensure clamav is enabled'
+      severity: high
+      command: 'config:get clamav.settings'
+      config-name: clamav.settings
+      values:
+        - key: enabled
+          value: true
+          truthy: true
     - name: '[DATABASE] Ensure only admins can register accounts'
       command: 'config:get user.settings'
       config-name: user.settings
@@ -136,8 +129,10 @@ checks:
       values:
         - key: css.preprocess
           value: true
+          truthy: true
         - key: js.preprocess
           value: true
+          truthy: true
     - name: '[DATABASE] Ensure no error log displayed'
       command: 'config:get system.logging'
       config-name: user.settings
@@ -149,6 +144,7 @@ checks:
       severity: high
       path: config/default
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
@@ -160,6 +156,7 @@ checks:
     - name: '[DATABASE] Active modules audit'
       severity: high
       required:
+        - clamav
         - govcms_security
         - lagoon_logs
         - tfa
@@ -172,17 +169,14 @@ checks:
       severity: high
       disallowed:
         - administer config permissions
-        - administer managed modules
-        - administer managed modules permissions
         - administer modules
         - administer permissions
+        - administer seckit
         - administer site configuration
         - administer software updates
         - import configuration
         - synchronize configuration
         - use PHP for google analytics tracking visibility
-      exclude-roles:
-        - govcms_site_administrator
   yamllint:
     - name: '[FILE] Yaml lint platform files'
       severity: high
