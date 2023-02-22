@@ -177,6 +177,9 @@ checks:
         - import configuration
         - synchronize configuration
         - use PHP for google analytics tracking visibility
+  drupal-admin-user:
+    - name: '[DATABASE] Active user roles admin check'
+      severity: high
   yamllint:
     - name: '[FILE] Yaml lint platform files'
       severity: high
