@@ -63,7 +63,7 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Deploy :: Configuration import"
   assert_output_contains "[update]: Import site configuration."
 
-  assert_equal "config:import -y sync" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "config:import -y" "$(mock_get_call_args "${mock_drush}" 2)"
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 }
 
@@ -125,7 +125,7 @@ load ../_helpers_govcms
   assert_output_contains "[update]: Import site configuration."
   assert_output_contains "[success]: Completed successfully."
 
-  assert_equal "config:import -y sync" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "config:import -y" "$(mock_get_call_args "${mock_drush}" 2)"
   assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 }
 
@@ -148,7 +148,7 @@ load ../_helpers_govcms
   assert_output_contains "[update]: Import dev configuration partially."
   assert_output_contains "[success]: Completed successfully."
 
-  assert_equal "config:import -y sync" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "config:import -y" "$(mock_get_call_args "${mock_drush}" 2)"
   assert_equal "config:import -y --source=${CONFIG_DEV_DIR} --partial" "$(mock_get_call_args "${mock_drush}" 3)"
   assert_equal 3 "$(mock_get_call_num "${mock_drush}")"
 }
