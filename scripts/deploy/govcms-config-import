@@ -46,7 +46,7 @@ fi
 
 if [ "$config_count" -gt 0 ]; then
   echo "[update]: Import site configuration."
-  drush config:import -y sync
+  drush config:import -y
 fi
 
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ] && [ "$dev_config_count" -gt 0 ]; then

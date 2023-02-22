@@ -65,7 +65,7 @@ common_deploy () {
   # Base configuration import with development environment overrides.
   if [[ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" = "import" && "$config_count" -gt 0 ]]; then
     echo "Performing config import."
-    drush config:import -y sync
+    drush config:import -y
     if [[ "$LAGOON_ENVIRONMENT_TYPE" != "production" && "$dev_config_count" -gt 0 ]]; then
       echo "Performing development config import on non-production site."
       drush config:import -y --partial --source=../config/dev
