@@ -41,6 +41,44 @@ checks:
             - import configuration
             - synchronize configuration
             - use PHP for google analytics tracking visibility
+    - name: '[FILE] Disallowed permissions for anonymous role'
+      severity: high
+      file: user.role.anonymous.yml
+      ignore-missing: true
+      path: config/default
+      values:
+        - key: permissions
+          is-list: true
+          optional: true
+          disallowed:
+            - 'access administration pages'
+            - 'access content overview'
+            - 'access site reports'
+            - 'access user profiles'
+            - 'administer account settings'
+            - 'administer blocks'
+            - 'administer comment types'
+            - 'administer comments'
+            - 'administer contact forms'
+            - 'administer content types'
+            - 'administer filters'
+            - 'administer image styles'
+            - 'administer menu'
+            - 'administer nodes'
+            - 'administer search'
+            - 'administer shortcuts'
+            - 'administer taxonomy'
+            - 'administer themes'
+            - 'administer url aliases'
+            - 'administer users'
+            - 'administer views'
+            - 'bypass node access'
+            - 'create url aliases'
+            - 'delete all revisions'
+            - 'revert all revisions'
+            - 'view all revisions'
+            - 'view the administration theme'
+            - 'view user email addresses'
     - name: '[FILE] Validate TFA config'
       severity: high
       file: tfa.settings.yml
