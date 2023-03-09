@@ -103,3 +103,5 @@ $config['module_permissions.settings']['permission_blacklist'] = [
 */
 // Disable Logging to DB
 $config['event_log_track.adminsettings']['disable_db_logs'] = 1;
+// Lock down event log output type.
+$config['event_log_track.settings']['output_type'] = 'watchdog';
