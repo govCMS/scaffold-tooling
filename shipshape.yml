@@ -42,7 +42,6 @@ checks:
             - synchronize configuration
             - use PHP for google analytics tracking visibility
     - name: '[FILE] Disallowed permissions for anonymous role'
-      severity: high
       file: user.role.anonymous.yml
       ignore-missing: true
       path: config/default
