@@ -18,6 +18,12 @@ MARIADB_READREPLICA_HOSTS=${MARIADB_READREPLICA_HOSTS:-}
 GOVCMS_TEST_CANARY=${GOVCMS_TEST_CANARY:-FALSE}
 LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 
+# For some projects with huge database sizes, the drush command might fail
+# due to the hardcoded drush timeout of 4 hours. If that happens, we have the
+# ability to set this variable to load the database via mysql directly,
+# thereby avoiding the drush timeout.
+DB_LOAD_NO_DRUSH=${DB_LOAD_NO_DRUSH:-FALSE}
+
 echo "GovCMS Deploy :: Database synchronisation"
 
 if [[ "$GOVCMS_SKIP_DB_SYNC" != FALSE ]]; then
@@ -62,9 +68,33 @@ fi
 echo "[info]: Preparing database sync"
 
 # shellcheck disable=SC2086
-drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y
+drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump \
+  --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql \
+  --skip-tables-key=common -y
 drush rsync --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS":/tmp/sync.sql.gz /tmp/ -y
-gunzip < /tmp/sync.sql.gz | drush sqlc
+
+if [[ "$DB_LOAD_NO_DRUSH" = TRUE ]]; then
+  DB_CONF=$(drush sql:conf --show-passwords --format=json 2>&1)
+  DB_NAME=$(echo "$DB_CONF" | jq -r '.database')
+  DB_HOST=$(echo "$DB_CONF" | jq -r '.host')
+  DB_USER=$(echo "$DB_CONF" | jq -r '.username')
+  DB_PASS=$(echo "$DB_CONF" | jq -r '.password')
+
+  LOAD_TMP_FILE=$(mktemp -u --suffix=.govcms-db-load)
+  cat > "$LOAD_TMP_FILE" << EOF
+[client]
+user=${DB_USER}
+password=${DB_PASS}
+EOF
+
+  echo "[info]: Loading database using mysql"
+  gunzip < /tmp/sync.sql.gz | mysql --defaults-file="$LOAD_TMP_FILE" \
+    --host="$DB_HOST" --port=3306 "$DB_NAME"
+else
+  echo "[info]: Loading database using drush"
+  gunzip < /tmp/sync.sql.gz | drush sqlc
+fi
+
 rm /tmp/sync.sql.gz
 # @todo: Add sanitisation?
 
