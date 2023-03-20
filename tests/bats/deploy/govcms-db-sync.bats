@@ -110,8 +110,9 @@ setup() {
   assert_output_contains "[info]: Site could not be bootstrapped... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
+  assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[success]: Completed successfully."
   assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }
@@ -139,8 +140,9 @@ setup() {
   assert_output_contains "[info]: Check that the site can be bootstrapped."
   assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
 
+  assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/othersites @govcms.override sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/othersites @govcms.override sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
@@ -170,8 +172,9 @@ setup() {
   assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
+  assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[success]: Completed successfully."
   assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
 }
@@ -179,7 +182,6 @@ setup() {
 @test  "Database sync: always sync upgrade environments" {
   mock_drush=$(mock_command "drush")
   mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
-  mock_gunzip=$(mock_command "gunzip")
   mock_gunzip=$(mock_command "gunzip")
 
   export LAGOON_ENVIRONMENT_TYPE=development
@@ -202,8 +204,44 @@ setup() {
   assert_output_contains "[info]: Upgrade branch... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
+  assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[success]: Completed successfully."
   assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
+}
+
+@test "Database sync: development, import content, import db without drush" {
+  mock_drush=$(mock_command "drush")
+  mock_set_output "${mock_drush}" '{"bootstrap": "Successful"}' 1
+  mock_gunzip=$(mock_command "gunzip")
+  mock_mysql=$(mock_command "mysql")
+
+  export LAGOON_ENVIRONMENT_TYPE=development
+  export GOVCMS_DEPLOY_WORKFLOW_CONTENT=import
+  export GOVCMS_SITE_ALIAS=
+  export GOVCMS_SITE_ALIAS_PATH=
+  export MARIADB_READREPLICA_HOSTS=
+  export DB_LOAD_NO_DRUSH=TRUE
+
+  run scripts/deploy/govcms-db-sync >&3
+
+  assert_output_contains "GovCMS Deploy :: Database synchronisation"
+
+  assert_output_contains "[info]: Environment type: development"
+  assert_output_contains "[info]: Content strategy: import"
+  assert_output_contains "[info]: Site alias:       govcms.prod"
+  assert_output_contains "[info]: Alias path:       /app/drush/sites"
+
+  assert_output_contains "[info]: Check that the site can be bootstrapped."
+  assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
+
+  assert_output_contains "[info]: Preparing database sync"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "sql:conf --show-passwords --format=json" "$(mock_get_call_args "${mock_drush}" 4)"
+
+  assert_output_contains "[info]: Loading database using mysql"
+  assert_output_contains "[success]: Completed successfully."
+  assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 1 "$(mock_get_call_num "${mock_mysql}")"
 }
