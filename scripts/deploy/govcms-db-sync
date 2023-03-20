@@ -77,6 +77,7 @@ if [[ "$DB_LOAD_NO_DRUSH" = TRUE ]]; then
   DB_CONF=$(drush sql:conf --show-passwords --format=json 2>&1)
   DB_NAME=$(echo "$DB_CONF" | jq -r '.database')
   DB_HOST=$(echo "$DB_CONF" | jq -r '.host')
+  DB_PORT=$(echo "$DB_CONF" | jq -r '.port')
   DB_USER=$(echo "$DB_CONF" | jq -r '.username')
   DB_PASS=$(echo "$DB_CONF" | jq -r '.password')
 
@@ -89,7 +90,7 @@ EOF
 
   echo "[info]: Loading database using mysql"
   gunzip < /tmp/sync.sql.gz | mysql --defaults-file="$LOAD_TMP_FILE" \
-    --host="$DB_HOST" --port=3306 "$DB_NAME"
+    --host="$DB_HOST" --port="$DB_PORT" "$DB_NAME"
 else
   echo "[info]: Loading database using drush"
   gunzip < /tmp/sync.sql.gz | drush sqlc
