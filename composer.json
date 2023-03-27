@@ -9,7 +9,6 @@
     "drupal/stage_file_proxy": "^2.0",
     "drupal/clamav": "^2.0",
     "drupal/purge": "^3.4",
-    "drupal/config_ignore": "^3.0",
     "drupal/lagoon_logs": "^2.1",
     "phpstan/extension-installer": "^1.1.0",
     "spaze/phpstan-disallowed-calls": "^2.3.0",
