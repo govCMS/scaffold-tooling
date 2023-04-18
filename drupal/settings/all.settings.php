@@ -128,6 +128,9 @@ if (defined('STDIN') || in_array(PHP_SAPI, ['cli', 'cli-server'])) {
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['path'] = '/';
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['core'] = 'drupal';
 
+// Prevents legacy Symfony ApcClassLoader from being used instead of Composer's.
+$settings['class_loader_auto_detect'] = FALSE;
+
 // Configure seckit to emit the HSTS headers when a user is likely visiting
 // govCMS using a domain with valid SSL.
 //
