@@ -141,6 +141,9 @@ if (in_array(PHP_SAPI, ['cli', 'cli-server'])) {
   }
 }
 
+// Prevents legacy Symfony ApcClassLoader from being used instead of Composer's.
+$settings['class_loader_auto_detect'] = FALSE;
+
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['path'] = '/';
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['core'] = 'drupal';
 
