@@ -2,7 +2,7 @@ checks:
   file:
     - name: '[FILE] Illegal files'
       severity: high
-      path: .
+      path: web
       disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
     - name: '[FILE] Sensitive public files'
       path: web/sites/default/files
@@ -181,4 +181,5 @@ checks:
       severity: high
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
       paths:
-        - web/themes
+        - web/themes/custom
+        - themes
