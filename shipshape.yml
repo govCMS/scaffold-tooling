@@ -188,6 +188,7 @@ checks:
       disallowed:
         - dblog
         - module_permissions_ui
+        - statistics
         - update
   drupal-db-module:
     - name: '[DATABASE] Active modules audit'
@@ -200,6 +201,7 @@ checks:
       disallowed:
         - dblog
         - module_permissions_ui
+        - statistics
         - update
   drupal-db-permissions:
     - name: '[DATABASE] Disallowed permissions on active site'
