@@ -109,7 +109,7 @@ $config['event_log_track.settings']['output_type'] = 'watchdog';
 /**
  * Seckit configuration.
  */
-// Enforce the GoVCMS report UIR route
+// Enforce the GoVCMS report URI route.
 $report_uri = getenv('GOVCMS_CSP_URI');
 if (!empty($report_uri)) {
   $config['seckit.settings']['seckit_xss']['csp']['report-uri'] = $report_uri;
