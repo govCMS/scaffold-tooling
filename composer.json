@@ -73,14 +73,7 @@
       "drupal/core-composer-scaffold": true,
       "oomphinc/composer-installers-extender": true,
       "phpstan/extension-installer": true
-<<<<<<< HEAD
-    }
-  },
-  "extra": {
-    "patches": {}
-=======
     },
     "apcu-autoloader": true
->>>>>>> 9.x-develop
   }
 }
