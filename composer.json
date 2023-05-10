@@ -4,12 +4,12 @@
   "license": "GPL-2.0-or-later",
   "require": {
     "drush/drush": "~9 || ~10 || ~11",
-    "drupal/lagoon_logs": "^2.0",
+    "drupal/lagoon_logs": "^2.1",
     "drupal/redis": "^1.6",
     "drupal/stage_file_proxy": "^2.0",
     "drupal/clamav": "^2.0",
     "drupal/purge": "3.x-dev",
-    "drupal/lagoon_logs": "^2.1",
+    "drupal/config_ignore": "^2.4",
     "phpstan/extension-installer": "^1.1.0",
     "spaze/phpstan-disallowed-calls": "^2.3.0",
     "cweagans/composer-patches": "^1.7"
@@ -73,9 +73,14 @@
       "drupal/core-composer-scaffold": true,
       "oomphinc/composer-installers-extender": true,
       "phpstan/extension-installer": true
+<<<<<<< HEAD
     }
   },
   "extra": {
     "patches": {}
+=======
+    },
+    "apcu-autoloader": true
+>>>>>>> 9.x-develop
   }
 }
