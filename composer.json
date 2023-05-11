@@ -78,6 +78,7 @@
       "oomphinc/composer-installers-extender": true,
       "phpstan/extension-installer": true
     },
-    "apcu-autoloader": true
+    "apcu-autoloader": true,
+    "optimize-autoloader": true
   }
 }
