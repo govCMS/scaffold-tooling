@@ -63,6 +63,7 @@
     "scripts/validate/govcms-validate-illegal-files"
   ],
   "config": {
-    "apcu-autoloader": true
+    "apcu-autoloader": true,
+    "optimize-autoloader": true
   }
 }
