@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+IFS=$'\n\t'
+set -euo pipefail
+
+#
+# GovCMS restore database from backup.
+#
+# Accepts 1 argument for backup file (.sql or .sql.gz) path.
+#
+
+echo "GovCMS Deploy :: Restore Database"
+
+STATUS=$(drush status --fields=bootstrap --format=json)
+if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
+  echo '[skip]: Site is not available.'
+  exit 0
+fi
+
+if [ $# -eq 0 ]; then
+  echo "[skip]: No backup file has been provided."
+  exit 0;
+elif [ $# -gt 1 ]; then
+  echo "[skip]: Too many arguments, expecting one."
+  exit 0;
+fi
+
+BACKUP_FILE=$1
+echo "[info]: Importing backup file..."
+
+if [[ $BACKUP_FILE == *".sql" ]]; then
+  drush sql-drop -y
+  drush sqlc < $BACKUP_FILE -vv
+elif [[ $BACKUP_FILE == *".sql.gz" ]]; then
+  drush sql-drop -y
+  mkdir /tmp/restore
+  gunzip -c $BACKUP_FILE > /tmp/restore/db-restore.sql
+  drush sqlc < /tmp/restore/db-restore.sql -vv
+  rm -rf /tmp/restore
+elif [[ $BACKUP_FILE == *".tar.gz" ]]; then
+  drush sql-drop -y
+  mkdir /tmp/restore
+  tar xfz $BACKUP_FILE --directory /tmp/restore
+  FILE=$(ls /tmp/restore/*.sql | head -1)
+  drush sqlc < $FILE -vv
+  rm -rf /tmp/restore
+else
+  echo "[skip]: Unsupported file type."
+  exit 0;
+fi
+
+drush -y cache:rebuild
+drush -y updatedb
+
+echo "[success]: Completed successfully."
