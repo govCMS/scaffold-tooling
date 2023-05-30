@@ -110,6 +110,25 @@ vet:
   when: on_success
   allow_failure: false
 
+# NOTICE: Include standard security scanning and compliance checks
+# provided by shipshape. This check further extends the capabilities
+# of the VET stage.
+shipshape:
+  <<: *static_template
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - tests/shipshape-results.xml
+    reports:
+      junit:
+        - tests/shipshape-results.xml
+    when: always
+  stage: static
+  script:
+    - shipshape -f /govcms/shipshape.yml --exclude-db --error-code -o junit > tests/shipshape-results.xml
+  when: on_success
+  allow_failure: true
+
 lint:
   <<: *static_template
   extends: .job-lint
