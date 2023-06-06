@@ -33,7 +33,7 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer permissions\""
   assert_output_contains "[fail]: 'authenticated' has restricted permissions: \"administer permissions\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 3 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -47,7 +47,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer modules\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -61,7 +61,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer software updates\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -75,7 +75,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer site configuration\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -89,7 +89,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"synchronize configuration\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -103,7 +103,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer config permissions\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -117,7 +117,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"use PHP for google analytics tracking visibility\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -131,7 +131,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"import configuration\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }
@@ -145,7 +145,7 @@ load ../_helpers_govcms
 
   assert_output_contains "GovCMS Validate :: Disallowed permissions on active site"
   assert_output_contains "[fail]: 'anonymous' has restricted permissions: \"administer site configuration,administer software updates\""
-  assert_equal 1 "$(mock_get_call_num "${mock_drush}")"
+  assert_equal 2 "$(mock_get_call_num "${mock_drush}")"
 
   assert_failure
 }

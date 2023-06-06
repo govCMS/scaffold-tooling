@@ -134,6 +134,16 @@ if (defined('STDIN') || in_array(PHP_SAPI, ['cli', 'cli-server'])) {
   }
 }
 
+// Allow projects to increase PHP memory limit for CLI requests.
+if (in_array(PHP_SAPI, ['cli', 'cli-server'])) {
+  if ($limit = getenv('GOVCMS_CLI_MEMORY_LIMIT')) {
+    ini_set('memory_limit', $limit);
+  }
+}
+
+// Prevents legacy Symfony ApcClassLoader from being used instead of Composer's.
+$settings['class_loader_auto_detect'] = FALSE;
+
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['path'] = '/';
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['core'] = 'drupal';
 

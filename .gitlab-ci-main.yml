@@ -146,7 +146,7 @@ functional:
   <<: *full_template
   extends: .job-functional
   script:
-    - echo "Will run something like docker-compose exec -T test ./vendor/bin/govcms-integration"
+    - docker-compose exec -T test /app/vendor/bin/phpunit --testsuite=functional -c /app/tests/phpunit
 audit:
   <<: *full_template
   extends: .job-audit
