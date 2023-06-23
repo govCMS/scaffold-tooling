@@ -109,6 +109,9 @@ vet:
     - ./vendor/bin/govcms-vet
   when: on_success
   allow_failure: false
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 lint:
   <<: *static_template
@@ -119,12 +122,18 @@ lint:
       set +exuo pipefail # Linting...
       ./vendor/bin/govcms-lint web/modules/custom
       ./vendor/bin/govcms-lint web/themes/custom
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 unit:
   <<: *static_template
   extends: .job-unit
   script:
     - ./vendor/bin/govcms-unit --testsuite=unit
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 # Pre-flight (like a smoke test for general deployability).
 preflight:
@@ -135,6 +144,9 @@ preflight:
     - docker-compose exec -T cli bash -c 'drush cim -y'
     - docker-compose exec -T cli bash -c 'drush st'
     - docker-compose exec -T cli bash -c 'drush updatedb:status'
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 # Integration.
 behat:
@@ -142,16 +154,25 @@ behat:
   extends: .job-behat
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-behat
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 functional:
   <<: *full_template
   extends: .job-functional
   script:
     - docker-compose exec -T test /app/vendor/bin/phpunit --testsuite=functional -c /app/tests/phpunit
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 audit:
   <<: *full_template
   extends: .job-audit
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-audit
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 # MRs only.
 audit_on_merge:
@@ -161,6 +182,8 @@ audit_on_merge:
     - docker-compose exec -T test ./vendor/bin/govcms-audit
   only:
     - merge_requests
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
   stage: deploy
 
 # Deploy / summary.
@@ -170,3 +193,35 @@ deploy:
   script:
     - echo "Deployment triggered, please see $GOVCMS_DASHBOARD/$CI_PROJECT_NAME/$CI_PROJECT_NAME-$(echo $CI_COMMIT_REF_NAME | sed -e 's/[^[:alnum:]-]/-/g')"
   stage: deploy
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
+
+# Deprecation report.
+deprecation-report:
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT == "true"
+  artifacts:
+    expire_in: "90 days"
+    paths:
+      - govcms-deprecations.xml
+    reports:
+      junit:
+        - govcms-deprecations.xml
+    when: always
+  variables:
+    # Used to specify the location of the govcms validation scripts -
+    # the ship-shape autoloader will use this location to determine
+    # where the verification checks are located.
+    APP_DIR: '/govcms'
+  script:
+    # -- Force MARIADB image when running deprecation report & smoke testing.
+    - |
+      touch .env
+      sed -i -e "/MARIADB_DATA_IMAGE/d" .env
+      sed -i -e "/GOVCMS_DEPLOY_WORKFLOW_CONFIG/d" .env
+      sed -i -e "/GOVCMS_IMAGE_VERSION/d" .env
+      echo "MARIADB_DATA_IMAGE=gitlab-registry-production.govcms.amazee.io/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/mariadb-drupal-data" >> .env
+      echo "GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain" >> .env
+      cat .env
