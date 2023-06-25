@@ -197,6 +197,7 @@ deploy:
 
 # Deprecation report.
 deprecation-report:
+  stage: integration
   only:
     variables:
       - $RUN_DEPRECATION_REPORT == "true"
@@ -245,4 +246,3 @@ deprecation-report:
         fi
       fi
       exit 1
-  stage: integration
