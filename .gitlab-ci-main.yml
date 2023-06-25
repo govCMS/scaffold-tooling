@@ -182,8 +182,6 @@ audit_on_merge:
     - docker-compose exec -T test ./vendor/bin/govcms-audit
   only:
     - merge_requests
-    variables:
-      - $RUN_DEPRECATION_REPORT != "true"
   stage: deploy
 
 # Deploy / summary.
