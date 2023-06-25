@@ -196,53 +196,53 @@ deploy:
       - $RUN_DEPRECATION_REPORT != "true"
 
 # Deprecation report.
-# deprecation_report:
-#   stage: integration
-#   only:
-#     variables:
-#       - $RUN_DEPRECATION_REPORT == "true"
-#   artifacts:
-#     expire_in: "90 days"
-#     paths:
-#       - govcms-deprecations.xml
-#     reports:
-#       junit:
-#         - govcms-deprecations.xml
-#     when: always
-#   variables:
-#     # Used to specify the location of the govcms validation scripts -
-#     # the ship-shape autoloader will use this location to determine
-#     # where the verification checks are located.
-#     APP_DIR: '/govcms'
-#   script:
-#     # -- Force MARIADB image when running deprecation report & smoke testing.
-#     - |
-#       touch .env
-#       sed -i -e "/MARIADB_DATA_IMAGE/d" .env
-#       sed -i -e "/GOVCMS_DEPLOY_WORKFLOW_CONFIG/d" .env
-#       sed -i -e "/GOVCMS_IMAGE_VERSION/d" .env
-#       echo "MARIADB_DATA_IMAGE=gitlab-registry-production.govcms.amazee.io/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/mariadb-drupal-data" >> .env
-#       echo "GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain" >> .env
-#       cat .env
-#   after_script:
-#     - |
-#       if [ -s govcms-deprecations.xml ]; then
+deprecation_report:
+  stage: integration
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT == "true"
+  artifacts:
+    expire_in: "90 days"
+    paths:
+      - govcms-deprecations.xml
+    reports:
+      junit:
+        - govcms-deprecations.xml
+    when: always
+  variables:
+    # Used to specify the location of the govcms validation scripts -
+    # the ship-shape autoloader will use this location to determine
+    # where the verification checks are located.
+    APP_DIR: '/govcms'
+  script:
+    # -- Force MARIADB image when running deprecation report & smoke testing.
+    - |
+      touch .env
+      sed -i -e "/MARIADB_DATA_IMAGE/d" .env
+      sed -i -e "/GOVCMS_DEPLOY_WORKFLOW_CONFIG/d" .env
+      sed -i -e "/GOVCMS_IMAGE_VERSION/d" .env
+      echo "MARIADB_DATA_IMAGE=gitlab-registry-production.govcms.amazee.io/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/mariadb-drupal-data" >> .env
+      echo "GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain" >> .env
+      cat .env
+  after_script:
+    - |
+      if [ -s govcms-deprecations.xml ]; then
 
-#         if cat govcms-deprecations.xml | grep -q "d10_theme_pass"; then
-#           echo -e "\n ********************************************************\n\e[1;32m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
-#           echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
-#           echo -e " At this point your theme is reportedly \e[1;32mcompatible with Drupal 10.\e[0m\n"
-#           echo -e " This does not guarantee the upgrade to Drupal 10 will be issue free, however it is a good indication\n"
-#           echo -e " that there will be no (or low) effort required in your theme.\n"
-#           echo -e "\n ********************************************************\n"
-#         else
-#           echo -e "\n ********************************************************\n\e[31m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
-#           echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
-#           echo -e " Until your project is fully D10 compatible, you will continue to see some pipeline failures initiated by the GovCMS Service Account.\n"
-#           echo -e " This internal testing has no impact on your current build process. No deployment has been triggered.\n"
-#           echo -e " To ensure a smooth upgrade, you can get a head start by reviewing and resolving the issues highlighted:\n"
-#           echo -e " https://projects.govcms.gov.au/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/-/pipelines/$CI_PIPELINE_ID/test_report"
-#           echo -e "\n ********************************************************\n"
-#         fi
-#       fi
-#       exit 1
+        if cat govcms-deprecations.xml | grep -q "d10_theme_pass"; then
+          echo -e "\n ********************************************************\n\e[1;32m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
+          echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
+          echo -e " At this point your theme is reportedly \e[1;32mcompatible with Drupal 10.\e[0m\n"
+          echo -e " This does not guarantee the upgrade to Drupal 10 will be issue free, however it is a good indication\n"
+          echo -e " that there will be no (or low) effort required in your theme.\n"
+          echo -e "\n ********************************************************\n"
+        else
+          echo -e "\n ********************************************************\n\e[31m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
+          echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
+          echo -e " Until your project is fully D10 compatible, you will continue to see some pipeline failures initiated by the GovCMS Service Account.\n"
+          echo -e " This internal testing has no impact on your current build process. No deployment has been triggered.\n"
+          echo -e " To ensure a smooth upgrade, you can get a head start by reviewing and resolving the issues highlighted:\n"
+          echo -e " https://projects.govcms.gov.au/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/-/pipelines/$CI_PIPELINE_ID/test_report"
+          echo -e "\n ********************************************************\n"
+        fi
+      fi
+      exit 1
