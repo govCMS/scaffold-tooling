@@ -196,7 +196,7 @@ deploy:
       - $RUN_DEPRECATION_REPORT != "true"
 
 # Deprecation report.
-deprecation-report:
+deprecation_report:
   stage: integration
   only:
     variables:
