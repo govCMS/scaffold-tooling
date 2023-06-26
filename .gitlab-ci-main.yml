@@ -239,6 +239,7 @@ deprecation_report:
       fi
     - "COMPOSE_HTTP_TIMEOUT=300 ahoy up"
     - "docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m"
+    - docker-compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
     - "ahoy govcms-deploy"
     - "docker-compose exec -T cli mkdir -p /app/web/sites/default/files/private/{backups,tmp}"
 
