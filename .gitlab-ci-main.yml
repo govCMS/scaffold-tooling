@@ -258,28 +258,8 @@ deprecation_report:
     - |
       # Install and run upgrade_status for deprecation report.
       docker-compose exec -T cli composer require drupal/upgrade_status
-
-      # Resolve issues with themes and incorrect project names.
-      find web/themes -name '*.info.yml' -exec sed -i -e "/project:/d" {} \;
-      find web/themes -name '*.info.yml' -exec sh -c 'echo "" >> {}' \;
-      find web/themes -name '*.info.yml' -exec sh -c 'echo \nproject: `basename {} .info.yml` >> {}' \;
-
-      # Determine valid enabled themes and process.
-      export themestring=`ahoy drush pml --type=theme --field=name --status=enabled --no-core | grep -v adminimal_theme | grep -v bootstrap_barrio | grep -v govcms_bartik | grep -v govcms_admin_theme | grep -v govcmsui | grep -v govcms8_uikit_starter | grep -v classy | grep -v stable | grep -v seven | paste -sd " " -`
-
-      # Empty themestring; likely no custom theme in use.
-      if [ "$themestring" = "" ]; then
-        echo -e "\n ********************************************************\n\e[1;32m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
-        echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
-        echo -e " No custom theme was found, therefore no compatibility issues could be detected.\n"
-        echo -e " This does not guarantee the upgrade to Drupal 10 will be issue free, however it is a good indication\n"
-        echo -e " that there will be no (or low) effort required in your theme.\n"
-        echo -e "\n ********************************************************\n"
-        exit 1
-      fi
-
       ahoy drush pm-enable upgrade_status -y
-      ahoy drush upgrade_status:checkstyle $themestring > /artefacts/upgrade_status.xml
+      ahoy drush upgrade_status:checkstyle --ignore-uninstalled --ignore-contrib --all > /artefacts/upgrade_status.xml
       # Strip whitespace in the file
       sed -i '/^$/d' /artefacts/upgrade_status.xml
       php /artefacts/junit_rewrite.php > govcms-deprecations.xml
@@ -292,9 +272,9 @@ deprecation_report:
         if cat govcms-deprecations.xml | grep -q "d10_theme_pass"; then
           echo -e "\n ********************************************************\n\e[1;32m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
           echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
-          echo -e " At this point your theme is reportedly \e[1;32mcompatible with Drupal 10.\e[0m\n"
+          echo -e " At this point custom modules and themes in your codebase are reportedly \e[1;32mcompatible with Drupal 10.\e[0m\n"
           echo -e " This does not guarantee the upgrade to Drupal 10 will be issue free, however it is a good indication\n"
-          echo -e " that there will be no (or low) effort required in your theme.\n"
+          echo -e " that there will be no (or low) effort required in your custom code.\n"
           echo -e "\n ********************************************************\n"
         else
           echo -e "\n ********************************************************\n\e[31m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
