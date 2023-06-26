@@ -260,9 +260,9 @@ deprecation_report:
       docker-compose exec -T cli composer require drupal/upgrade_status
 
       # Resolve issues with themes and incorrect project names.
-      find themes -name '*.info.yml' -exec sed -i -e "/project:/d" {} \;
-      find themes -name '*.info.yml' -exec sh -c 'echo "" >> {}' \;
-      find themes -name '*.info.yml' -exec sh -c 'echo \nproject: `basename {} .info.yml` >> {}' \;
+      find web/themes -name '*.info.yml' -exec sed -i -e "/project:/d" {} \;
+      find web/themes -name '*.info.yml' -exec sh -c 'echo "" >> {}' \;
+      find web/themes -name '*.info.yml' -exec sh -c 'echo \nproject: `basename {} .info.yml` >> {}' \;
 
       # Determine valid enabled themes and process.
       export themestring=`ahoy drush pml --type=theme --field=name --status=enabled --no-core | grep -v adminimal_theme | grep -v bootstrap_barrio | grep -v govcms_bartik | grep -v govcms_admin_theme | grep -v govcmsui | grep -v govcms8_uikit_starter | grep -v classy | grep -v stable | grep -v seven | paste -sd " " -`
