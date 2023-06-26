@@ -224,6 +224,66 @@ deprecation_report:
       echo "MARIADB_DATA_IMAGE=gitlab-registry-production.govcms.amazee.io/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/mariadb-drupal-data" >> .env
       echo "GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain" >> .env
       cat .env
+    - sed -i "/ENV WEBROOT=web/a RUN composer config --global github-oauth.github.com $GOVCMS_GITHUB_TOKEN" .docker/Dockerfile.cli
+
+    - "export DOCKER_HOST=tcp://localhost:2375"
+    - "docker network prune -f && docker network create amazeeio-network"
+    - "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry-production.govcms.amazee.io"
+    - "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN"
+    - sed -i -e '/amazeeio-ssh-agent/d' docker-compose.yml
+    - sed -i -e "/###/d" docker-compose.yml
+    - |
+      if [ -f "docker-compose.override.yml" ]; then
+        rm docker-compose.override.yml 2> /dev/null
+        echo -e "\033[1;33mNOTICE:\033[0m Removed docker-compose.override.yml to prevent issues with the pipeline."
+      fi
+    - "COMPOSE_HTTP_TIMEOUT=300 ahoy up"
+    - "docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m"
+    - "ahoy govcms-deploy"
+    - "docker-compose exec -T cli mkdir -p /app/web/sites/default/files/private/{backups,tmp}"
+
+    # Fix 2.4.0 scaffold bug.
+    - sed -i 's/exec -e/exec/g' .ahoy.yml
+    - "ahoy drush pmu shield -y" # Ensure that shield is not enabled.
+    # Bootstrap test.
+    - ahoy drush status
+    - |
+        if [[ $(ahoy run curl -s -o /dev/null -w "%{http_code}" nginx:8080) -ge 500 ]]; then
+            echo "ERR: Homepage is emitting 5xx response.";
+            exit 1;
+        fi
+
+    # -- Generate deprecation report
+    - |
+      # Install and run upgrade_status for deprecation report.
+      docker-compose exec -T cli composer require drupal/upgrade_status
+
+      # Resolve issues with themes and incorrect project names.
+      find themes -name '*.info.yml' -exec sed -i -e "/project:/d" {} \;
+      find themes -name '*.info.yml' -exec sh -c 'echo "" >> {}' \;
+      find themes -name '*.info.yml' -exec sh -c 'echo \nproject: `basename {} .info.yml` >> {}' \;
+
+      # Determine valid enabled themes and process.
+      export themestring=`ahoy drush pml --type=theme --field=name --status=enabled --no-core | grep -v adminimal_theme | grep -v bootstrap_barrio | grep -v govcms_bartik | grep -v govcms_admin_theme | grep -v govcmsui | grep -v govcms8_uikit_starter | grep -v classy | grep -v stable | grep -v seven | paste -sd " " -`
+
+      # Empty themestring; likely no custom theme in use.
+      if [ "$themestring" = "" ]; then
+        echo -e "\n ********************************************************\n\e[1;32m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
+        echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
+        echo -e " No custom theme was found, therefore no compatibility issues could be detected.\n"
+        echo -e " This does not guarantee the upgrade to Drupal 10 will be issue free, however it is a good indication\n"
+        echo -e " that there will be no (or low) effort required in your theme.\n"
+        echo -e "\n ********************************************************\n"
+        exit 1
+      fi
+
+      ahoy drush pm-enable upgrade_status -y
+      ahoy drush upgrade_status:checkstyle $themestring > /artefacts/upgrade_status.xml
+      # Strip whitespace in the file
+      sed -i '/^$/d' /artefacts/upgrade_status.xml
+      php /artefacts/junit_rewrite.php > govcms-deprecations.xml
+      exit 1
+
   after_script:
     - |
       if [ -s govcms-deprecations.xml ]; then
