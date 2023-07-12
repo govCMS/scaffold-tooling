@@ -109,6 +109,9 @@ vet:
     - ./vendor/bin/govcms-vet
   when: on_success
   allow_failure: false
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 lint:
   <<: *static_template
@@ -119,12 +122,18 @@ lint:
       set +exuo pipefail # Linting...
       ./vendor/bin/govcms-lint web/modules/custom
       ./vendor/bin/govcms-lint web/themes/custom
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 unit:
   <<: *static_template
   extends: .job-unit
   script:
     - ./vendor/bin/govcms-unit --testsuite=unit
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 # Pre-flight (like a smoke test for general deployability).
 preflight:
@@ -135,6 +144,9 @@ preflight:
     - docker-compose exec -T cli bash -c 'drush cim -y'
     - docker-compose exec -T cli bash -c 'drush st'
     - docker-compose exec -T cli bash -c 'drush updatedb:status'
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 # Integration.
 behat:
@@ -142,16 +154,25 @@ behat:
   extends: .job-behat
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-behat
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 functional:
   <<: *full_template
   extends: .job-functional
   script:
     - docker-compose exec -T test /app/vendor/bin/phpunit --testsuite=functional -c /app/tests/phpunit
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 audit:
   <<: *full_template
   extends: .job-audit
   script:
     - docker-compose exec -T test ./vendor/bin/govcms-audit
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
 
 # MRs only.
 audit_on_merge:
@@ -170,3 +191,99 @@ deploy:
   script:
     - echo "Deployment triggered, please see $GOVCMS_DASHBOARD/$CI_PROJECT_NAME/$CI_PROJECT_NAME-$(echo $CI_COMMIT_REF_NAME | sed -e 's/[^[:alnum:]-]/-/g')"
   stage: deploy
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT != "true"
+
+# Deprecation report.
+deprecation_report:
+  stage: integration
+  only:
+    variables:
+      - $RUN_DEPRECATION_REPORT == "true"
+  artifacts:
+    expire_in: "90 days"
+    paths:
+      - govcms-deprecations.xml
+    reports:
+      junit:
+        - govcms-deprecations.xml
+    when: always
+  variables:
+    # Used to specify the location of the govcms validation scripts -
+    # the ship-shape autoloader will use this location to determine
+    # where the verification checks are located.
+    APP_DIR: '/govcms'
+  script:
+    # -- Force MARIADB image when running deprecation report & smoke testing.
+    - |
+      touch .env
+      sed -i -e "/MARIADB_DATA_IMAGE/d" .env
+      sed -i -e "/GOVCMS_DEPLOY_WORKFLOW_CONFIG/d" .env
+      sed -i -e "/GOVCMS_IMAGE_VERSION/d" .env
+      echo "MARIADB_DATA_IMAGE=gitlab-registry-production.govcms.amazee.io/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/mariadb-drupal-data" >> .env
+      echo "GOVCMS_DEPLOY_WORKFLOW_CONFIG=retain" >> .env
+      cat .env
+    - sed -i "/ENV WEBROOT=web/a RUN composer config --global github-oauth.github.com $GOVCMS_GITHUB_TOKEN" .docker/Dockerfile.cli
+
+    - "export DOCKER_HOST=tcp://localhost:2375"
+    - "docker network prune -f && docker network create amazeeio-network"
+    - "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry-production.govcms.amazee.io"
+    - "docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN"
+    - sed -i -e '/amazeeio-ssh-agent/d' docker-compose.yml
+    - sed -i -e "/###/d" docker-compose.yml
+    - |
+      if [ -f "docker-compose.override.yml" ]; then
+        rm docker-compose.override.yml 2> /dev/null
+        echo -e "\033[1;33mNOTICE:\033[0m Removed docker-compose.override.yml to prevent issues with the pipeline."
+      fi
+    - "COMPOSE_HTTP_TIMEOUT=300 ahoy up"
+    - "docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m"
+    - docker-compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
+    - "ahoy govcms-deploy"
+    - "docker-compose exec -T cli mkdir -p /app/web/sites/default/files/private/{backups,tmp}"
+
+    # Fix 2.4.0 scaffold bug.
+    - sed -i 's/exec -e/exec/g' .ahoy.yml
+    - "ahoy drush pmu shield -y" # Ensure that shield is not enabled.
+    # Bootstrap test.
+    - ahoy drush status
+    - |
+        if [[ $(ahoy run curl -s -o /dev/null -w "%{http_code}" nginx:8080) -ge 500 ]]; then
+            echo "ERR: Homepage is emitting 5xx response.";
+            exit 1;
+        fi
+
+    # -- Generate deprecation report
+    - |
+      # Install and run upgrade_status for deprecation report.
+      docker-compose exec -T cli composer require drupal/upgrade_status
+      ahoy drush pm-enable upgrade_status -y
+      ahoy drush upgrade_status:checkstyle --ignore-uninstalled --ignore-contrib --all > /artefacts/upgrade_status.xml
+      # Strip whitespace in the file
+      sed -i '/^$/d' /artefacts/upgrade_status.xml
+      php /artefacts/junit_rewrite.php > govcms-deprecations.xml
+      exit 1
+
+  after_script:
+    - |
+      if [ -s govcms-deprecations.xml ]; then
+
+        if cat govcms-deprecations.xml | grep -q "d10_theme_pass"; then
+          echo -e "\n ********************************************************\n\e[1;32m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
+          echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
+          echo -e " At this point custom modules and themes in your codebase are reportedly \e[1;32mcompatible with Drupal 10.\e[0m\n"
+          echo -e " This does not guarantee the upgrade to Drupal 10 will be issue free, however it is a good indication\n"
+          echo -e " that there will be no (or low) effort required in your custom code.\n"
+          echo -e "\n ********************************************************\n"
+        else
+          echo -e "\n ********************************************************\n\e[31m ATTENTION\e[0m: This is a GovCMS initiated job in preparation for the D10 distribution coming in 2023.\n"
+          echo -e " We are conducting D10 compatibility testing, which will inform our approach to the upgrade path from D9 to D10.\n"
+          echo -e " Until your project is fully D10 compatible, you will continue to see some pipeline failures initiated by the GovCMS Service Account.\n"
+          echo -e " This internal testing has no impact on your current build process. No deployment has been triggered.\n"
+          echo -e " To ensure a smooth upgrade, you can get a head start by reviewing and resolving the issues highlighted:\n"
+          echo -e " https://projects.govcms.gov.au/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/-/pipelines/$CI_PIPELINE_ID/test_report"
+          echo -e "\n ********************************************************\n"
+        fi
+      fi
+      exit 1
