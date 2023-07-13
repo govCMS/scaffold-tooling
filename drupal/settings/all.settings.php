@@ -177,3 +177,6 @@ else {
 if (getenv('LAGOON')) {
   $settings['trusted_host_patterns'][] = '.*';
 }
+
+// Swiftmailer configuration.
+$config['swiftmailer.transport']['sendmail_mode'] = 't';
