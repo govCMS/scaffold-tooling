@@ -32,6 +32,7 @@ echo "There are ${config_count} config yaml files, and ${dev_config_count} dev y
 # Ensure tmp folder always exists.
 mkdir -p "$APP/web/sites/default/files/private/tmp"
 
+drush cache:rebuild
 drush core:status
 
 # Database options to configure the remote to use the read replica when
