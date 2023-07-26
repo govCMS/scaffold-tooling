@@ -11,7 +11,6 @@
     "drupal/purge": "3.x-dev",
     "drupal/fast_404": "2.0-alpha7",
     "drupal/govcms_akamai_purge": "^2.0",
-    "drupal/config_ignore": "^2.4",
     "phpstan/extension-installer": "^1.1.0",
     "spaze/phpstan-disallowed-calls": "^2.3.0",
     "cweagans/composer-patches": "^1.7"
