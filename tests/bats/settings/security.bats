@@ -77,7 +77,7 @@ security_settings() {
   )
 
   [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "clamav" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "av" ]
   [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
 }
 
@@ -103,7 +103,7 @@ security_settings() {
   )
 
   [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "clamav" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "av" ]
   [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3000" ]
 }
 
