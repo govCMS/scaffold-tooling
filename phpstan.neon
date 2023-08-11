@@ -98,3 +98,6 @@ parameters:
       message: 'please change the code'
     - function: 'SQLite3Result::*()'
       message: 'please change the code'
+    - function: 'Drupal::httpClient()'
+      message: 'please change the code'
+
