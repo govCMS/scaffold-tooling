@@ -90,14 +90,17 @@ parameters:
     - function: 'var_dump()'
       message: 'please change the code'
   disallowedMethodCalls:
-    - function: 'mysqli::*()'
+    - method: 'mysqli::*()'
       message: 'please change the code'
-    - function: 'SQLite3::*()'
+    - method: 'SQLite3::*()'
       message: 'please change the code'
-    - function: 'SQLite3Stmt::*()'
+    - method: 'SQLite3Stmt::*()'
       message: 'please change the code'
-    - function: 'SQLite3Result::*()'
+    - method: 'SQLite3Result::*()'
       message: 'please change the code'
-    - function: 'Drupal::httpClient()'
+  disallowedStaticCalls:
+    - method: 'Drupal::httpClient()'
       message: 'please change the code'
-
+  disallowedNamespaces:
+    - class: 'GuzzleHttp\Client'
+      message: 'please change the code'
