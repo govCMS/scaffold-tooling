@@ -5,6 +5,11 @@
  * DEV_MODE specific settings. Included from settings.php.
  */
 
+// Cookie handling to allow HTTP requests as modern browsers may try to
+// upgrade the request and require the cookie to be "Secure" if samesite
+// is "None" (default).
+ini_set('session.cookie_samesite', 'Lax');
+
 // See comment in all.settings.php.
 // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
 $govcms_includes = $govcms_includes ?? __DIR__;
