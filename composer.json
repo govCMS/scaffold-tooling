@@ -4,7 +4,6 @@
   "license": "GPL-2.0-or-later",
   "require": {
     "drush/drush": "~9 || ~10 || ~11",
-    "drupal/lagoon_logs": "^2.0",
     "drupal/redis": "^1.6",
     "drupal/stage_file_proxy": "^2.0",
     "drupal/clamav": "^2.0",
