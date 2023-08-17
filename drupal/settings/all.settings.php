@@ -46,7 +46,7 @@ $clam_mode = getenv('CLAMAV_MODE') ?: 1;
 
 if ($clam_mode == 0 || strtolower($clam_mode) == 'daemon') {
   $config['clamav.settings']['scan_mode'] = 0;
-  $config['clamav.settings']['mode_daemon_tcpip']['hostname'] = getenv('CLAMAV_HOST') ?: 'clamav';
+  $config['clamav.settings']['mode_daemon_tcpip']['hostname'] = getenv('CLAMAV_HOST') ?: 'av';
   $config['clamav.settings']['mode_daemon_tcpip']['port'] = getenv('CLAMAV_PORT') ?: 3310;
 }
 
@@ -133,6 +133,16 @@ if (defined('STDIN') || in_array(PHP_SAPI, ['cli', 'cli-server'])) {
     $settings['http_client_config']['timeout'] = $http_client_timeout;
   }
 }
+
+// Allow projects to increase PHP memory limit for CLI requests.
+if (in_array(PHP_SAPI, ['cli', 'cli-server'])) {
+  if ($limit = getenv('GOVCMS_CLI_MEMORY_LIMIT')) {
+    ini_set('memory_limit', $limit);
+  }
+}
+
+// Prevents legacy Symfony ApcClassLoader from being used instead of Composer's.
+$settings['class_loader_auto_detect'] = FALSE;
 
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['path'] = '/';
 $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['core'] = 'drupal';

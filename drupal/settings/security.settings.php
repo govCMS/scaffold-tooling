@@ -97,3 +97,20 @@ $config['module_permissions.settings']['permission_blacklist'] = [
   'administer search_api',
   'assign all roles',
 ];
+
+/**
+* Event log track settings.
+*/
+// Disable Logging to DB
+$config['event_log_track.adminsettings']['disable_db_logs'] = 1;
+// Lock down event log output type.
+$config['event_log_track.settings']['output_type'] = 'watchdog';
+
+/**
+ * Seckit configuration.
+ */
+// Enforce the GoVCMS report URI route.
+$report_uri = getenv('GOVCMS_CSP_URI');
+if (!empty($report_uri)) {
+  $config['seckit.settings']['seckit_xss']['csp']['report-uri'] = $report_uri;
+}
