@@ -5,3 +5,13 @@ parameters:
     gc_divisor: 100
     gc_maxlifetime: 3600
     cookie_lifetime: 0
+    # Required since 10.1.x
+    # Re-add the original Drupal core value, as the entire of
+    # `session.storage.options` is overriden not merged.
+    # Needed as Drupal will default to SameSite=None for session cookie if no
+    # services.yml file sets it, this makes login only work on https so local
+    # environments on plain http will be broken.
+    # @see https://git.drupalcode.org/project/drupal/-/blob/10.1.1/core/core.services.yml#L12
+    # @see https://www.drupal.org/node/3275352
+    # @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value
+    cookie_samesite: Lax
