@@ -65,8 +65,10 @@ security_settings() {
     settings | jq -rc '.config | "\(.["clamav.settings"])"'
   )
 
-  # Settings are not enforced if CLAMAV_MODE is not set.
-  [ "$CLAMAV" == 'null' ]
+  # Production is default, values should be set for production.
+  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "av" ]
+  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
 }
 
 @test "Clam AV settings" {
