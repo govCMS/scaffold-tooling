@@ -13,7 +13,8 @@
     "drupal/govcms_akamai_purge": "^2.0",
     "phpstan/extension-installer": "^1.1.0",
     "spaze/phpstan-disallowed-calls": "^2.3.0",
-    "cweagans/composer-patches": "^1.7"
+    "cweagans/composer-patches": "^1.7",
+    "drupal/httpav": "^1.0.0"
   },
   "require-dev": {
     "phar-io/manifest": "~1",
