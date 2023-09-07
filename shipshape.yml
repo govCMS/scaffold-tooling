@@ -240,7 +240,6 @@ checks:
       ignore-missing: true
   phpstan:
     - name: '[FILE] Banned PHP function list'
-      severity: high
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
       paths:
         - web/themes/custom
