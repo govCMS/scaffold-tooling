@@ -113,6 +113,33 @@ vet:
     variables:
       - $RUN_DEPRECATION_REPORT != "true"
 
+# # NOTICE: Include standard security scanning and compliance checks
+# # provided by shipshape. This check further extends the capabilities
+# # of the VET stage.
+shipshape:
+  <<: *static_template
+  stage: static
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - tests/shipshape-results.xml
+    reports:
+      junit:
+        - tests/shipshape-results.xml
+    when: always
+  script:
+    - shipshape -f /govcms/shipshape.yml --exclude-db --error-code -o junit > tests/shipshape-results.xml
+  when: on_success
+  allow_failure: true
+  after_script:
+    - |
+      if [ -s tests/shipshape-results.xml ]; then
+        echo -e "\n           ********************************************************\n\e[31mATTENTION\e[0m: GovCMS Shipshape\n"
+        echo -e "           A GovCMS compliance report has been generated, please review and resolve any errors.\n"
+        echo -e "           https://projects.govcms.gov.au/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/-/pipelines/$CI_PIPELINE_ID/test_report"
+        echo -e "\n           ********************************************************\n"
+      fi
+
 lint:
   <<: *static_template
   extends: .job-lint
