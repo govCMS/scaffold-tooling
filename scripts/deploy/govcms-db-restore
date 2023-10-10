@@ -40,9 +40,8 @@ elif [[ $BACKUP_FILE == *".tar.gz" ]]; then
   drush sql-drop -y
   mkdir /tmp/restore
   tar xfz $BACKUP_FILE --directory /tmp/restore
-  BACKUP_FILE=$(ls /tmp/restore/*.sql | head -1)
-  mysql -u $MARIADB_USERNAME -p$MARIADB_PASSWORD -h $MARIADB_HOST $MARIADB_DATABASE < $BACKUP_FILE
-  # drush sqlc < $BACKUP_FILE -vv
+  FILE=$(ls /tmp/restore/*.sql | head -1)
+  drush sqlc < $FILE -vv
   rm -rf /tmp/restore
 else
   echo "[skip]: Unsupported file type."
