@@ -17,6 +17,9 @@ GOVCMS_DRUSH_RECIPIENTS=${GOVCMS_DRUSH_RECIPIENTS:-}
 GOVCMS_DRUSH_NOTIFICATION_ENABLE=${GOVCMS_DRUSH_NOTIFICATION_ENABLE:-false}
 LAGOON_PROJECT=${LAGOON_PROJECT:-'base project'}
 
+# Slack
+SLACK_URL='https://hooks.slack.com/services/'
+
 TMP=$(mktemp)
 COMMAND="drush $*"
 
@@ -32,6 +35,11 @@ send_errors() {
     TO="$TO,$GOVCMS_DRUSH_RECIPIENTS"
   fi
 
+  # Send Slack notification if token is set.
+  if [ -n "${SLACK_TOKEN}" ];then
+    send_slack "$ERROR"
+  fi
+
   sendmail $TO <<EOF
 Subject: $SUBJECT
 From: $FROM
@@ -43,6 +51,44 @@ $ERROR
 
 Please contact your development partner or support for assistance.
 EOF
+}
+
+send_slack() {
+  # Escape quotes.
+  ERROR=$(echo $1 | sed 's/"/*/g')
+  # Post payload.
+  curl \
+  -H "Content-type: application/json" \
+  -X POST $SLACK_URL$SLACK_TOKEN \
+  -d \
+    '
+    {
+      "attachments":[{
+        "pretext": "*GovCMS Drush command failed to complete successfully.*",
+        "fields":[
+          {
+            "title":"Project",
+            "value":"'"$LAGOON_PROJECT"'",
+            "short":"true"
+          },
+          {
+            "title":"Branch",
+            "value":"'"$LAGOON_GIT_BRANCH"'",
+            "short":"true"
+          },
+          {
+            "title":"Command",
+            "value":"'"$COMMAND"'",
+          },
+          {
+            "title":"Error",
+            "value":"'"$ERROR"'",
+          }
+        ],
+        "color":"danger"
+      }]
+    }
+    '
 }
 
 if $COMMAND 2> >(tee $TMP); then
