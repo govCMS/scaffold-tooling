@@ -55,7 +55,8 @@ EOF
 
 send_slack() {
   # Escape quotes.
-  ERROR=$(echo $1 | sed 's/"/*/g')
+  ERROR=$(echo $1 | sed 's/"/`/g')
+  TIMESTAMP=$(date +"%T")
   # Post payload.
   curl \
   -H "Content-type: application/json" \
@@ -85,7 +86,8 @@ send_slack() {
             "value":"'"$ERROR"'",
           }
         ],
-        "color":"danger"
+        "color":"danger",
+        "ts":"'"$TIMESTAMP"'"
       }]
     }
     '
