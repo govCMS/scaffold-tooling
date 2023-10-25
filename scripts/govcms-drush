@@ -55,7 +55,8 @@ EOF
 
 send_slack() {
   # Escape quotes.
-  ERROR=$(echo $1 | sed 's/"/`/g')
+  local ERROR
+  ERROR=$(jq -n --arg msg "$1" '$msg')
   TIMESTAMP=$(date +"%T")
   # Post payload.
   curl \
@@ -83,7 +84,7 @@ send_slack() {
           },
           {
             "title":"Error",
-            "value":"'"$ERROR"'",
+            "value":"```'"$ERROR"'```",
           }
         ],
         "color":"danger",
