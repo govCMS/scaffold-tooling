@@ -80,7 +80,7 @@ send_slack() {
           },
           {
             "title":"Command",
-            "value":"'"$COMMAND"'",
+            "value":"`'"$COMMAND"'`",
           },
           {
             "title":"Error",
