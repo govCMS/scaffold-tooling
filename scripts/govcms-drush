@@ -54,10 +54,10 @@ EOF
 }
 
 send_slack() {
-  # Escape quotes.
+  # Escape and truncate for JSON.
   local ERROR
-  ERROR=$(jq -n --arg msg "$1" '$msg')
-  TIMESTAMP=$(date +"%T")
+  ERROR="$(jq -n --arg msg "\`\`\`$(echo $1 | cut -f1,2 -d'[')\`\`\`" '$msg')"
+  TIMESTAMP=$(date +"%s")
   # Post payload.
   curl \
   -H "Content-type: application/json" \
@@ -84,7 +84,7 @@ send_slack() {
           },
           {
             "title":"Error",
-            "value":"```'"$ERROR"'```",
+            "value":'"$ERROR"',
           }
         ],
         "color":"danger",
