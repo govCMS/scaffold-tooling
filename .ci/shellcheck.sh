@@ -17,7 +17,7 @@ done < <(
        ! -name "govcms-yaml_lint" -and ! -name "govcms-module_verify" -and \
        ! -name "govcms-prepare-xml" -and ! -name "*.yml" -and \
        ! -name "*.php" -and ! -name "*.json" -and ! -name "*.theme" -and \
-       ! -name "*.inc" -and ! -name "*.neon" \) \
+       ! -name "*.inc" -and ! -name "*.neon" -and ! -name "*.sql" -and ! -name "*.gz"  \) \
     -print0
   )
 

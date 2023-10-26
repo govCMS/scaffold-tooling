@@ -15,9 +15,11 @@ FAILURES=""
 function join_char { local IFS="$1" shift; echo "$*"; }
 
 function illegal_file {
+  # shellcheck disable=SC2317
   if [[ "$1" =~ $GOVCMS_ILLEGAL_FILE_PATTERN(.+)?\.php ]]; then
     return 0
   fi
+  # shellcheck disable=SC2317
   return 1
 }
 

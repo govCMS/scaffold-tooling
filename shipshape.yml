@@ -219,6 +219,8 @@ checks:
   drupal-admin-user:
     - name: '[DATABASE] Active user roles admin check'
       severity: high
+  drupal-user-forbidden:
+    - name: '[DATABASE] Active User 1 check'
   yamllint:
     - name: '[FILE] Yaml lint platform files'
       severity: high
