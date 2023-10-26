@@ -29,19 +29,20 @@ echo "[info]: Importing backup file..."
 
 if [[ $BACKUP_FILE == *".sql" ]]; then
   drush sql-drop -y
-  drush sqlc < $BACKUP_FILE -vv
+  drush sqlc < "$BACKUP_FILE" -vv
 elif [[ $BACKUP_FILE == *".sql.gz" ]]; then
   drush sql-drop -y
   mkdir /tmp/restore
-  gunzip -c $BACKUP_FILE > /tmp/restore/db-restore.sql
+  gunzip -c "$BACKUP_FILE" > /tmp/restore/db-restore.sql
   drush sqlc < /tmp/restore/db-restore.sql -vv
   rm -rf /tmp/restore
 elif [[ $BACKUP_FILE == *".tar.gz" ]]; then
   drush sql-drop -y
   mkdir /tmp/restore
-  tar xfz $BACKUP_FILE --directory /tmp/restore
+  tar xfz "$BACKUP_FILE" --directory /tmp/restore
+  # shellcheck disable=SC2012
   FILE=$(ls /tmp/restore/*.sql | head -1)
-  drush sqlc < $FILE -vv
+  drush sqlc < "$FILE" -vv
   rm -rf /tmp/restore
 else
   echo "[skip]: Unsupported file type."
