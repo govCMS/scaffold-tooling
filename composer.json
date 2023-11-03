@@ -8,7 +8,7 @@
     "drupal/redis": "^1.6",
     "drupal/stage_file_proxy": "^2.0",
     "drupal/clamav": "2.0.2-rc1",
-    "drupal/purge": "3.x-dev",
+    "drupal/purge": "^3.5",
     "drupal/fast_404": "2.0-alpha7",
     "drupal/govcms_akamai_purge": "^2.0",
     "phpstan/extension-installer": "^1.1.0",
