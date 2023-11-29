@@ -44,3 +44,22 @@ checks:
       pattern: ".*.yml"
       exclude-pattern: node_modules
       ignore-missing: true
+  json:
+    - name: Validate composer.json
+      file: composer.json
+      ignore-missing: true
+      key-values:
+        - key: '$.repositories..no-api'
+          optional: true
+          is-list: true
+          disallowed-values:
+            - true
+            - "true"
+            - 1
+            - "1"
+          allowed-values:
+            - false
+            - "false"
+            - 0
+            - "0"
+            -
