@@ -35,11 +35,6 @@ send_errors() {
     TO="$TO,$GOVCMS_DRUSH_RECIPIENTS"
   fi
 
-  # Send Slack notification if token is set.
-  if [ -n "${SLACK_TOKEN}" ];then
-    send_slack "$ERROR"
-  fi
-
   sendmail $TO <<EOF
 Subject: $SUBJECT
 From: $FROM
@@ -51,6 +46,11 @@ $ERROR
 
 Please contact your development partner or support for assistance.
 EOF
+
+  # Send Slack notification if token is set.
+  if [ -n "${SLACK_TOKEN}" ]; then
+    send_slack "$ERROR"
+  fi
 }
 
 send_slack() {
