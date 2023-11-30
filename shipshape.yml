@@ -216,6 +216,12 @@ checks:
         - import configuration
         - synchronize configuration
         - use PHP for google analytics tracking visibility
+  drupal-role-permissions:
+    - name: '[DATABASE] Authenticated role check'
+      severity: high
+      rid: 'authenticated'
+      required-permissions:
+        - 'setup own tfa'
   drupal-admin-user:
     - name: '[DATABASE] Active user roles admin check'
       severity: high
