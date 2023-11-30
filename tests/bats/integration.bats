@@ -34,7 +34,7 @@ load _helpers_govcms
   rm -rf .git
 
   # Init the scaffold for Drupal 9 PaaS.
-  ahoy init test paas 9
+  ahoy init test paas 10
 
   # Prepare composer to install requirements.
   composer config -g github-oauth.github.com "$GOVCMS_GITHUB_TOKEN"
