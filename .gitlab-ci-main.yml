@@ -22,12 +22,12 @@ variables:
 .static_template: &static_template
   before_script:
     # Add support to add a bot user SSH key to validate some composer operations.
-    - |
-      if [ -n $BOT_USER ]; then
-        echo ${BOT_USER} | base64 -d > /home/.ssh/id_rsa && chmod 600 /home/.ssh/id_rsa
-        eval $(ssh-agent -s)
-        ssh-add /home/.ssh/id_rsa
-      fi
+    # - |
+    #  if [ -n $BOT_USER ]; then
+    #    echo ${BOT_USER} | base64 -d > /home/.ssh/id_rsa && chmod 600 /home/.ssh/id_rsa
+    #    eval $(ssh-agent -s)
+    #    ssh-add /home/.ssh/id_rsa
+    #  fi
     - composer install
   stage: static
 
