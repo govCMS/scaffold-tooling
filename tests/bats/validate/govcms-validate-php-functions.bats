@@ -18,10 +18,23 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
   assert_output_contains "4      Calling shell_exec() is forbidden, please change the code"
   assert_output_contains "6      Calling print_r() is forbidden, please change the code"
+
+  assert_output_contains "[ERROR] Found 2 errors"
+}
+
+@test "Check banned PHP classes and methods: theme file" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
+  export GOVCMS_RESULTS_STDOUT=1
+  export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/banned_functions.theme
+  export PHPSTAN_CONFIG=tests/bats/validate/fixtures/banned_functions/phpstan-extra.neon
+
+  run scripts/validate/govcms-validate-php-functions >&3
+
+  assert_output_contains "GovCMS Validate :: Banned PHP function list"
   assert_output_contains "8      Calling Drupal::httpClient() is forbidden, please change the code"
   assert_output_contains "10     Class GuzzleHttp\Client is forbidden, please change the code"
 
-  assert_output_contains "[ERROR] Found 4 errors"
+  assert_output_contains "[ERROR] Found 2 errors"
 }
 
 @test "Check banned PHP functions: inc file" {
@@ -74,10 +87,9 @@ load ../_helpers_govcms
   run scripts/validate/govcms-validate-php-functions >&3
 
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
-  assert_output_contains "3      Namespace GuzzleHttp\Client is forbidden, please change the code"
   assert_output_contains "6      Calling curl_init() is forbidden, please change the code"
   assert_output_contains "7      Calling curl_exec() is forbidden, please change the code"
-  assert_output_contains "10      Calling curl_multi_exec() is forbidden, please change the code"
+  assert_output_contains "10     Calling curl_multi_exec() is forbidden, please change the code"
 
   assert_output_contains "14     Calling ftp_connect() is forbidden, please change the code"
   assert_output_contains "16     Calling ftp_exec() is forbidden, please change the code"
@@ -88,7 +100,21 @@ load ../_helpers_govcms
   assert_output_contains "26     Calling ftp_raw() is forbidden, please change the code"
   assert_output_contains "28     Calling ftp_rawlist() is forbidden, please change the code"
 
-  assert_output_contains "[ERROR] Found 12 errors"
+  assert_output_contains "[ERROR] Found 11 errors"
+}
+
+@test "Check banned PHP functions: net functions namespace" {
+  export GOVCMS_SCAFFOLD_TOOLING_DIR=tests/bats/validate/fixtures/banned_functions
+  export GOVCMS_RESULTS_STDOUT=1
+  export GOVCMS_THEME_DIR=tests/bats/validate/fixtures/banned_functions/net_functions.php
+  export PHPSTAN_CONFIG=tests/bats/validate/fixtures/banned_functions/phpstan-extra.neon
+
+  run scripts/validate/govcms-validate-php-functions >&3
+
+  assert_output_contains "GovCMS Validate :: Banned PHP function list"
+  assert_output_contains "3      Namespace GuzzleHttp\Client is forbidden, please change the code"
+
+  assert_output_contains "[ERROR] Found 1 error"
 }
 
 @test "Check banned PHP functions: posix functions" {

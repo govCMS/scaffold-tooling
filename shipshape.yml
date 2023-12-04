@@ -252,3 +252,9 @@ checks:
       paths:
         - web/themes/custom
         - themes
+    - name: '[FILE] Banned PHP methods and classes'
+      severity: low
+      configuration: vendor/govcms/scaffold-tooling/phpstan-extra.neon
+      paths:
+        - web/themes/custom
+        - themes

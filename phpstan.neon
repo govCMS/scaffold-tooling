@@ -1,13 +1,8 @@
+includes:
+    - vendor/spaze/phpstan-disallowed-calls/extension.neon
 parameters:
   # Disable all phpstan rules.
   customRulesetUsed: true
-  excludePaths:
-    - /app/vendor/*
-    - */assets/src/lib/campaignmonitor/samples/*
-    - */tests/*
-    - */bootstrap/scripts/*
-  scanDirectories:
-    - /app
   fileExtensions:
     - php
     - theme
@@ -97,10 +92,4 @@ parameters:
     - method: 'SQLite3Stmt::*()'
       message: 'please change the code'
     - method: 'SQLite3Result::*()'
-      message: 'please change the code'
-  disallowedStaticCalls:
-    - method: 'Drupal::httpClient()'
-      message: 'please change the code'
-  disallowedNamespaces:
-    - class: 'GuzzleHttp\Client'
       message: 'please change the code'
