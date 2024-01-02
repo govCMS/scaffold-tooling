@@ -187,6 +187,7 @@ checks:
         - tfa
       disallowed:
         - dblog
+        - devel
         - module_permissions_ui
         - statistics
         - update
@@ -200,6 +201,7 @@ checks:
         - tfa
       disallowed:
         - dblog
+        - devel
         - module_permissions_ui
         - statistics
         - update
