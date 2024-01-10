@@ -54,7 +54,7 @@ done
 
 # Check the active database for 'is_admin'.
 for role in ${ROLES//,/ }; do
-  if [[ $(drush config:get "user.role.$role" is_admin --pipe) -eq 1 ]]; then
+  if [[ $(drush config:get "user.role.$role" is_admin --format=string) -eq 1 ]]; then
     echo "[FAIL]; '$role' has is_admin";
     FAILURES="$FAILURES,$role"
   fi
