@@ -35,6 +35,8 @@ PLATFORM_MODULES=(
   "lagoon_logs"
   "environment_indicator"
   "govcms_security"
+  "prometheus_exporter"
+  "prometheus_exporter_update"
 )
 
 MODULE_LIST=""

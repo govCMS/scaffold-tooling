@@ -177,3 +177,6 @@ else {
 if (getenv('LAGOON')) {
   $settings['trusted_host_patterns'][] = '.*';
 }
+
+// Enable the update_status collector for Prometheus Exporter.
+$config['prometheus_exporter.settings']['collectors']['update_status']['enabled'] = TRUE;
