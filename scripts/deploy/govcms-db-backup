@@ -14,6 +14,9 @@ LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
 GOVCMS_SKIP_DATABASE_BACKUP=${GOVCMS_SKIP_DATABASE_BACKUP:-}
 
+# Drush 12 support.
+DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+
 echo "GovCMS Deploy :: Backup database"
 
 # Backup processes only happen on production.
@@ -28,14 +31,14 @@ if [ -n "${GOVCMS_SKIP_DATABASE_BACKUP}" ]; then
   exit 0
 fi
 
-STATUS=$(drush status --fields=bootstrap --format=json)
+STATUS=$("$DRUSH" status --fields=bootstrap --format=json)
 if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
   echo "[fail]: Drupal is not installed or operational."
   exit 0 # Perhaps exit > 0 to fail the build?
 fi
 
 mkdir -p "$GOVCMS_BACKUP_DIR"
-drush sql:dump --gzip --extra-dump=--no-tablespaces --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
+"$DRUSH" sql:dump --gzip --extra-dump=--no-tablespaces --result-file="$GOVCMS_BACKUP_DIR/pre-deploy-dump.sql"
 
 echo "[info]: Backup saved to $GOVCMS_BACKUP_DIR/pre-deploy-dump.sql."
 

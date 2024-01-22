@@ -12,6 +12,9 @@ set -Eeuo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_ENABLE_MODULES=${GOVCMS_DEPLOY_ENABLE_MODULES:-true}
 
+# Drush 12 support.
+DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+
 echo "GovCMS Deploy :: Enable modules"
 
 if [ "$GOVCMS_DEPLOY_ENABLE_MODULES" != "true" ]; then
@@ -19,13 +22,13 @@ if [ "$GOVCMS_DEPLOY_ENABLE_MODULES" != "true" ]; then
   exit 0
 fi
 
-STATUS=$(drush status --fields=bootstrap --format=json)
+STATUS=$("$DRUSH" status --fields=bootstrap --format=json)
 if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
   echo '[skip]: Site is not available.'
   exit 0
 fi
 
-MODULES=$(drush pm:list --status=enabled)
+MODULES=$("$DRUSH" pm:list --status=enabled)
 NON_PROD_MODULES=("stage_file_proxy")
 PLATFORM_MODULES=(
   "redis"
@@ -60,7 +63,7 @@ if [[ -n "$MODULE_LIST" ]]; then
   # SC2086 expects quoted variables, we want to pass each in as a
   # separate parameter so we disable this check.
   # shellcheck disable=SC2086
-  drush pm:enable $MODULE_LIST -y
+  "$DRUSH" pm:enable $MODULE_LIST -y
   echo "[info]: Enabled $MODULE_LIST"
 fi
 

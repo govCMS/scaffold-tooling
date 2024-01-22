@@ -11,6 +11,9 @@ GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-permissions}
 GOVCMS_REMEDIATE=${GOVCMS_REMEDIATE:-""}
 
+# Drush 12 support.
+DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+
 GOVCMS_REQUIRED_MODULES=(
   clamav
   govcms_security
@@ -30,14 +33,14 @@ TOTAL=0
 
 echo "GovCMS Validate :: Active modules validation"
 
-MODULE_LIST=$(drush pm:list --status=enabled --format=json)
+MODULE_LIST=$("$DRUSH" pm:list --status=enabled --format=json)
 
 # Check if required modules are enabled
 for module in "${GOVCMS_REQUIRED_MODULES[@]}"; do
   (( TOTAL=TOTAL+1 ))
   if [[ 'null' == $(jq -r ".$module" <<< "${MODULE_LIST}") ]]; then
     if [ -n "${GOVCMS_REMEDIATE}" ]; then
-      drush pm:enable "$module" -y
+      "$DRUSH" pm:enable "$module" -y
     else
       echo "[fail]: '$module' is not enabled";
       FAILURES="$FAILURES,disabled:$module"
@@ -50,7 +53,7 @@ for module in "${GOVCMS_DISALLOWED_MODULES[@]}"; do
   (( TOTAL=TOTAL+1 ))
   if [[ 'null' != $(jq -r ".$module" <<< "${MODULE_LIST}") ]]; then
     if [ -n "${GOVCMS_REMEDIATE}" ]; then
-      drush pm:disable "$module" -y
+      "$DRUSH" pm:disable "$module" -y
     else
       echo "[fail]: '$module' is enabled";
       FAILURES="$FAILURES,enabled:$module"

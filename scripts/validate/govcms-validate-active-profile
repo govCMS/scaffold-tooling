@@ -9,11 +9,14 @@ set -euo pipefail
 GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-profile}
 
+# Drush 12 support.
+DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+
 FAILURES=""
 
 echo "GovCMS Validate :: Validate profile on active site"
 
-PROFILE=$(drush config:get core.extension --format=json | jq -r '.profile')
+PROFILE=$("$DRUSH" config:get core.extension --format=json | jq -r '.profile')
 
 if [[ "$PROFILE" != 'govcms' ]]; then
   echo "[fail]: Detected invalid profile [$PROFILE]"

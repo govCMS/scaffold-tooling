@@ -8,9 +8,12 @@ set -euo pipefail
 # Accepts 1 argument for backup file (.sql or .sql.gz) path.
 #
 
+# Drush 12 support.
+DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+
 echo "GovCMS Deploy :: Restore Database"
 
-STATUS=$(drush status --fields=bootstrap --format=json)
+STATUS=$("$DRUSH" status --fields=bootstrap --format=json)
 if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
   echo '[skip]: Site is not available.'
   exit 0
@@ -28,28 +31,28 @@ BACKUP_FILE=$1
 echo "[info]: Importing backup file..."
 
 if [[ $BACKUP_FILE == *".sql" ]]; then
-  drush sql-drop -y
-  drush sqlc < "$BACKUP_FILE" -vv
+  "$DRUSH" sql-drop -y
+  "$DRUSH" sqlc < "$BACKUP_FILE" -vv
 elif [[ $BACKUP_FILE == *".sql.gz" ]]; then
-  drush sql-drop -y
+  "$DRUSH" sql-drop -y
   mkdir /tmp/restore
   gunzip -c "$BACKUP_FILE" > /tmp/restore/db-restore.sql
-  drush sqlc < /tmp/restore/db-restore.sql -vv
+  "$DRUSH" sqlc < /tmp/restore/db-restore.sql -vv
   rm -rf /tmp/restore
 elif [[ $BACKUP_FILE == *".tar.gz" ]]; then
-  drush sql-drop -y
+  "$DRUSH" sql-drop -y
   mkdir /tmp/restore
   tar xfz "$BACKUP_FILE" --directory /tmp/restore
   # shellcheck disable=SC2012
   FILE=$(ls /tmp/restore/*.sql | head -1)
-  drush sqlc < "$FILE" -vv
+  "$DRUSH" sqlc < "$FILE" -vv
   rm -rf /tmp/restore
 else
   echo "[skip]: Unsupported file type."
   exit 0;
 fi
 
-drush -y cache:rebuild
-drush -y updatedb
+"$DRUSH" -y cache:rebuild
+"$DRUSH" -y updatedb
 
 echo "[success]: Completed successfully."
