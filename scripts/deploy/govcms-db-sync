@@ -24,6 +24,12 @@ LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 # thereby avoiding the drush timeout.
 DB_LOAD_NO_DRUSH=${DB_LOAD_NO_DRUSH:-FALSE}
 
+# Drush 12 support.
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
+
 echo "GovCMS Deploy :: Database synchronisation"
 
 if [[ "$GOVCMS_SKIP_DB_SYNC" != FALSE ]]; then
@@ -45,9 +51,9 @@ echo "[info]: Check that the site can be bootstrapped."
 
 if [[ "$GOVCMS_CACHE_REBUILD_BEFORE_DB_SYNC" = TRUE ]]; then
   echo "[info]: Rebuilding cache before database sync."
-  drush cr
+  "$DRUSH" cr
 fi
-STATUS=$(drush status --fields=bootstrap --format=json)
+STATUS=$("$DRUSH" status --fields=bootstrap --format=json)
 
 if [[ "$GOVCMS_TEST_CANARY" = TRUE ]]; then
   echo "[info]: Canary site... syncing."
@@ -68,13 +74,13 @@ fi
 echo "[info]: Preparing database sync"
 
 # shellcheck disable=SC2086
-drush --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump \
+"$DRUSH" --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump \
   --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql \
   --skip-tables-key=common -y
-drush rsync --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS":/tmp/sync.sql.gz /tmp/ -y
+"$DRUSH" rsync --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS":/tmp/sync.sql.gz /tmp/ -y
 
 if [[ "$DB_LOAD_NO_DRUSH" = TRUE ]]; then
-  DB_CONF=$(drush sql:conf --show-passwords --format=json 2>&1)
+  DB_CONF=$("$DRUSH" sql:conf --show-passwords --format=json 2>&1)
   DB_NAME=$(echo "$DB_CONF" | jq -r '.database')
   DB_HOST=$(echo "$DB_CONF" | jq -r '.host')
   DB_PORT=$(echo "$DB_CONF" | jq -r '.port')

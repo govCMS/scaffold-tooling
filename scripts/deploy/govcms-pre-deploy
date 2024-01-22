@@ -11,6 +11,12 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_PRE_COMMANDS=${GOVCMS_DEPLOY_PRE_COMMANDS:-false}
 
+# Drush 12 support.
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
+
 echo "GovCMS Deploy :: Pre-deploy commands"
 
 if [ ! $# -eq 0 ]; then
@@ -31,7 +37,7 @@ for COMMAND in $COMMANDS; do
   if [[ $COMMAND =~ ^(pmu|pm:uninstall|en|pm:enable|config:set|cset).* ]]; then
     echo "[update]: Running $COMMAND."
     # shellcheck disable=SC2086
-    drush $COMMAND
+    "$DRUSH" $COMMAND
   fi
 done
 

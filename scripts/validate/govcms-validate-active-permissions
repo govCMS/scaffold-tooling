@@ -11,11 +11,17 @@ set -euo pipefail
 GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-permissions}
 
+# Drush 12 support.
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
+
 FAILURES=""
 
 echo "GovCMS Validate :: Disallowed permissions on active site"
 
-GOVCMS_PERMISSIONS_LIST=$(drush role:list --format=json)
+GOVCMS_PERMISSIONS_LIST=$("$DRUSH" role:list --format=json)
 ROLES=$(jq -r '.|[keys[]] | join(",")' <<< "${GOVCMS_PERMISSIONS_LIST}")
 RESTRICTED_PERMS_FOUND=$(
   jq -r '[(.|keys[]) as $k
@@ -54,7 +60,7 @@ done
 
 # Check the active database for 'is_admin'.
 for role in ${ROLES//,/ }; do
-  if [[ $(drush config:get "user.role.$role" is_admin --pipe) -eq 1 ]]; then
+  if [[ $("$DRUSH" config:get "user.role.$role" is_admin --format=string) -eq 1 ]]; then
     echo "[FAIL]; '$role' has is_admin";
     FAILURES="$FAILURES,$role"
   fi

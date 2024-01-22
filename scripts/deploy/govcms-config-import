@@ -12,6 +12,12 @@ CONFIG_DEFAULT_DIR=${CONFIG_DEFAULT_DIR:-/app/config/default}
 CONFIG_DEV_DIR=${CONFIG_DEV_DIR:-/app/config/dev}
 LAGOON_GIT_SAFE_BRANCH=${LAGOON_GIT_SAFE_BRANCH:-master}
 
+# Drush 12 support.
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
+
 echo "GovCMS Deploy :: Configuration import"
 
 if [ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" != "import" ]; then
@@ -38,7 +44,7 @@ if [ "$config_count" -eq 0 ] && [ "$dev_config_count" -eq 0 ]; then
   exit 0
 fi
 
-STATUS=$(drush status --fields=bootstrap --format=json)
+STATUS=$("$DRUSH" status --fields=bootstrap --format=json)
 if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
   echo '[skip]: Site is not available.'
   exit 0

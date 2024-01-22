@@ -13,6 +13,10 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_BACKUP_DIR=${GOVCMS_BACKUP_DIR:-/app/web/sites/default/files/private/backups}
 GOVCMS_CONFIG_BACKUP=${GOVCMS_CONFIG_BACKUP:-pre-deploy-config}
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
 
 echo "GovCMS Deploy :: Backup configuration"
 
@@ -21,7 +25,7 @@ if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ]; then
   exit 0
 fi
 
-STATUS=$(drush status --fields=bootstrap --format=json)
+STATUS=$("$DRUSH" status --fields=bootstrap --format=json)
 if [ "$(jq -r '.bootstrap' 2> /dev/null <<< "$STATUS")" != "Successful" ]; then
   echo '[skip]: Site is not available.'
   exit 0
@@ -29,7 +33,7 @@ fi
 
 echo "[info]: Preparing config backup"
 
-drush config:export sync -y --destination "$GOVCMS_BACKUP_DIR/config"
+"$DRUSH" config:export sync -y --destination "$GOVCMS_BACKUP_DIR/config"
 tar -czf "$GOVCMS_BACKUP_DIR/$GOVCMS_CONFIG_BACKUP.tar.gz" -C "$GOVCMS_BACKUP_DIR/config" . --remove-files
 
 echo "[info]: Saved to $GOVCMS_BACKUP_DIR/$GOVCMS_CONFIG_BACKUP.tar.gz"

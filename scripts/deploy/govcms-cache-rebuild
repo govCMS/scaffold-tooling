@@ -9,8 +9,13 @@ set -euo pipefail
 #
 
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
-
 GOVCMS_SKIP_CACHE_REBUILD=${GOVCMS_SKIP_CACHE_REBUILD:-}
+
+# Drush 12 support.
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
 
 echo "GovCMS Deploy :: Cache rebuild"
 
@@ -19,6 +24,6 @@ if [ -n "${GOVCMS_SKIP_CACHE_REBUILD}" ]; then
   exit 0
 fi
 
-drush -y cache:rebuild
+"$DRUSH" -y cache:rebuild
 
 echo "[success]: Completed successfully."

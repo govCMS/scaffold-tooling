@@ -17,6 +17,12 @@ set -euo pipefail
 LAGOON_ENVIRONMENT_TYPE=${LAGOON_ENVIRONMENT_TYPE:-production}
 GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
 
+# Drush 12 support.
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
+
 echo "GovCMS Deploy :: Pre-deploy database updates"
 
 if [ "$GOVCMS_DEPLOY_PRE_UPDB" = false ]; then
@@ -25,6 +31,6 @@ if [ "$GOVCMS_DEPLOY_PRE_UPDB" = false ]; then
   exit 0;
 fi
 
-drush updatedb -y
+"$DRUSH" updatedb -y
 
 echo "[success]: Completed successfully."
