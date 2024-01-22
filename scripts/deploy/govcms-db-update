@@ -12,7 +12,10 @@ GOVCMS_DEPLOY_PRE_UPDB=${GOVCMS_DEPLOY_PRE_UPDB:-false}
 GOVCMS_CACHE_REBUILD_PRE_UPDB=${GOVCMS_CACHE_REBUILD_PRE_UPDB:-true}
 
 # Drush 12 support.
-DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
 
 echo "GovCMS Deploy :: Update Database"
 

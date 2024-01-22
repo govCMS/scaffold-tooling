@@ -17,6 +17,7 @@ setup() {
   CUR_DIR="$PWD"
 
   export TEST_APP_DIR=$(prepare_app_dir)
+  export GOVCMS_DRUSH=drush
   setup_mock
 }
 

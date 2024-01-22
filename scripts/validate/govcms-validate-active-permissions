@@ -12,7 +12,10 @@ GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-active-permissions}
 
 # Drush 12 support.
-DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+DRUSH="${GOVCMS_DRUSH:-none}"
+if [ "$DRUSH" == "none" ]; then
+  DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
+fi
 
 FAILURES=""
 
