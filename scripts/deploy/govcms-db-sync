@@ -99,7 +99,7 @@ EOF
     --host="$DB_HOST" --port="$DB_PORT" "$DB_NAME"
 else
   echo "[info]: Loading database using drush"
-  gunzip < /tmp/sync.sql.gz | drush sqlc
+  gunzip < /tmp/sync.sql.gz | "$DRUSH" sqlc
 fi
 
 rm /tmp/sync.sql.gz
