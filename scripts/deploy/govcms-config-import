@@ -52,12 +52,12 @@ fi
 
 if [ "$config_count" -gt 0 ]; then
   echo "[update]: Import site configuration."
-  drush config:import -y
+  "$DRUSH" config:import -y
 fi
 
 if [ "$LAGOON_ENVIRONMENT_TYPE" != "production" ] && [ "$dev_config_count" -gt 0 ]; then
   echo "[update]: Import dev configuration partially."
-  drush config:import -y --source="$CONFIG_DEV_DIR" --partial
+  "$DRUSH" config:import -y --source="$CONFIG_DEV_DIR" --partial
 fi
 
 echo "[success]: Completed successfully."
