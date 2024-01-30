@@ -55,7 +55,7 @@ $settings['hash_salt'] = hash('sha256', getenv('MARIADB_HOST'));
 
 // Add custom symfony mailer transport command.
 $settings['mailer_sendmail_commands'] = [
-  ini_get('sendmail_path') . ' -t'
+  '/usr/sbin/sendmail -t -i'
 ];
 
 // Allow custom themes to provide custom 404 pages.
