@@ -33,10 +33,11 @@ fi
 
 MODULES=$("$DRUSH" pm:list --status=enabled)
 NON_PROD_MODULES=("stage_file_proxy")
+AV=$([ -z "$HTTPAV_ENDPOINT" ] && echo "clamav" || echo "httpav")
 PLATFORM_MODULES=(
   "redis"
   "fast404"
-  "clamav"
+  $AV
   "robotstxt"
   "lagoon_logs"
   "environment_indicator"
