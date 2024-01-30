@@ -53,6 +53,11 @@ if ($clam_mode == 0 || strtolower($clam_mode) == 'daemon') {
 // Non-deterministic hash salt.
 $settings['hash_salt'] = hash('sha256', getenv('MARIADB_HOST'));
 
+// Add custom symfony mailer transport command.
+$settings['mailer_sendmail_commands'] = [
+  '/usr/sbin/sendmail -t -i'
+];
+
 // Allow custom themes to provide custom 404 pages.
 // By placing a file called 404.html in the root of their theme repository.
 // 404 pages must be less than 512KB to be used. This is a performance

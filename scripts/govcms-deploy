@@ -114,7 +114,7 @@ else
       # shellcheck disable=SC2086
       "$DRUSH" --alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql -y
       "$DRUSH" rsync --alias-path=/app/drush/sites @govcms.prod:/tmp/sync.sql.gz /tmp/ -y
-      gunzip < /tmp/sync.sql.gz | drush sqlc
+      gunzip < /tmp/sync.sql.gz | "$DRUSH" sqlc
       rm /tmp/sync.sql.gz
       common_deploy
     fi
