@@ -14,8 +14,10 @@ GOVCMS_CORE_EXTENTION_FILE_NAME=${GOVCMS_CORE_EXTENTION_FILE_NAME:-"core.extensi
 GOVCMS_PREPARE_XML_SCRIPT=${GOVCMS_PREPARE_XML_SCRIPT:-govcms-prepare-xml}
 GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-modules}
 
+AV=$([ -z "${HTTPAV_ENDPOINT:-}" ] && echo "clamav" || echo "httpav")
+
 GOVCMS_REQUIRED_MODULES=(
-  clamav
+  $AV
   govcms_security
   lagoon_logs
   tfa
