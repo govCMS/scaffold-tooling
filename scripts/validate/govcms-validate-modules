@@ -17,7 +17,7 @@ GOVCMS_OUTFILE=${GOVCMS_OUTFILE:-govcms-validate-modules}
 AV=$([ -z "${HTTPAV_ENDPOINT:-}" ] && echo "clamav" || echo "httpav")
 
 GOVCMS_REQUIRED_MODULES=(
-  $AV
+  "$AV"
   govcms_security
   lagoon_logs
   tfa

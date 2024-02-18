@@ -37,7 +37,7 @@ AV=$([ -z "${HTTPAV_ENDPOINT:-}" ] && echo "clamav" || echo "httpav")
 PLATFORM_MODULES=(
   "redis"
   "fast404"
-  $AV
+  "$AV"
   "robotstxt"
   "lagoon_logs"
   "environment_indicator"
