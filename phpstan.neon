@@ -1,13 +1,6 @@
 parameters:
   # Disable all phpstan rules.
   customRulesetUsed: true
-  excludePaths:
-    - /app/vendor/*
-    - */assets/src/lib/campaignmonitor/samples/*
-    - */tests/*
-    - */bootstrap/scripts/*
-  scanDirectories:
-    - /app
   fileExtensions:
     - php
     - theme
@@ -90,11 +83,11 @@ parameters:
     - function: 'var_dump()'
       message: 'please change the code'
   disallowedMethodCalls:
-    - function: 'mysqli::*()'
+    - method: 'mysqli::*()'
       message: 'please change the code'
-    - function: 'SQLite3::*()'
+    - method: 'SQLite3::*()'
       message: 'please change the code'
-    - function: 'SQLite3Stmt::*()'
+    - method: 'SQLite3Stmt::*()'
       message: 'please change the code'
-    - function: 'SQLite3Result::*()'
+    - method: 'SQLite3Result::*()'
       message: 'please change the code'

@@ -37,7 +37,7 @@ else
 fi
 
 PHPSTAN_PATH=${VENDOR_DIR}/bin/phpstan
-PHPSTAN_CONFIG=${GOVCMS_SCAFFOLD_TOOLING_DIR}/phpstan.neon
+PHPSTAN_CONFIG=${PHPSTAN_CONFIG:-$GOVCMS_SCAFFOLD_TOOLING_DIR/phpstan.neon}
 
 set +e
 ${PHPSTAN_PATH} analyse -c "${PHPSTAN_CONFIG}" "${GOVCMS_THEME_DIR}" --error-format=junit --no-progress > "${GOVCMS_OUTFILE}".xml

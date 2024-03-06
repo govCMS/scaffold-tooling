@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Client;
+
 function curl_functions() {
   $ch = curl_init();
   curl_exec($ch);
