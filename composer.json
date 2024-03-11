@@ -3,7 +3,7 @@
   "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
   "license": "GPL-2.0-or-later",
   "require": {
-    "drush/drush": "12.4.3",
+    "drush/drush": "12.4.4",
     "drupal/lagoon_logs": "^3.0 || ^2.1",
     "drupal/redis": "1.7.0",
     "drupal/stage_file_proxy": "2.1.4",
@@ -26,9 +26,7 @@
     "php-parallel-lint/php-parallel-lint": "^1.2"
   },
   "scripts": {
-    "post-install-cmd": [
-      "rm -rf ./tests"
-    ]
+    "post-install-cmd": ["rm -rf ./tests"]
   },
   "bin": [
     "scripts/govcms-audit",
