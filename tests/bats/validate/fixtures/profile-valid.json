@@ -124,6 +124,8 @@
     "path": 0,
     "path_alias": 0,
     "permissions_by_term": 0,
+    "prometheus_exporter": 0,
+    "prometheus_exporter_update": 0,
     "quickedit": 0,
     "rdf": 0,
     "real_aes": 0,
