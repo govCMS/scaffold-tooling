@@ -38,3 +38,9 @@ elseif (getenv('LAGOON_PROJECT')) {
 $config['environment_indicator.indicator']['bg_color'] = '#006600';
 $config['environment_indicator.indicator']['fg_color'] = '#FFFFFF';
 $config['environment_indicator.indicator']['name'] = 'Non-production';
+
+// Stage file proxy does not copy all assets back to non-prods (eg. pdfs)
+// this results in httpav attempting to scan a file that doesn't exist.
+// to ensure that this use case is covered we should allow unchecked
+// files.
+$config['httpav.settings']['allow_unchecked'] = TRUE;
