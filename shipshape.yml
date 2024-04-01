@@ -236,3 +236,11 @@ checks:
       paths:
         - web/themes/custom
         - themes
+  filediff:
+    - name: "PaaS Gitlab CI file"
+      severity: low
+      source: https://github.com/govCMS/scaffold/raw/master/.gitlab-ci.paas.yml
+      target: .gitlab-ci.yml
+      ignore-missing: true
+      source-context:
+        GOVCMS_VERSION: 9
