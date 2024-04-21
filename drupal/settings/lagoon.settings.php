@@ -154,3 +154,25 @@ if (getenv('ENABLE_REDIS')) {
     $settings['cache']['default'] = 'cache.backend.null';
   }
 }
+
+if (isset($_SERVER['HTTP_TRUE_CLIENT_IP']) || isset($_SERVER['HTTP_FASTLY_CLIENT_IP'])) {
+    // Support different CDN implementations of forwarding the true client IP
+    // back to the origin server.
+    // @see https://techdocs.akamai.com/property-mgr/docs/origin-server
+    // @see https://www.fastly.com/documentation/reference/http/http-headers/Fastly-Client-IP/
+    $client = isset($_SERVER['HTTP_TRUE_CLIENT_IP']) ? $_SERVER['HTTP_TRUE_CLIENT_IP'] : $_SERVER['HTTP_FASTLY_CLIENT_IP'];
+    $ips = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR']);
+
+    // If the client ip is contained in the X-Forwarded-For header, then
+    // all IP addresses to the right of that entry are reverse-proxies, which are
+    // additional to the value in $_SERVER['REMOTE_ADDR].
+    // E.g. <client> --- <CDN PoP1> --- <CDN PoP2> --- <drupal>.
+    if ($keys = array_keys($ips, $client)) {
+      $position = end($keys);
+      $reverseProxies = array_slice($ips, $position + 1);
+      $reverseProxies[] = $_SERVER['REMOTE_ADDR'];
+
+      $settings['reverse_proxy'] = TRUE;
+      $settings['reverse_proxy_addresses'] = $reverseProxies;
+    }
+}
