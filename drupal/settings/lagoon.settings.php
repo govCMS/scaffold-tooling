@@ -164,7 +164,7 @@ if (isset($_SERVER['HTTP_TRUE_CLIENT_IP']) || isset($_SERVER['HTTP_FASTLY_CLIENT
     $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
     $ips = array_map('trim', $ips);
 
-    // nginx uses $proxy_add_x_forwarded_for to append which appends the $remote_addr to
+    // nginx uses $proxy_add_x_forwarded_for which appends the client ip to
     // the x_forwarded_for header. This means the last IP in the list is the client IP.
     if (in_array($client, $ips)) {
       $settings['reverse_proxy'] = TRUE;
