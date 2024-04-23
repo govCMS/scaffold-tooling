@@ -155,12 +155,11 @@ if (getenv('ENABLE_REDIS')) {
   }
 }
 
-if (isset($_SERVER['HTTP_TRUE_CLIENT_IP']) || isset($_SERVER['HTTP_FASTLY_CLIENT_IP'])) {
+if (isset($_SERVER['HTTP_TRUE_CLIENT_IP'])) {
     // Support different CDN implementations of forwarding the true client IP
     // back to the origin server.
     // @see https://techdocs.akamai.com/property-mgr/docs/origin-server
-    // @see https://www.fastly.com/documentation/reference/http/http-headers/Fastly-Client-IP/
-    $client = isset($_SERVER['HTTP_TRUE_CLIENT_IP']) ? $_SERVER['HTTP_TRUE_CLIENT_IP'] : $_SERVER['HTTP_FASTLY_CLIENT_IP'];
+    $client = $_SERVER['HTTP_TRUE_CLIENT_IP'];
     $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
     $ips = array_map('trim', $ips);
 
