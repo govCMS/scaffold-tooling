@@ -154,3 +154,19 @@ if (getenv('ENABLE_REDIS')) {
     $settings['cache']['default'] = 'cache.backend.null';
   }
 }
+
+if (isset($_SERVER['HTTP_TRUE_CLIENT_IP'])) {
+    // Support different CDN implementations of forwarding the true client IP
+    // back to the origin server.
+    // @see https://techdocs.akamai.com/property-mgr/docs/origin-server
+    $client = $_SERVER['HTTP_TRUE_CLIENT_IP'];
+    $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $ips = array_map('trim', $ips);
+
+    // nginx uses $proxy_add_x_forwarded_for which appends the client ip to
+    // the x_forwarded_for header. This means the last IP in the list is the client IP.
+    if (in_array($client, $ips)) {
+      $settings['reverse_proxy'] = TRUE;
+      $settings['reverse_proxy_addresses'] = array_diff($ips, [$client]);
+    }
+}
