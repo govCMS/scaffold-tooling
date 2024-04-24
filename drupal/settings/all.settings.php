@@ -182,3 +182,4 @@ else {
 if (getenv('LAGOON')) {
   $settings['trusted_host_patterns'][] = '.*';
 }
+
