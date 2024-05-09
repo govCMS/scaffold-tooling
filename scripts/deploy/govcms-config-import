@@ -20,6 +20,11 @@ fi
 
 echo "GovCMS Deploy :: Configuration import"
 
+if [ ! -z "$GOVCMS_TEST_CANARY" ]; then
+    echo "[skip]: Config import disabled on canary sites."
+    exit 0
+fi
+
 if [ "$GOVCMS_DEPLOY_WORKFLOW_CONFIG" != "import" ]; then
   echo "[skip]: Workflow is not set to import."
   exit 0
