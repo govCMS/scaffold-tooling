@@ -180,6 +180,7 @@ checks:
       required:
         - govcms_security
         - lagoon_logs
+        - google_analytics
         - tfa
       disallowed:
         - dblog
