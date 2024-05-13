@@ -18,7 +18,7 @@ $govcms_includes = $govcms_includes ?? __DIR__;
 $settings['container_yamls'][] = $govcms_includes . '/production.services.yml';
 
 // Inject Google Analytics snippet on all production sites.
-$config['google_analytics.settings']['codesnippet']['after'] = "gtag('config', 'G-956VPMXW21', {'name': 'govcms'}); gtag('govcms.send', 'pageview', {'anonymizeIp': true})";
+$config['google_analytics.settings']['codesnippet']['after'] = "gtag('config', 'G-0XT7NFV9ZS', {'name': 'govcms'}); gtag('govcms.send', 'pageview', {'anonymizeIp': true})";
 
 // Don't show any error messages on the site (will still be shown in watchdog).
 $config['system.logging']['error_level'] = 'hide';
