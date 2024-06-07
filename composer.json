@@ -80,11 +80,5 @@
     "apcu-autoloader": true,
     "optimize-autoloader": true
   },
-  "extra": {
-    "patches": {
-      "drupal/clamav": {
-        "Support CKEditor5 inline uploads": "https://git.drupalcode.org/project/clamav/-/merge_requests/7/diffs.patch"
-      }
-    }
-  }
+  "extra": {}
 }

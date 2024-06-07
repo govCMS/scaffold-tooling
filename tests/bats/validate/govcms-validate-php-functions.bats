@@ -47,8 +47,8 @@ load ../_helpers_govcms
   assert_output_contains "GovCMS Validate :: Banned PHP function list"
   assert_output_contains "4      Calling dd() is forbidden, please change the code"
   assert_output_contains "6      Calling debug_backtrace() is forbidden, please change the code"
-  assert_output_contains "8      Calling mysqli::__construct() is forbidden, please change the code [mysqli::__construct() matches mysqli::*()]"
-  assert_output_contains "9      Calling mysqli::close() is forbidden, please change the code [mysqli::close() matches mysqli::*()]"
+  assert_output_contains "8      Calling mysqli::__construct() is forbidden, please change the code"
+  assert_output_contains "9      Calling mysqli::close() is forbidden, please change the code"
 
   assert_output_contains "[ERROR] Found 4 errors"
 }

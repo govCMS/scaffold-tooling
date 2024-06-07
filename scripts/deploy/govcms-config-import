@@ -20,7 +20,8 @@ fi
 
 echo "GovCMS Deploy :: Configuration import"
 
-if [ ! -z "$GOVCMS_TEST_CANARY" ]; then
+# shellcheck disable=SC2236
+if [ -n "${GOVCMS_TEST_CANARY+x}" ]; then
     echo "[skip]: Config import disabled on canary sites."
     exit 0
 fi
