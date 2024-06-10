@@ -17,8 +17,10 @@ if [ "$DRUSH" == "none" ]; then
   DRUSH=$(which /app/vendor/bin/drush > /dev/null 2>&1 && echo "/app/vendor/bin/drush" || echo "/usr/local/bin/drush")
 fi
 
+AV=$([ -z "${HTTPAV_ENDPOINT:-}" ] && echo "clamav" || echo "httpav")
+
 GOVCMS_REQUIRED_MODULES=(
-  clamav
+  "$AV"
   govcms_security
   lagoon_logs
   tfa

@@ -87,7 +87,7 @@ lagoon_settings() {
     LAGOON_ENVIRONMENT_TYPE=production \
     production_settings | jq -rc '.config | "\(.["google_analytics.settings"]["codesnippet"]["after"])"'
   )
-  [[ "$SNIPPET" == *"gtag('config', 'UA-54970022-1', {'name': 'govcms'})"* ]]
+  [[ "$SNIPPET" == *"gtag('config', 'G-0XT7NFV9ZS', {'name': 'govcms'})"* ]]
   [[ "$SNIPPET" == *"gtag('govcms.send', 'pageview', {'anonymizeIp': true})"* ]]
 }
 

@@ -1,0 +1,16 @@
+parameters:
+  # Disable all phpstan rules.
+  customRulesetUsed: true
+  fileExtensions:
+    - php
+    - theme
+    - inc
+  bootstrapFiles:
+    - Drupal.php
+  reportUnmatchedIgnoredErrors: false
+  disallowedStaticCalls:
+    - method: 'Drupal::httpClient()'
+      message: 'please change the code'
+  disallowedNamespaces:
+    - class: 'GuzzleHttp\Client'
+      message: 'please change the code'

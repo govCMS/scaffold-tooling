@@ -12,9 +12,9 @@ done < <(
     -print0
   )
 
-composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
 composer global require drupal/coder
-composer global require dealerdirect/phpcodesniffer-composer-installer:^0.7.1
+composer global require dealerdirect/phpcodesniffer-composer-installer
 
 for file in "${targets[@]}"; do
   [ -f "${file}" ] && /home/.composer/vendor/bin/phpcs --standard=Drupal,DrupalPractice -s --colors "${file}"

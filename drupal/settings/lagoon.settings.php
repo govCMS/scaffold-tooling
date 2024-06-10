@@ -32,9 +32,11 @@ $db_conf = [
   'collation' => 'utf8mb4_general_ci',
 ];
 
-$databases['default']['default'] = array_merge($db_conf, [
-  'host' => getenv('MARIADB_HOST') ?: 'mariadb',
-]);
+$databases['default']['default'] = array_merge(
+    $db_conf, [
+      'host' => getenv('MARIADB_HOST') ?: 'mariadb',
+    ]
+);
 
 if (getenv('MARIADB_READREPLICA_HOSTS')) {
   $replica_hosts = explode(' ', getenv('MARIADB_READREPLICA_HOSTS'));
@@ -43,25 +45,31 @@ if (getenv('MARIADB_READREPLICA_HOSTS')) {
   if (!empty($replica_hosts)) {
     // Add a standalone connection to the read replica. This allows Drush to
     // target the readers directly with --database=read.
-    $databases['read']['default'] = array_merge($db_conf, [
-      'host' => $replica_hosts[0],
-    ]);
+    $databases['read']['default'] = array_merge(
+          $db_conf, [
+            'host' => $replica_hosts[0],
+          ]
+      );
 
     foreach ($replica_hosts as $replica_host) {
       // Add replica support to the default database connection. This allows
       // services to use the database.replica service for particular operations.
-      $databases['default']['replica'][] = array_merge($db_conf, [
-        'host' => $replica_host,
-      ]);
+      $databases['default']['replica'][] = array_merge(
+          $db_conf, [
+            'host' => $replica_host,
+          ]
+        );
     }
   }
 }
 
 // Lagoon Varnish & reverse proxy settings.
 $varnish_hosts = explode(',', getenv('VARNISH_HOSTS') ?: 'varnish');
-array_walk($varnish_hosts, function (&$value, $key) {
-  $value .= ':' . getenv('VARNISH_CONTROL_PORT') ?: '6082';
-});
+array_walk(
+    $varnish_hosts, function (&$value, $key) {
+        $value .= ':' . getenv('VARNISH_CONTROL_PORT') ?: '6082';
+    }
+);
 
 $settings['reverse_proxy'] = TRUE;
 $settings['reverse_proxy_addresses'] = array_merge(explode(',', getenv('VARNISH_HOSTS')), ['varnish']);
@@ -149,8 +157,25 @@ if (getenv('ENABLE_REDIS')) {
     ];
   }
   catch (\Exception $e) {
-    // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
+      // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UndefinedVariable
     $settings['container_yamls'][] = "$govcms_includes/redis-unavailable.services.yml";
     $settings['cache']['default'] = 'cache.backend.null';
+  }
+}
+
+if (isset($_SERVER['HTTP_TRUE_CLIENT_IP'])) {
+  // Support different CDN implementations of forwarding the true client IP
+  // back to the origin server.
+  // @see https://techdocs.akamai.com/property-mgr/docs/origin-server
+  $client = $_SERVER['HTTP_TRUE_CLIENT_IP'];
+  $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+  $ips = array_map('trim', $ips);
+
+  // Nginx uses $proxy_add_x_forwarded_for which appends the client ip to
+  // the x_forwarded_for header. This means the last IP in the list is the
+  // client IP.
+  if (in_array($client, $ips)) {
+    $settings['reverse_proxy'] = TRUE;
+    $settings['reverse_proxy_addresses'] = array_diff($ips, [$client]);
   }
 }
