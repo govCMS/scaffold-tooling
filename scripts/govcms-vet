@@ -14,11 +14,11 @@ CLIENTCODE="${WORKSPACE}/clientcode"
 SOURCE="$PWD"
 
 # Flavour (saas/paas) and version can be passed in to test a codebase.
-FLAVOUR=$(yq r .version.yml type)
+FLAVOUR=$(yq '.type' .version.yml)
 FLAVOUR=${1:-"$FLAVOUR"}
-VERSION=$(yq r .version.yml scaffold)
+VERSION=$(yq '.scaffold' .version.yml)
 VERSION=${2:-"$VERSION"}
-DRUPAL_VERSION=$(yq r .version.yml version)
+DRUPAL_VERSION=$(yq '.version' .version.yml)
 DRUPAL_VERSION=${3:-"$DRUPAL_VERSION"}
 
 
