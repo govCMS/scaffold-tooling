@@ -7,10 +7,10 @@ checks:
     - name: '[FILE] Executable files'
       severity: high
       path: ./
-      disallowed-pattern: '.*\.(exe|dmg)?$'
+      disallowed-pattern: '.*\.(exe|dmg)+$'
     - name: '[FILE] Sensitive public files'
       path: web/sites/default/files
-      disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)?$'
+      disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)+$'
       exclude-pattern: '.*\.(css|js)\.gz?$'
       skip-dir:
         - private
