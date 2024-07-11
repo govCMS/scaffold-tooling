@@ -7,7 +7,7 @@ checks:
     - name: '[FILE] Executable files'
       severity: high
       path: ./
-      disallowed-pattern: '.*\.(exe|dmg)+$'
+      disallowed-pattern: '.*\.(bin|deb|dmg|elf|exe|msi|sh)+$'
       exclude-pattern: '.*(vendor/symfony/console/Resources/bin/hiddeninput.exe)+$'
     - name: '[FILE] Sensitive public files'
       path: web/sites/default/files
