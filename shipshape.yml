@@ -8,6 +8,7 @@ checks:
       severity: high
       path: ./
       disallowed-pattern: '.*\.(exe|dmg)+$'
+      exclude-pattern: '.*(vendor/symfony/console/Resources/bin/hiddeninput.exe)+$'
     - name: '[FILE] Sensitive public files'
       path: web/sites/default/files
       disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)+$'
