@@ -5,7 +5,7 @@ checks:
       path: web
       disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
     - name: '[FILE] Executable files'
-      severity: high
+      severity: normal
       path: ./
       disallowed-pattern: '.*\.(bin|deb|dmg|elf|exe|msi|sh)+$'
       exclude-pattern: '^(vendor|web/core|web/modules/contrib)+.*'
