@@ -4,9 +4,14 @@ checks:
       severity: high
       path: web
       disallowed-pattern: '^(adminer|phpmyadmin|bigdump)?\.php$'
+    - name: '[FILE] Executable files'
+      severity: normal
+      path: ./
+      disallowed-pattern: '.*\.(bin|deb|dmg|elf|exe|msi|sh)+$'
+      exclude-pattern: '^(vendor|web/core|web/modules/contrib)+.*'
     - name: '[FILE] Sensitive public files'
       path: web/sites/default/files
-      disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)?$'
+      disallowed-pattern: '.*\.(sql|php|sh|py|bz2|gz|tar|tgz|zip)+$'
       exclude-pattern: '.*\.(css|js)\.gz?$'
       skip-dir:
         - private
@@ -123,14 +128,14 @@ checks:
           value: theme
   drush-yaml:
     - name: '[DATABASE] Validate active install profile'
-      command: 'config:get core.extension'
+      command: 'config:get --include-overridden core.extension'
       config-name: core.extension
       values:
         - key: profile
           value: govcms
     - name: '[DATABASE] Validate active TFA'
       severity: high
-      command: 'config:get tfa.settings'
+      command: 'config:get --include-overridden tfa.settings'
       config-name: tfa.settings
       values:
         - key: enabled
@@ -139,13 +144,13 @@ checks:
         - key: required_roles.authenticated
           value: authenticated
     - name: '[DATABASE] Ensure only admins can register accounts'
-      command: 'config:get user.settings'
+      command: 'config:get --include-overridden user.settings'
       config-name: user.settings
       values:
         - key: register
           value: admin_only
     - name: '[DATABASE] Ensure CSS & JS aggregations are enabled'
-      command: 'config:get system.performance'
+      command: 'config:get --include-overridden system.performance'
       config-name: system.performance
       values:
         - key: css.preprocess
@@ -155,7 +160,7 @@ checks:
           value: true
           truthy: true
     - name: '[DATABASE] Ensure no error log displayed'
-      command: 'config:get system.logging'
+      command: 'config:get --include-overridden system.logging'
       config-name: user.settings
       values:
         - key: error_level
@@ -233,6 +238,12 @@ checks:
   phpstan:
     - name: '[FILE] Banned PHP function list'
       configuration: vendor/govcms/scaffold-tooling/phpstan.neon
+      paths:
+        - web/themes/custom
+        - themes
+    - name: '[FILE] Banned PHP methods and classes'
+      severity: low
+      configuration: vendor/govcms/scaffold-tooling/phpstan-extra.neon
       paths:
         - web/themes/custom
         - themes

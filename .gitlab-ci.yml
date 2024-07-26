@@ -1,14 +1,14 @@
 ---
-image: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci${GOVCMS_CI_IMAGE_VERSION}
+image: gitlab-registry-production.govcms.amazee.io/govcms/images/ci${GOVCMS_CI_IMAGE_VERSION}
 
 services:
-  - name: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci/dind:latest
+  - name: docker:dind
     command: ["--tls=false"]
 
 test:
   script:
     - composer validate --strict --no-check-all
+    - yq --version
     - .ci/shellcheck.sh
     - .ci/phpcs.sh
     - .ci/bats.sh
-

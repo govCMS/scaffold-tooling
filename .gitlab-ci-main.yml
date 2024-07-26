@@ -1,8 +1,8 @@
 ---
-image: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci${GOVCMS_CI_IMAGE_VERSION}
+image: gitlab-registry-production.govcms.amazee.io/govcms/images/ci${GOVCMS_CI_IMAGE_VERSION}
 
 services:
-  - name: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci/dind:latest
+  - name: docker:dind
     command: ["--tls=false"]
 
 stages:
@@ -42,15 +42,15 @@ variables:
       # Some local overrides are prefixed with '###' and we remove them here.
       sed -i -e "/###/d" docker-compose.yml
 
-      docker-compose up -d mariadb
-      docker-compose up -d cli
-      docker-compose ps
+      docker compose up -d mariadb
+      docker compose up -d cli
+      docker compose ps
 
       # Re-run composer to account for the fact the /app just got mounted over.
-      docker-compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
+      docker compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
 
       echo "Running govcms-deploy."
-      docker-compose exec -T cli ./vendor/bin/govcms-deploy
+      docker compose exec -T cli ./vendor/bin/govcms-deploy
   stage: preflight
 
 # Setup the full working project for integration tests like Behat.
@@ -69,12 +69,12 @@ variables:
       # Some local overrides are prefixed with '###' and we remove them here.
       sed -i -e "/###/d" docker-compose.yml
 
-      docker-compose up -d mariadb
-      docker-compose up -d
-      docker-compose ps
+      docker compose up -d mariadb
+      docker compose up -d
+      docker compose ps
 
       # Re-run composer to account for the fact the /app just got mounted over.
-      docker-compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
+      docker compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
 
       DATABASE_IMAGE="$CI_REGISTRY_IMAGE/mariadb-drupal-data"
 
@@ -84,22 +84,22 @@ variables:
 
       if [[ $EXIT_CODE -ne 0 ]]; then
         echo "$DATABASE_IMAGE not found, installing GovCMS"
-        docker-compose exec -T cli bash -c 'drush sql-drop'
+        docker compose exec -T cli bash -c 'drush sql-drop'
         if [[ -f "./custom/database-quickstart.sql.gz" ]]; then
             echo "Installing from a database dump."
             gunzip ./custom/database-quickstart.sql.gz
-            docker-compose exec -T cli bash -c 'drush sql-cli --yes' < ./custom/database-quickstart.sql
+            docker compose exec -T cli bash -c 'drush sql-cli --yes' < ./custom/database-quickstart.sql
         else
             echo "Installing the default govcms profile."
-            docker-compose exec -T cli bash -c 'drush si govcms -y'
+            docker compose exec -T cli bash -c 'drush si govcms -y'
         fi
       else
           echo "Using found database image: $DATABASE_IMAGE"
       fi
 
       echo "Running govcms-deploy."
-      docker-compose exec -T cli ./vendor/bin/govcms-deploy
-      docker-compose exec -T cli bash -c 'drush status'
+      docker compose exec -T cli ./vendor/bin/govcms-deploy
+      docker compose exec -T cli bash -c 'drush status'
 
 ##
 # Job definitions.
@@ -119,6 +119,33 @@ vet:
   only:
     variables:
       - $RUN_DEPRECATION_REPORT != "true"
+
+# # NOTICE: Include standard security scanning and compliance checks
+# # provided by shipshape. This check further extends the capabilities
+# # of the VET stage.
+shipshape:
+  <<: *static_template
+  stage: static
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - tests/shipshape-results.xml
+    reports:
+      junit:
+        - tests/shipshape-results.xml
+    when: always
+  script:
+    - shipshape -f /govcms/shipshape.yml --exclude-db --error-code -o junit > tests/shipshape-results.xml
+  when: on_success
+  allow_failure: true
+  after_script:
+    - |
+      if [ -s tests/shipshape-results.xml ]; then
+        echo -e "\n           ********************************************************\n\e[31mATTENTION\e[0m: GovCMS Shipshape\n"
+        echo -e "           A GovCMS compliance report has been generated, please review and resolve any errors.\n"
+        echo -e "           https://projects.govcms.gov.au/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/-/pipelines/$CI_PIPELINE_ID/test_report"
+        echo -e "\n           ********************************************************\n"
+      fi
 
 lint:
   <<: *static_template
@@ -148,9 +175,9 @@ preflight:
   extends: .job-preflight
   stage: preflight
   script:
-    - docker-compose exec -T cli bash -c 'drush cim -y'
-    - docker-compose exec -T cli bash -c 'drush st'
-    - docker-compose exec -T cli bash -c 'drush updatedb:status'
+    - docker compose exec -T cli bash -c 'drush cim -y'
+    - docker compose exec -T cli bash -c 'drush st'
+    - docker compose exec -T cli bash -c 'drush updatedb:status'
   only:
     variables:
       - $RUN_DEPRECATION_REPORT != "true"
@@ -160,7 +187,7 @@ behat:
   <<: *full_template
   extends: .job-behat
   script:
-    - docker-compose exec -T test ./vendor/bin/govcms-behat
+    - docker compose exec -T test ./vendor/bin/govcms-behat
   only:
     variables:
       - $RUN_DEPRECATION_REPORT != "true"
@@ -168,7 +195,7 @@ functional:
   <<: *full_template
   extends: .job-functional
   script:
-    - docker-compose exec -T test /app/vendor/bin/phpunit --testsuite=functional -c /app/tests/phpunit
+    - docker compose exec -T test /app/vendor/bin/phpunit --testsuite=functional -c /app/tests/phpunit
   only:
     variables:
       - $RUN_DEPRECATION_REPORT != "true"
@@ -176,7 +203,7 @@ audit:
   <<: *full_template
   extends: .job-audit
   script:
-    - docker-compose exec -T test ./vendor/bin/govcms-audit
+    - docker compose exec -T test ./vendor/bin/govcms-audit
   only:
     variables:
       - $RUN_DEPRECATION_REPORT != "true"
@@ -186,7 +213,7 @@ audit_on_merge:
   <<: *full_template
   extends: .job-audit-on-merge
   script:
-    - docker-compose exec -T test ./vendor/bin/govcms-audit
+    - docker compose exec -T test ./vendor/bin/govcms-audit
   only:
     - merge_requests
   stage: deploy
@@ -245,10 +272,10 @@ deprecation_report:
         echo -e "\033[1;33mNOTICE:\033[0m Removed docker-compose.override.yml to prevent issues with the pipeline."
       fi
     - "COMPOSE_HTTP_TIMEOUT=300 ahoy up"
-    - "docker-compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m"
-    - docker-compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
+    - "docker compose exec -T test dockerize -wait tcp://mariadb:3306 -timeout 2m"
+    - docker compose exec -T cli bash -c 'composer install --no-interaction --no-suggest'
     - "ahoy govcms-deploy"
-    - "docker-compose exec -T cli mkdir -p /app/web/sites/default/files/private/{backups,tmp}"
+    - "docker compose exec -T cli mkdir -p /app/web/sites/default/files/private/{backups,tmp}"
 
     # Fix 2.4.0 scaffold bug.
     - sed -i 's/exec -e/exec/g' .ahoy.yml
@@ -264,7 +291,7 @@ deprecation_report:
     # -- Generate deprecation report
     - |
       # Install and run upgrade_status for deprecation report.
-      docker-compose exec -T cli composer require drupal/upgrade_status
+      docker compose exec -T cli composer require drupal/upgrade_status
       ahoy drush pm-enable upgrade_status -y
       ahoy drush upgrade_status:checkstyle --ignore-uninstalled --ignore-contrib --all > /artefacts/upgrade_status.xml
       # Strip whitespace in the file
