@@ -1,14 +1,11 @@
----
-version: '2.3'
 x-volumes:
   &default-volumes
     volumes:
       - .:/app/
-volumes:
-  app: {}
+
 services:
   test:
-    image: gitlab-registry-production.govcms.amazee.io/govcms/govcms-ci${GOVCMS_CI_IMAGE_VERSION:-}
+    image: gitlab-registry-production.govcms.amazee.io/govcms/images/ci${GOVCMS_CI_IMAGE_VERSION:-}
     << : *default-volumes
     environment:
       GOVCMS_GITHUB_TOKEN: ${GOVCMS_GITHUB_TOKEN:-}

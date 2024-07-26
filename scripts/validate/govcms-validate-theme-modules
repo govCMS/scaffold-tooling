@@ -41,7 +41,7 @@ IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_INFO_FILE_LIST; do
-  if [[ $(yq r "$file" 'type') == 'module' ]]; then
+  if [[ $(yq '.type' "$file") == 'module' ]]; then
     echo "[fail]: Module detected with $file"
     FAILURES="$FAILURES,$file"
   fi
