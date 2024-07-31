@@ -34,7 +34,7 @@ IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_FILE_LIST; do
-  FILE_JSON=$(yq read "$file" --tojson)
+  FILE_JSON=$(yq "$file" -o json)
   RESTRICTED_PERMS_JSON=$(
     jq -r 'if (.permissions |
         index("administer modules") or
@@ -68,7 +68,7 @@ for file in $GOVCMS_FILE_LIST; do
     FAILURES="$FAILURES,$file"
     continue
   fi
-  if [[ $(yq r "$file" 'is_admin') == 'true' ]]; then
+  if [[ $(yq '.is_admin' "$file") == 'true' ]]; then
     echo "[fail]: $file is listed as an admin role";
     FAILURES="$FAILURES,$file"
     continue

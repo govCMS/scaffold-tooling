@@ -1,0 +1,8 @@
+services:
+  test:
+    secrets:
+      - composer_auth
+
+secrets:
+  composer_auth:
+    file: $HOME/.composer/auth.json

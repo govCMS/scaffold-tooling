@@ -3,32 +3,30 @@
   "description": "A variety of standard config, scripts and packages to support GovCMS scaffold.",
   "license": "GPL-2.0-or-later",
   "require": {
-    "drush/drush": "^12",
+    "drush/drush": "12.5.2",
     "drupal/lagoon_logs": "^3.0 || ^2.1",
-    "drupal/redis": "^1.6",
-    "drupal/stage_file_proxy": "^2.0",
-    "drupal/clamav": "^2.0",
-    "drupal/httpav": "^1.1",
-    "drupal/purge": "^3.5",
-    "drupal/fast_404": "^3.0",
-    "drupal/govcms_akamai_purge": "^2.1",
-    "phpstan/extension-installer": "^1.1.0",
-    "spaze/phpstan-disallowed-calls": "^2.3.0",
-    "cweagans/composer-patches": "^1.7"
+    "drupal/redis": "1.7.0",
+    "drupal/stage_file_proxy": "2.1.4",
+    "drupal/clamav": "2.0.2",
+    "drupal/httpav": "1.1.1",
+    "drupal/purge": "3.5.0",
+    "drupal/fast_404": "3.2.0",
+    "drupal/govcms_akamai_purge": "2.1.0",
+    "phpstan/extension-installer": "1.3.1",
+    "spaze/phpstan-disallowed-calls": "2.16.1",
+    "cweagans/composer-patches": "1.7.3"
   },
   "require-dev": {
-    "phar-io/manifest": "~2",
-    "phar-io/version": "~2",
-    "webflo/drupal-finder": "^1.0.0",
-    "webmozart/path-util": "^2.3",
-    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phar-io/manifest": "2.0.3",
+    "phar-io/version": "3.2.1",
+    "webflo/drupal-finder": "1.2.2",
+    "webmozart/path-util": "2.3.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "1.0",
     "zaporylie/composer-drupal-optimizations": "^1.0",
     "php-parallel-lint/php-parallel-lint": "^1.2"
   },
   "scripts": {
-    "post-install-cmd": [
-      "rm -rf ./tests"
-    ]
+    "post-install-cmd": ["rm -rf ./tests"]
   },
   "bin": [
     "scripts/govcms-audit",
