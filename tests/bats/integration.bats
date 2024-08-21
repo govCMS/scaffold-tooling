@@ -33,11 +33,15 @@ load _helpers_govcms
   git clone --depth 1 https://github.com/govCMS/scaffold "$(pwd)"
   rm -rf .git
 
-  # Init the scaffold for Drupal 9 PaaS.
+  # Init the scaffold for Drupal 10 PaaS.
   ahoy init test paas 10
 
   # Prepare composer to install requirements.
-  composer config -g github-oauth.github.com "$GOVCMS_GITHUB_TOKEN"
+  if [ -f "/run/secrets/composer_auth" ]; then
+    cp /run/secrets/composer_auth "${HOME}/.composer/auth.json"
+  else
+    composer config -g github-oauth.github.com "$GOVCMS_GITHUB_TOKEN"
+  fi
   # Change the distribution to HTTPS to prevent key issues.
   cat composer.json | jq 'del(.repositories[3]) | .repositories += [{"type": "vcs", "url": "https://github.com/govcms/govcms"}]' > composer.https.json
   mv composer.json composer.json.bkup
@@ -93,10 +97,10 @@ load _helpers_govcms
   assert_file_contains vendor/govcms/scaffold-tooling/drupal/settings/all.settings.php "${LATEST_COMMIT}"
 
   # Assert that the settings are correct.
-  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_maxlifetime")" -eq 3600 ];
-  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_divisor")" -eq 100 ];
-  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].gc_probability")" -eq 1 ];
-  [ "$(yq r vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml "parameters[session.storage.options].cookie_lifetime")" -eq 0 ];
+  [ "$(yq '.parameters."session.storage.options".gc_maxlifetime' vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml)" -eq 3600 ];
+  [ "$(yq '.parameters."session.storage.options".gc_divisor' vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml)" -eq 100 ];
+  [ "$(yq '.parameters."session.storage.options".gc_probability' vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml)" -eq 1 ];
+  [ "$(yq '.parameters."session.storage.options".cookie_lifetime' vendor/govcms/scaffold-tooling/drupal/settings/all.services.yml)" -eq 0 ];
 
   # Assert that bootstrapping Drupal includes settings file.
   run vendor/bin/drush -l default core:status

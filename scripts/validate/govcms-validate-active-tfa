@@ -19,7 +19,7 @@ FAILURES=""
 
 echo "GovCMS Validate :: Validate TFA config on active site"
 
-TFA_CONFIG=$("$DRUSH" config:get tfa.settings --format=json)
+TFA_CONFIG=$("$DRUSH" config:get --include-overridden tfa.settings --format=json)
 
 TFA_ENABLED=$(jq -r '.enabled' <<< "${TFA_CONFIG}")
 if [[ "${TFA_ENABLED}" != 1 && "${TFA_ENABLED}" != 'true' ]]; then

@@ -31,14 +31,14 @@ IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_FILE_LIST; do
-  TFA_ENABLED=$(yq r "$file" 'enabled')
+  TFA_ENABLED=$(yq '.enabled' "$file")
   if [[ "${TFA_ENABLED}" != 1 && "${TFA_ENABLED}" != 'true' ]]; then
     echo "[fail]: TFA not enabled"
     FAILURES="${FAILURES},${TFA_ENABLED}"
   else
     echo "[info]: TFA is enabled"
   fi
-  TFA_REQUIRED=$(yq r "$file" 'required_roles.authenticated')
+  TFA_REQUIRED=$(yq '.required_roles.authenticated' "$file")
   if [[ "${TFA_REQUIRED}" != "authenticated" ]]; then
     echo "[fail]: TFA is not required for authenticated users"
     FAILURES="${FAILURES},${TFA_REQUIRED}"

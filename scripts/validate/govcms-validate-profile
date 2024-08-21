@@ -31,9 +31,9 @@ IFS_BAK="$IFS"
 IFS=$'\n'
 
 for file in $GOVCMS_FILE_LIST; do
-  if [[ $(yq r "$file" 'profile') != 'govcms' ]]; then
-    echo "[fail]: Invalid profile detected $(yq r "$file" 'profile')"
-    FAILURES=$(yq r "$file" 'profile')
+  if [[ $(yq '.profile' "$file") != 'govcms' ]]; then
+    echo "[fail]: Invalid profile detected $(yq '.profile' "$file")"
+    FAILURES=$(yq '.profile' "$file")
   else
     echo "[info]: $file is using the 'govcms' profile"
   fi

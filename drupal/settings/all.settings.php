@@ -166,7 +166,7 @@ $config['search_api.server.lagoon_solr']['backend_config']['connector_config']['
 // @see https://govdex.gov.au/jira/browse/GOVCMS-1109
 // @see http://cgit.drupalcode.org/seckit/tree/includes/seckit.form.inc#n397
 //
-if (preg_match("~^.+(\.gov\.au|\.org\.au)$~i", $_SERVER['HTTP_HOST'])) {
+if (isset($_SERVER['HTTP_HOST']) && preg_match("~^.+(\.gov\.au|\.org\.au)$~i", $_SERVER['HTTP_HOST'])) {
   $config['seckit.settings']['seckit_ssl']['hsts'] = TRUE;
   $config['seckit.settings']['seckit_ssl']['hsts_max_age'] = 31536000;
   $config['seckit.settings']['seckit_ssl']['hsts_subdomains'] = FALSE;

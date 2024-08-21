@@ -47,7 +47,7 @@ for file in $config_file; do
   # Check if required modules are missing from core.extension.yml.
   for module_name in "${GOVCMS_REQUIRED_MODULES[@]}"; do
     (( TOTAL=TOTAL+1 ))
-    if [[ $(yq r "$file" "module.$module_name") == 'null' ]]; then
+    if [[ $(yq ".module.$module_name" "$file") == 'null' ]]; then
       echo "[fail]: '$module_name' is required"
       FAILURES="$FAILURES,disabled:$module_name"
     fi
@@ -58,7 +58,7 @@ for file in $config_file; do
     (( TOTAL=TOTAL+1 ))
     # yq returns NULL when a yaml key doesn't exist;
     # if a value is returned, we assume the module is enabled.
-    if [[ $(yq r "$file" "module.$module_name") != 'null' ]]; then
+    if [[ $(yq ".module.$module_name" "$file") != 'null' ]]; then
       echo "[fail]: '$module_name' cannot be enabled"
       FAILURES="$FAILURES,enabled:$module_name"
     fi
