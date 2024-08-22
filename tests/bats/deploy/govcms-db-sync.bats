@@ -112,7 +112,7 @@ setup() {
   assert_output_contains "[info]: Site could not be bootstrapped... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --structure-tables-list=redirect_404,cache,cache_* --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[success]: Completed successfully."
@@ -144,7 +144,7 @@ setup() {
 
   assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/othersites @govcms.override sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/othersites @govcms.override sql:dump --gzip --extra-dump=--no-tablespaces --structure-tables-list=redirect_404,cache,cache_* --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[success]: Completed successfully."
   assert_equal 4 "$(mock_get_call_num "${mock_drush}")"
@@ -174,7 +174,7 @@ setup() {
   assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --structure-tables-list=redirect_404,cache,cache_* --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[success]: Completed successfully."
@@ -206,7 +206,7 @@ setup() {
   assert_output_contains "[info]: Upgrade branch... syncing."
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --structure-tables-list=redirect_404,cache,cache_* --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
 
   assert_output_contains "[info]: Loading database using drush"
   assert_output_contains "[success]: Completed successfully."
@@ -239,7 +239,7 @@ setup() {
   assert_equal "status --fields=bootstrap --format=json" "$(mock_get_call_args "${mock_drush}" 1)"
 
   assert_output_contains "[info]: Preparing database sync"
-  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
+  assert_equal "--alias-path=/app/drush/sites @govcms.prod sql:dump --gzip --extra-dump=--no-tablespaces --structure-tables-list=redirect_404,cache,cache_* --result-file=/tmp/sync.sql --skip-tables-key=common -y" "$(mock_get_call_args "${mock_drush}" 2)"
   assert_equal "sql:conf --show-passwords --format=json" "$(mock_get_call_args "${mock_drush}" 4)"
 
   assert_output_contains "[info]: Loading database using mysql"
