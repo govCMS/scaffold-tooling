@@ -75,7 +75,7 @@ echo "[info]: Preparing database sync"
 
 # shellcheck disable=SC2086
 "$DRUSH" --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS" sql:dump \
-  --gzip --extra-dump=--no-tablespaces --result-file=/tmp/sync.sql \
+  --gzip --extra-dump="--no-tablespaces --default-character-set=utf8mb4 --create-options --set-charset" --result-file=/tmp/sync.sql \
   --skip-tables-key=common -y
 "$DRUSH" rsync --alias-path="$GOVCMS_SITE_ALIAS_PATH" @"$GOVCMS_SITE_ALIAS":/tmp/sync.sql.gz /tmp/ -y
 
