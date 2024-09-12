@@ -181,7 +181,6 @@ checks:
         - update
         - redirect_404
     - name: '[FILE] Deprecated modules'
-      severity: high
       path: config/default
       required: []
       disallowed:
@@ -201,7 +200,6 @@ checks:
         - update
         - redirect_404
     - name: '[DATABASE] Deprecated modules'
-      severity: high
       path: config/default
       required: []
       disallowed:
