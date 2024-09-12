@@ -1,0 +1,65 @@
+checks:
+  yaml:
+    - name: '[FILE] Validate services are all of an allowed type'
+      file: docker-compose.yml
+      ignore-missing: false
+      path: .
+      values:
+        - key: services.*.labels['lagoon.type']
+          allowed:
+            - none
+            - cli
+            - cli-persistent
+            - mariadb
+            - mariadb-dbaas
+            - nginx
+            - nginx-php
+            - nginx-php-persistent
+            - redis
+            - redis-persistent
+            - solr
+            - varnish
+            - varnish-persistent
+  drupal-db-module:
+    - name: '[DATABASE] lagoon_logs module is required'
+      severity: high
+      required:
+        - lagoon_logs
+  yamllint:
+    - name: '[FILE] Yaml lint platform files'
+      severity: high
+      files:
+        - .lagoon.yml
+        - docker-compose.yml
+      ignore-missing: true
+    - name: '[FILE] Yaml lint theme files'
+      severity: high
+      path: web/themes
+      pattern: ".*.yml"
+      exclude-pattern: node_modules
+      ignore-missing: true
+    - name: '[FILE] Yaml lint theme files (no web prefix)'
+      severity: high
+      path: themes
+      pattern: ".*.yml"
+      exclude-pattern: node_modules
+      ignore-missing: true
+  json:
+    - name: Validate composer.json
+      file: composer.json
+      ignore-missing: true
+      key-values:
+        - key: '$.repositories..no-api'
+          optional: true
+          is-list: true
+          disallowed-values:
+            - true
+            - "true"
+            - 1
+            - "1"
+          allowed-values:
+            - false
+            - "false"
+            - 0
+            - "0"
+            -
