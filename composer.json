@@ -55,13 +55,10 @@
     "scripts/validate/govcms-validate-active-profile",
     "scripts/validate/govcms-validate-active-tfa",
     "scripts/validate/govcms-validate-modules",
-    "scripts/validate/govcms-validate-permissions",
     "scripts/validate/govcms-validate-php-functions",
-    "scripts/validate/govcms-validate-platform-yml",
     "scripts/validate/govcms-validate-profile",
     "scripts/validate/govcms-validate-tfa",
     "scripts/validate/govcms-validate-theme-modules",
-    "scripts/validate/govcms-validate-theme-yml",
     "scripts/validate/govcms-yaml_lint",
     "scripts/validate/govcms-module_verify",
     "scripts/validate/govcms-validate-illegal-files"
