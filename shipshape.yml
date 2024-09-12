@@ -179,6 +179,13 @@ checks:
         - module_permissions_ui
         - statistics
         - update
+        - redirect_404
+    - name: '[FILE] Deprecated modules'
+      severity: high
+      path: config/default
+      required: []
+      disallowed:
+        - redirect_404
   drupal-db-module:
     - name: '[DATABASE] Active modules audit'
       severity: high
@@ -192,6 +199,13 @@ checks:
         - module_permissions_ui
         - statistics
         - update
+        - redirect_404
+    - name: '[DATABASE] Deprecated modules'
+      severity: high
+      path: config/default
+      required: []
+      disallowed:
+        - redirect_404
   drupal-db-permissions:
     - name: '[DATABASE] Disallowed permissions on active site'
       severity: high
