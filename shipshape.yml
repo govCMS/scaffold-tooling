@@ -200,7 +200,6 @@ checks:
         - update
         - redirect_404
     - name: '[DATABASE] Deprecated modules'
-      path: config/default
       required: []
       disallowed:
         - redirect_404
