@@ -1,6 +1,5 @@
 module:
   admin_toolbar: 0
-  clamav: 0
   ctools_block: 0
   datetime: 0
   datetime_range: 0

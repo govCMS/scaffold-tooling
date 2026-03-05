@@ -59,56 +59,6 @@ security_settings() {
   [ "$(echo "$SECKIT" | jq .hsts_max_age)" -eq 31536000 ]
 }
 
-@test "Clam AV env var not set" {
-  CLAMAV=$(
-    LAGOON=true\
-    settings | jq -rc '.config | "\(.["clamav.settings"])"'
-  )
-
-  # Production is default, values should be set for production.
-  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "av" ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
-}
-
-@test "Clam AV settings" {
-  CLAMAV=$(
-    LAGOON=true\
-    CLAMAV_MODE=daemon\
-    settings | jq -rc '.config | "\(.["clamav.settings"])"'
-  )
-
-  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "av" ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
-}
-
-@test "ClamAV host override" {
-  CLAMAV=$(
-    LAGOON=true\
-    CLAMAV_MODE=daemon\
-    CLAMAV_HOST=notclam\
-    settings | jq -rc '.config | "\(.["clamav.settings"])"'
-  )
-
-  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "notclam" ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3310" ]
-}
-
-@test "ClamAV port override" {
-  CLAMAV=$(
-    LAGOON=true\
-    CLAMAV_MODE=daemon\
-    CLAMAV_PORT=3000\
-    settings | jq -rc '.config | "\(.["clamav.settings"])"'
-  )
-
-  [ "$(echo "$CLAMAV" | jq -rc .scan_mode)" == 0 ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.hostname)" == "av" ]
-  [ "$(echo "$CLAMAV" | jq -rc .mode_daemon_tcpip.port)" == "3000" ]
-}
-
 @test "Module permission settings" {
   [ $(security_settings | jq -rc '.config."module_permissions.settings".managed_modules | index( "bigmenu" )') != 'null' ]
   [ $(security_settings | jq -rc '.config."module_permissions.settings".protected_modules | index( "module_permissions" )') != 'null' ]
