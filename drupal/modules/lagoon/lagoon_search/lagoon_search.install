@@ -18,7 +18,14 @@ function lagoon_search_update_8101() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('search_api.server.lagoon_solr');
 
-  if (!$backend_config = $config->get('backend_config')) {
+  if ($config->isNew()) {
+    // The search_api.server.lagoon_solr config does not exist.
+    \Drupal::logger('lagoon_search')->notice('Skipping lagoon_search_update_8101, search_api.server.lagoon_solr does not exist');
+    return;
+  }
+
+  $backend_config = $config->get('backend_config');
+  if (empty($backend_config)) {
     // This means that the Lagoon Solr configuration was not found so
     // we have nothing to update.
     \Drupal::logger('lagoon_search')->notice('Skipping lagoon_search_update_8101, nothing to update');
