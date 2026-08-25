@@ -69,3 +69,6 @@ if (!empty(getenv('GOVCMS_TFA_ENFORCE'))) {
     $config['user.role.authenticated']['permissions'][999999] = 'setup own tfa';
   }
 }
+
+// Enforce password policy for all users.
+$config['password_policy.password_policy.austism']['roles']['authenticated'] = 'authenticated';
