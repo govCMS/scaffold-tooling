@@ -143,7 +143,7 @@ shipshape:
         - tests/shipshape-results.xml
     when: always
   script:
-    - shipshape -f /govcms/shipshape.yml --exclude-db --error-code -o junit > tests/shipshape-results.xml
+    - shipshape run . -f /govcms/shipshape.yml -f /govcms/shipshape.paas.yml --exclude-db --error-code -o junit > tests/shipshape-results.xml
   when: on_success
   allow_failure: true
   after_script:
