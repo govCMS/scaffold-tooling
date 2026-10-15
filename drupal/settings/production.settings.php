@@ -47,7 +47,10 @@ $config['environment_indicator.indicator']['name'] = 'Production';
 // Override temporary file cleanup if required (GOVCMS-15853).
 $temp_file_max_age = getenv('GOVCMS_FILE_TEMP_MAX_AGE');
 if (is_numeric($temp_file_max_age)) {
-  $config['system.file']['temporary_maximum_age'] = (int) $temp_file_max_age;
+  $temp_file_max_age = (int) $temp_file_max_age;
+  if ($temp_file_max_age >= 0) {
+    $config['system.file']['temporary_maximum_age'] = $temp_file_max_age;
+  }
 }
 
 // Disable converting unused files into temporary files (GOVCMS-15853).
