@@ -68,6 +68,21 @@ if (!empty(getenv('GOVCMS_TFA_ENFORCE'))) {
     $config['tfa.settings']['required_roles']['authenticated'] = 'authenticated';
     $config['user.role.authenticated']['permissions'][999999] = 'setup own tfa';
   }
+  // GOVCMS-10498 - Disable tfa_trusted_browser plugin.
+  if (empty(getenv('GOVCMS_TFA_ALLOW_TRUSTED_BROWSER'))) {
+    // As tfa_trusted_browser is the only login plugin shipped in TFA,
+    // we can override the login_plugins key with NULL.
+    // Setting it to an empty array [] or overriding individual array key
+    // will not work.
+    // @see https://git.drupalcode.org/project/tfa/-/blob/8.x-1.x/src/TfaLoginPluginManager.php?ref_type=heads#L120
+    // @see \Drupal\tfa\TfaLoginPluginManager::getPlugins()
+    // @see https://git.drupalcode.org/project/tfa/-/blob/2.x/src/TfaPluginManager.php?ref_type=heads#L117
+    // @see \Drupal\tfa\TfaPluginManager::getClassDefinitions()
+    // In the future, if TFA includes more useful login plugins
+    // which are allowed on the platform, this approach will need
+    // to be reworked.
+    $config['tfa.settings']['login_plugins'] = NULL;
+  }
 }
 
 // Enforce password policy for all users.
