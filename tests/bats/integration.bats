@@ -33,8 +33,8 @@ load _helpers_govcms
   git clone --depth 1 https://github.com/govCMS/scaffold "$(pwd)"
   rm -rf .git
 
-  # Init the scaffold for Drupal 10 PaaS.
-  ahoy init test paas 10
+  # Init the scaffold for Drupal 11 PaaS.
+  ahoy init test paas 11
 
   # Prepare composer to install requirements.
   if [ -f "/run/secrets/composer_auth" ]; then

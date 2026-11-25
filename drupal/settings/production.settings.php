@@ -44,10 +44,21 @@ $config['environment_indicator.indicator']['bg_color'] = '#AF110E';
 $config['environment_indicator.indicator']['fg_color'] = '#FFFFFF';
 $config['environment_indicator.indicator']['name'] = 'Production';
 
-// Disable temporary file deletion (GOVCMSD8-576).
-$config['system.file']['temporary_maximum_age'] = 0;
-if (is_numeric($file_gc = getenv('GOVCMS_FILE_TEMP_MAX_AGE'))) {
-  $config['system.file']['temporary_maximum_age'] = $file_gc;
+// Override temporary file cleanup if required (GOVCMS-15853).
+$temp_file_max_age = getenv('GOVCMS_FILE_TEMP_MAX_AGE');
+if (is_numeric($temp_file_max_age)) {
+  $temp_file_max_age = (int) $temp_file_max_age;
+  if ($temp_file_max_age >= 0) {
+    $config['system.file']['temporary_maximum_age'] = $temp_file_max_age;
+  }
+}
+
+// Disable converting unused files into temporary files (GOVCMS-15853).
+// @see https://www.drupal.org/node/2891902
+$config['file.settings']['make_unused_managed_files_temporary'] = FALSE;
+$make_unused_managed_files_temporary = getenv('GOVCMS_MAKE_UNUSED_FILES_TEMP');
+if ($make_unused_managed_files_temporary === 'true') {
+  $config['file.settings']['make_unused_managed_files_temporary'] = TRUE;
 }
 
 $config['lagoon_logs.settings']['host'] = getenv('LAGOON_LOGS_ENDPOINT') ?: 'application-logs.lagoon.svc';
