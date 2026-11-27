@@ -3,6 +3,10 @@
 load ../_helpers_govcms
 
 setup() {
+  if [ "$(uname -s)" = "Darwin" ]; then
+    export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+  fi
+
   PROJECT_DIR=$(pwd)
   if [ ! -f "/tmp/bats/all.settings.php" ]; then
     mkdir -p /tmp/bats
@@ -196,4 +200,23 @@ lagoon_settings() {
   [ "$(echo "$DB" | jq -rc .default.replica[1].port)" == "3306" ]
   [ "$(echo "$DB" | jq -rc .default.replica[1].charset)" == "utf8mb4" ]
   [ "$(echo "$DB" | jq -rc .default.replica[1].collation)" == "utf8mb4_general_ci" ]
+}
+
+@test "Drupal hash salt from MARIADB_HOST" {
+  OUT=$(
+    MARIADB_HOST="mariadb-host" \
+    all_settings | jq -cr .settings.hash_salt
+  )
+  # SHA256 hash of "mariabdb-host".
+  [ "$OUT" == "32b96c7acaa1df56ea966c7e30c59c4211024992720682363c56db2993307e99" ]
+}
+
+@test "Drupal hash salt from GOVCMS_DRUPAL_HASH_SALT env var" {
+  OUT=$(
+    GOVCMS_DRUPAL_HASH_SALT="s0M3_S4lT" \
+    MARIADB_HOST="mariadb-host" \
+    all_settings | jq -cr .settings.hash_salt
+  )
+  [ "$OUT" == "s0M3_S4lT" ]
+  [ "$OUT" != "32b96c7acaa1df56ea966c7e30c59c4211024992720682363c56db2993307e99" ]
 }
