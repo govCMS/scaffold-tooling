@@ -42,7 +42,7 @@ $settings['file_private_path'] = 'sites/default/files/private';
 $settings['file_temp_path'] = 'sites/default/files/private/tmp';
 
 // Non-deterministic hash salt.
-$settings['hash_salt'] = hash('sha256', getenv('MARIADB_HOST'));
+$settings['hash_salt'] = getenv('GOVCMS_DRUPAL_HASH_SALT') ?: hash('sha256', getenv('MARIADB_HOST'));
 
 // Add custom symfony mailer transport command.
 $settings['mailer_sendmail_commands'] = [

@@ -33,8 +33,8 @@ load _helpers_govcms
   git clone --depth 1 https://github.com/govCMS/scaffold "$(pwd)"
   rm -rf .git
 
-  # Init the scaffold for Drupal 10 PaaS.
-  ahoy init test paas 10
+  # Init the scaffold for Drupal 11 PaaS.
+  ahoy init test paas 11
 
   # Prepare composer to install requirements.
   if [ -f "/run/secrets/composer_auth" ]; then
@@ -55,6 +55,7 @@ load _helpers_govcms
   composer config allow-plugins.drupal/core-composer-scaffold true
   composer config allow-plugins.oomphinc/composer-installers-extender true
   composer config allow-plugins.phpstan/extension-installer true
+  composer config allow-plugins.symfony/runtime true
 
   composer install --no-interaction --ignore-platform-reqs
 

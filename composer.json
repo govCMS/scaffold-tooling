@@ -68,7 +68,8 @@
       "drupal/core-composer-scaffold": true,
       "oomphinc/composer-installers-extender": true,
       "phpstan/extension-installer": true,
-      "php-http/discovery": true
+      "php-http/discovery": true,
+      "symfony/runtime": true
     },
     "apcu-autoloader": true,
     "optimize-autoloader": true
